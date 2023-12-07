@@ -9,6 +9,14 @@ By: Tom Leidy
 Started 11/9/2023
 """
 import random
+import argparse
+
+parser = argparse.ArgumentParser(prog="yi-ren", description="an Yijing application",
+                                 epilog="A work in change")
+parser.add_argument("-u", "--user", default="default")
+parser.add_argument("-c", "--client", default="unspecified")
+
+args = parser.parse_args()
 
 # Steps:
 # add input() for topic
