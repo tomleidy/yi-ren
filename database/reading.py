@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
-
+from .base import Base
 
 load_dotenv()
 database_url = os.getenv("DATABASE_URL")
@@ -11,7 +11,6 @@ database_url = os.getenv("DATABASE_URL")
 # Connect to Postgres database
 engine = create_engine(database_url)
 Session = sessionmaker(bind=engine)
-Base = declarative_base()
 
 
 class Reading(Base):
