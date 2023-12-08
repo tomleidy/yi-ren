@@ -5,6 +5,7 @@ from sqlalchemy import pool
 
 from database.base import Base
 from models.reading import Reading
+from models.client import Client
 
 from alembic import context
 import os
