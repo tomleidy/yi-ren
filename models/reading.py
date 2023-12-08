@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
-from ..database.base import Base
+from database.base import Base
 
 
 class Reading(Base):
