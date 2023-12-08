@@ -20,13 +20,4 @@ trigram_pair_to_hexagram_number = {
 }
 
 
-trigram_lines_to_trigram_pinyin = {
-    (8, 8, 8): "Qian", (8, 8, 7): "Dui", (8, 7, 8): "Li", (8, 7, 7): "Zhen",
-    (7, 8, 8): "Xun", (7, 8, 7): "Kan", (7, 7, 8): "Gen", (7, 7, 7): "Kun"
-}
-
 # this one needs to be moved to the testing suite
-test_values_trigram_lines_all_moving = {
-    (9, 9, 9): "Qian", (9, 9, 6): "Dui", (9, 6, 9): "Li", (9, 6, 6): "Zhen",
-    (6, 9, 9): "Xun", (6, 9, 6): "Kan", (6, 6, 9): "Gen", (6, 6, 6): "Kun"
-}
