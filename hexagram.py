@@ -1,6 +1,5 @@
 """Hexagram Class, which is different from Hexagon Staff"""
 
-from three_coins import ThreeCoins
 from trigram import Trigram
 from yijing_references import trigram_pair_to_hexagram_number
 
@@ -8,7 +7,7 @@ line_string = {
     6: "--- o ---",
     7: "---   ---",
     8: "---------",
-    9: "--- x ---"
+    9: "----x----"
 }
 
 
@@ -44,6 +43,7 @@ class Hexagram:
 #     for value in hexagram_line_values:
 #         print(get_line_string(value))
 
+
     def print_hexagram(self, line_values):
         for line_value in line_values[::-1]:
             print(line_string[line_value])
@@ -51,16 +51,3 @@ class Hexagram:
     def get_line_string(self, line_value):
         """What does our line look like?"""
         return line_string[line_value]
-
-
-DEBUG = True
-
-if DEBUG:
-    lines = []
-    while len(lines) < 6:
-        lines.append(ThreeCoins().get_value_sum())
-    lower_trigram = Trigram(lines[0:3])
-    upper_trigram = Trigram(lines[3:])
-    print(lower_trigram)
-    print(upper_trigram)
-    hexxus = Hexagram(lower_trigram, upper_trigram)
