@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from database.base import Base
-from database.reading import Reading
+from models.reading import Reading
 
 from alembic import context
 import os

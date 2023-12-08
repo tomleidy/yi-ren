@@ -1,16 +1,6 @@
-import os
 from datetime import datetime, timezone
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
-from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
-from .base import Base
-
-load_dotenv()
-database_url = os.getenv("DATABASE_URL")
-
-# Connect to Postgres database
-engine = create_engine(database_url)
-Session = sessionmaker(bind=engine)
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from ..database.base import Base
 
 
 class Reading(Base):
