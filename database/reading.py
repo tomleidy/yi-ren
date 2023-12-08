@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timezone
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 from .base import Base
 
