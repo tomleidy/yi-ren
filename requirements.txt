@@ -5,4 +5,5 @@ MarkupSafe==2.1.3
 psycopg2==2.9.9
 python-dotenv==1.0.0
 SQLAlchemy==2.0.23
+typing==3.7.4.3
 typing_extensions==4.8.0
