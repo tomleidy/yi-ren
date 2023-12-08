@@ -1,8 +1,9 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
+
 
 load_dotenv()
 database_url = os.getenv("DATABASE_URL")
@@ -23,7 +24,9 @@ class Reading(Base):
         self.hexagram_primary = hexagrams[0]
         if len(hexagrams) > 1:
             self.hexagram_secondary = hexagrams[1]
-        self.line_moving_1, self.line_moving_2, self.line_moving_3, self.line_moving_4, self.line_moving_5, self.line_moving_6 = moving_lines
+        for i, line in enumerate(moving_lines, start=1):
+            setattr(self, f'line_moving_{i}', line)
+
         self.topic = topic
         self.reading_notes = notes
 
@@ -40,7 +43,8 @@ class Reading(Base):
     line_moving_4 = Column(Boolean, nullable=False, default=False)
     line_moving_5 = Column(Boolean, nullable=False, default=False)
     line_moving_6 = Column(Boolean, nullable=False, default=False)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False,
+                        default=lambda: datetime.now(timezone.utc))
     reading_notes = Column(String, nullable=True)
 
     def serialize(self):
