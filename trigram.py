@@ -62,11 +62,11 @@ if __name__ == "__main__":
     from line import Line
 
     list_of_trigrams = []
-    for lines, trigram in test_values_trigram_lines.items():
+    for test_lines, trigram in test_values_trigram_lines.items():
         line_list = []
-        for line in lines:
-            line_list.append(Line(line))
+        for test_line in test_lines:
+            line_list.append(Line(test_line))
         actual = Trigram(line_list).serialize()
-        expected = expected_serialized_trigrams[lines]
-        message = f"{trigram} serializes properly with {lines}"
+        expected = expected_serialized_trigrams[test_lines]
+        message = f"{trigram} serializes properly with {test_lines}"
         assert_equal(actual, expected, message)
