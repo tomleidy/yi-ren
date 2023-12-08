@@ -6,8 +6,8 @@ from database.base import Base
 class Reading(Base):
     """Handles SQLAlchemy model for readings table"""
 
-    def __init__(self, user_id: int, client_id: int, hexagrams: list, moving_lines: list, topic: str = "", notes: str = ""):
-        self.user_id = user_id
+    def __init__(self, reader_id: int, client_id: int, hexagrams: list, moving_lines: list, topic: str = "", notes: str = ""):
+        self.reader_id = reader_id
         self.client_id = client_id
 
         self.hexagram_primary = hexagrams[0]
@@ -21,7 +21,7 @@ class Reading(Base):
 
     __tablename__ = "readings"
     reading_id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, nullable=False)
+    reader_id = Column(Integer, nullable=False)
     client_id = Column(Integer, nullable=False)
     topic = Column(String, nullable=False, default="")
     hexagram_primary = Column(Integer, nullable=False)
@@ -52,7 +52,7 @@ class Reading(Base):
             "hexagram_primary": self.hexagram_primary,
             "lines_moving": moving_list,
             "created_at": self.created_at.isoformat(),
-            "user_id": self.user_id,
+            "reader_id": self.reader_id,
             "client_id": self.client_id,
             "reading_notes": self.reading_notes
 
