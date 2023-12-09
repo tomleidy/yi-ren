@@ -3,11 +3,11 @@ from sqlalchemy import Column, Integer, DateTime, Text, Date, Boolean
 from database.base import Base
 
 
-class Client(Base):
-    """Handles SQLAlchemy model for clients table"""
+class User(Base):
+    """Handles SQLAlchemy model for users table"""
 
-    __tablename__ = "clients"
-    client_id = Column(Integer, primary_key=True, autoincrement=True)
+    __tablename__ = "users"
+    user_id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(Text, nullable=False)
     personal_name = Column(Text)
     family_name = Column(Text)
@@ -22,23 +22,24 @@ class Client(Base):
     referred_by = Column(Text)
     email = Column(Text)
     phone_number = Column(Text)
-    client_notes = Column(Text)
+    user_notes = Column(Text)
     safe_to_email = Column(Boolean, default=True)
     safe_to_call = Column(Boolean, default=True)
     safe_to_text = Column(Boolean, default=True)
     preferred_contact_method = Column(Text)
     safety_notes = Column(Text)
+    is_reader = Column(Boolean, default=False)
 
     def serialize(self):
-        """Returns client information in dictionary"""
+        """Returns user information in dictionary"""
         serialize_list = [
-            "client_id", "username", "personal_name", "family_name",
+            "user_id", "username", "personal_name", "family_name",
             "chosen_personal_name", "created_at", "last_modified", "date_of_birth",
-            "gender", "referred_by", "email", "phone_number", "client_notes"
+            "gender", "referred_by", "email", "phone_number", "user_notes", "is_reader"
         ]
         timestamps = ["created_at", "last_modified"]
-        client_dict = {}
+        user_dict = {}
         for key, val in vars(self).items():
             if key in serialize_list:
-                client_dict[key] = val if key not in timestamps else val.isoformat()
-        return client_dict
+                user_dict[key] = val if key not in timestamps else val.isoformat()
+        return user_dict
