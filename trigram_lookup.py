@@ -1,0 +1,58 @@
+"""Dictionaries and helper functions for looking up Trigrams"""
+
+numeric_to_value_stationary = {6: 7, 7: 7, 8: 8, 9: 8}
+numeric_to_value_moving = {6: 8, 7: 7, 8: 8, 9: 7}
+trigram_lines_to_trigram_pinyin = {
+    (8, 8, 8): "Qian", (8, 8, 7): "Dui", (8, 7, 8): "Li", (8, 7, 7): "Zhen",
+    (7, 8, 8): "Xun", (7, 8, 7): "Kan", (7, 7, 8): "Gen", (7, 7, 7): "Kun"
+}
+
+trigram_pinyin_info = {
+    "Qian": {"zi": "乾", "gua": "☰", "meaning": "Heaven"},
+    "Dui": {"zi": "兌", "gua": "☱", "meaning": "Lake"},
+    "Li": {"zi": "兌", "gua": "☲", "meaning": "Fire"},
+    "Zhen": {"zi": "震", "gua": "☳", "meaning": "Thunder"},
+    "Xun": {"zi": "巽", "gua": "☴", "meaning": "Wind"},
+    "Kan": {"zi": "坎", "gua": "☵", "meaning": "Water"},
+    "Gen": {"zi": "艮", "gua": "☶", "meaning": "Mountain"},
+    "Kun": {"zi": "坤", "gua": "☷", "meaning": "Earth"}
+}
+
+
+def convert_lines_to_sevens_and_eights_only_stationary(lines: list):
+    """Return the stationary line values for a series of lines, i.e. 6->7, 9->8"""
+    sevens_and_eights_only = []
+    for line in lines:
+        sevens_and_eights_only.append(numeric_to_value_stationary[line])
+    return sevens_and_eights_only
+
+
+def convert_lines_to_sevens_and_eights_only_moving(lines: list):
+    """Return the moving line values for a series of lines, i.e. 6->8, 9->7"""
+    sevens_and_eights_only = []
+    for line in lines:
+        sevens_and_eights_only.append(numeric_to_value_moving[line])
+    return sevens_and_eights_only
+
+
+def get_trigram_from_lines_stationary(lines: list):
+    """Take a list of 3 integers and identify the trigram, default"""
+    lines = convert_lines_to_sevens_and_eights_only_stationary(lines)
+    return trigram_lines_to_trigram_pinyin[tuple(lines)]
+
+
+def get_trigram_from_lines_moving(lines: list):
+    """Take a list of 3 integers and identify the trigram that the current one is moving to"""
+    lines = convert_lines_to_sevens_and_eights_only_moving(lines)
+    return trigram_lines_to_trigram_pinyin[tuple(lines)]
+
+
+if __name__ == "__main__":
+    hexagrams = {}
+    for lower_key, lower_gua in trigram_lines_to_trigram_pinyin.items():
+        print(lower_key, lower_gua)
+        for upper_key, upper_gua in trigram_lines_to_trigram_pinyin.items():
+            combined_key = lower_key + upper_key
+            combined_gua = lower_gua + ", " + upper_gua
+            hexagrams[combined_key] = combined_gua
+    print(hexagrams)
