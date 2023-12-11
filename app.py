@@ -1,14 +1,24 @@
-"""Entry point for Yi-Ren"""
+"""
+Application: Yi Ren.
+
+The beginnings of 易人 ( Yi Ren), an Yijing application.
+
+The name is almost a play on words. There's a Chinese herb named Yi Yi Ren (薏苡仁) known as Job's Tears. Given that the Yijing is the book of changes, this is the app that changes a person. Which is a quality I've noticed as I've been working with it myself over the years.
+
+By: Tom Leidy
+Started 11/9/2023
+"""
+
+
 import argparse
 from hexagram import Hexagram
-from trigram import Trigram
 from three_coins import ThreeCoins
 
 parser = argparse.ArgumentParser(prog="yi-ren", description="an Yijing application",
                                  epilog="A work in change")
-parser.add_argument("-r", "--reader", default=None)
-parser.add_argument("-c", "--client", default=None)
-parser.add_argument("-t", "--topic", default=None)
+parser.add_argument("-r", "--reader", default="user")
+parser.add_argument("-c", "--client", default="user")
+parser.add_argument("-t", "--topic", default="user's unstated topic")
 args = parser.parse_args()
 
 print(args)
@@ -39,11 +49,18 @@ def get_response(message: str, max_len: int = 280, default: str = None):
 
 
 if args.reader is None:
-    reader = get_response("Please enter reader username", 20, "user")
+    reader = get_response("Please enter reader username", 20, "testuser")
+else:
+    reader = args.reader
+
 if args.reader is None:
-    client = get_response("Please enter client username", 20, "self")
+    client = get_response("Please enter client username", 20, "testuser")
+else:
+    client = args.client
 if args.topic is None:
     topic = get_response("Please enter topic of reading")
+else:
+    topic = args.topic
 
 
 print(f"Welcome, {reader}! May your reading for {client} be insightful!")
@@ -55,9 +72,9 @@ DEBUG = True
 if DEBUG:
     lines = []
     while len(lines) < 6:
-        lines.append(ThreeCoins().get_value_sum())
-    lower_trigram = Trigram(lines[0:3])
-    upper_trigram = Trigram(lines[3:])
-    print(lower_trigram)
-    print(upper_trigram)
-    hexxus = Hexagram(lower_trigram, upper_trigram)
+        lines.append(ThreeCoins(False).get_value_sum())
+    # lower_trigram = Trigram(lines[0:3])
+    # upper_trigram = Trigram(lines[3:])
+    # print(lower_trigram)
+    # print(upper_trigram)
+    hexxus = Hexagram(lines)
