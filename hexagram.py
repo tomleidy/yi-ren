@@ -22,7 +22,8 @@ class Hexagram:
         print(f"hexagram(s): {self.hexagrams}")
         # self.print_hexagram(self.line_values)
 
-    def get_lines(self):
+    def get_lines(self) -> dict:
+        """Return dictionary of stationary and, if moving, moving line values suitable for lookup"""
         lines = {}
         lines["stationary"] = original_to_lookup_values_stationary(
             self.line_values)
@@ -31,7 +32,8 @@ class Hexagram:
                 self.line_values)
         return lines
 
-    def get_trigrams(self):
+    def get_trigrams(self) -> dict:
+        """Return dictionary of stationary, and if moving, trigram pairs"""
         trigrams = {}
         lower = get_trigram_from_lines_stationary(self.line_values[0:3])
         upper = get_trigram_from_lines_stationary(self.line_values[3:6])
