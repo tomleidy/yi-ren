@@ -3,7 +3,7 @@
 import json
 from trigram_lookup import get_trigram_from_lines_stationary, get_trigram_from_lines_moving
 from hexagram_lookup import trigram_pair_to_hexagram_number
-from lookup import convert_lines_to_sevens_and_eights_only_moving, convert_lines_to_sevens_and_eights_only_stationary
+from lines import original_to_lookup_values_moving, original_to_lookup_values_stationary
 
 line_string = {6: "--- o ---", 7: "---   ---", 8: "---------", 9: "----x----"}
 
@@ -24,10 +24,10 @@ class Hexagram:
 
     def get_lines(self):
         lines = {}
-        lines["stationary"] = convert_lines_to_sevens_and_eights_only_stationary(
+        lines["stationary"] = original_to_lookup_values_stationary(
             self.line_values)
         if self.moving:
-            lines["moving"] = convert_lines_to_sevens_and_eights_only_moving(
+            lines["moving"] = original_to_lookup_values_moving(
                 self.line_values)
         return lines
 

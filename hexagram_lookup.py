@@ -1,5 +1,5 @@
 """Hexagram lookup dictionaries and functions"""
-from lookup import convert_lines_to_sevens_and_eights_only_moving, convert_lines_to_sevens_and_eights_only_stationary
+from lines import original_to_lookup_values_moving, original_to_lookup_values_stationary
 from trigram_lookup import trigram_pinyin_info
 from unittests import assert_equal
 
@@ -25,13 +25,13 @@ lines_to_hexagrams = {
 
 def get_trigram_from_lines_stationary(lines: list):
     """Take a list of 3 integers and identify the trigram, default"""
-    lines = convert_lines_to_sevens_and_eights_only_stationary(lines)
+    lines = original_to_lookup_values_stationary(lines)
     return lines_to_hexagrams[tuple(lines)]
 
 
 def get_trigram_from_lines_moving(lines: list):
     """Take a list of 3 integers and identify the trigram that the current one is moving to"""
-    lines = convert_lines_to_sevens_and_eights_only_moving(lines)
+    lines = original_to_lookup_values_moving(lines)
     return lines_to_hexagrams[tuple(lines)]
 
 

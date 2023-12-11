@@ -1,7 +1,7 @@
 """Functions and dictionaries that nourish trigram and hexagram lookup functions"""
 
 
-def convert_lines_to_sevens_and_eights_only_stationary(lines: list) -> list:
+def original_to_lookup_values_stationary(lines: list) -> list:
     """Return the stationary line values for a series of lines, i.e. 6->7, 9->8"""
     sevens_and_eights_only = []
     for line in lines:
@@ -9,7 +9,7 @@ def convert_lines_to_sevens_and_eights_only_stationary(lines: list) -> list:
     return sevens_and_eights_only
 
 
-def convert_lines_to_sevens_and_eights_only_moving(lines: list) -> list:
+def original_to_lookup_values_moving(lines: list) -> list:
     """Return the moving line values for a series of lines, i.e. 6->8, 9->7"""
     sevens_and_eights_only = []
     for line in lines:
