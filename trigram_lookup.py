@@ -1,5 +1,5 @@
 """Dictionaries and helper functions for looking up Trigrams"""
-from lookup import convert_lines_to_sevens_and_eights_only_moving, convert_lines_to_sevens_and_eights_only_stationary
+from lines import original_to_lookup_values_stationary, original_to_lookup_values_moving
 
 
 trigram_lines_to_trigram_pinyin = {
@@ -24,13 +24,13 @@ for lines, pinyin in trigram_lines_to_trigram_pinyin.items():
 
 def get_trigram_from_lines_stationary(lines: list):
     """Take a list of 3 integers and identify the trigram, default"""
-    lines = convert_lines_to_sevens_and_eights_only_stationary(lines)
+    lines = original_to_lookup_values_stationary(lines)
     return trigram_lines_to_trigram_pinyin[tuple(lines)]
 
 
 def get_trigram_from_lines_moving(lines: list):
     """Take a list of 3 integers and identify the trigram that the current one is moving to"""
-    lines = convert_lines_to_sevens_and_eights_only_moving(lines)
+    lines = original_to_lookup_values_moving(lines)
     return trigram_lines_to_trigram_pinyin[tuple(lines)]
 
 
