@@ -1,7 +1,7 @@
 """Dictionaries and helper functions for looking up Trigrams"""
+from lookup import convert_lines_to_sevens_and_eights_only_moving, convert_lines_to_sevens_and_eights_only_stationary
 
-numeric_to_value_stationary = {6: 7, 7: 7, 8: 8, 9: 8}
-numeric_to_value_moving = {6: 8, 7: 7, 8: 8, 9: 7}
+
 trigram_lines_to_trigram_pinyin = {
     (8, 8, 8): "Qian", (8, 8, 7): "Dui", (8, 7, 8): "Li", (8, 7, 7): "Zhen",
     (7, 8, 8): "Xun", (7, 8, 7): "Kan", (7, 7, 8): "Gen", (7, 7, 7): "Kun"
