@@ -17,22 +17,9 @@ trigram_pinyin_info = {
     "Gen": {"zi": "艮", "gua": "☶", "meaning": "Mountain"},
     "Kun": {"zi": "坤", "gua": "☷", "meaning": "Earth"}
 }
-
-
-def convert_lines_to_sevens_and_eights_only_stationary(lines: list):
-    """Return the stationary line values for a series of lines, i.e. 6->7, 9->8"""
-    sevens_and_eights_only = []
-    for line in lines:
-        sevens_and_eights_only.append(numeric_to_value_stationary[line])
-    return sevens_and_eights_only
-
-
-def convert_lines_to_sevens_and_eights_only_moving(lines: list):
-    """Return the moving line values for a series of lines, i.e. 6->8, 9->7"""
-    sevens_and_eights_only = []
-    for line in lines:
-        sevens_and_eights_only.append(numeric_to_value_moving[line])
-    return sevens_and_eights_only
+# this could be hard coded into the above dictionary, but for now this is faster.
+for lines, pinyin in trigram_lines_to_trigram_pinyin.items():
+    trigram_pinyin_info[pinyin]["lines"] = lines
 
 
 def get_trigram_from_lines_stationary(lines: list):
