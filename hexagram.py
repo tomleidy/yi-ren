@@ -1,48 +1,54 @@
 """Hexagram Class, which is different from Hexagon Staff"""
 
-from trigram import Trigram
-from yijing_references import trigram_pair_to_hexagram_number
+import json
+from trigram_lookup import get_trigram_from_lines_stationary, get_trigram_from_lines_moving
+from hexagram_lookup import trigram_pair_to_hexagram_number
+from lookup import convert_lines_to_sevens_and_eights_only_moving, convert_lines_to_sevens_and_eights_only_stationary
 
-line_string = {
-    6: "--- o ---",
-    7: "---   ---",
-    8: "---------",
-    9: "----x----"
-}
+line_string = {6: "--- o ---", 7: "---   ---", 8: "---------", 9: "----x----"}
 
 
 class Hexagram:
-    def __init__(self, lower: Trigram, upper: Trigram):
-        self.lower = lower
-        self.upper = upper
-        self.line_values = lower.get_values() + upper.get_values()
-        self.has_moving = 6 in self.line_values or 9 in self.line_values
-        lookup_pair_current = (lower.get_current(), upper.get_current())
+    """Instantiate with a 6 item long list of integers, 6 <= integers <= 9 """
 
-        self.hexagram_number_current = trigram_pair_to_hexagram_number[lookup_pair_current]
-        self.hexagram_number_alternate = 0
-        print(f"hexagram: {self.hexagram_number_current}")
-        print(self.line_values)
-        self.print_hexagram(self.line_values)
+    def __init__(self, six_line_values: list):
+        self.line_values = six_line_values
+        self.moving = any(line in [6, 9] for line in six_line_values)
+        self.lines = self.get_lines()
+        self.trigrams = self.get_trigrams()
+        self.hexagrams = self.get_hexagrams()
+        print(f"lines: {json.dumps(self.lines)}")
+        print(f"trigrams: {self.trigrams}")
+        print(f"hexagram(s): {self.hexagrams}")
+        # self.print_hexagram(self.line_values)
 
-        if self.has_moving:
-            alternate_lower = lower.get_alternate()
-            alternate_upper = upper.get_alternate()
-            if alternate_lower == "":
-                alternate_lower = lower.get_current()
-            if alternate_upper == "":
-                alternate_upper = upper.get_current()
+    def get_lines(self):
+        lines = {}
+        lines["stationary"] = convert_lines_to_sevens_and_eights_only_stationary(
+            self.line_values)
+        if self.moving:
+            lines["moving"] = convert_lines_to_sevens_and_eights_only_moving(
+                self.line_values)
+        return lines
 
-            lookup_pair_alternate = (alternate_lower, alternate_upper)
-            self.hexagram_number_alternate = trigram_pair_to_hexagram_number[
-                lookup_pair_alternate]
+    def get_trigrams(self):
+        trigrams = {}
+        lower = get_trigram_from_lines_stationary(self.line_values[0:3])
+        upper = get_trigram_from_lines_stationary(self.line_values[3:6])
+        trigrams["stationary"] = (lower, upper)
+        if self.moving:
+            lower = get_trigram_from_lines_moving(self.line_values[0:3])
+            upper = get_trigram_from_lines_moving(self.line_values[3:6])
+            trigrams["moving"] = (lower, upper)
+        return trigrams
 
-
-# def display_hexagram(hexagram_line_values):
-#     """Take hexagram line values and print the line"""
-#     for value in hexagram_line_values:
-#         print(get_line_string(value))
-
+    def get_hexagrams(self) -> int:
+        """Return hexagram number after looking up via lower and upper trigram names (pinyin)"""
+        hexagrams = {}
+        hexagrams["stationary"] = trigram_pair_to_hexagram_number[self.trigrams["stationary"]]
+        if self.moving:
+            hexagrams["moving"] = trigram_pair_to_hexagram_number[self.trigrams["moving"]]
+        return hexagrams
 
     def print_hexagram(self, line_values):
         for line_value in line_values[::-1]:
