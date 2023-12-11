@@ -15,12 +15,35 @@ class Hexagram:
         self.line_values = six_line_values
         self.moving = any(line in [6, 9] for line in six_line_values)
         self.lines = self.get_lines()
+        self.moving_list = self.get_moving_lines()
         self.trigrams = self.get_trigrams()
         self.hexagrams = self.get_hexagrams()
+        self.print_info()
+        # print(f"serialize(): {json.dumps(self.serialize())}")
+        self.print_hexagrams()
+
+    def print_info(self):
         print(f"lines: {json.dumps(self.lines)}")
         print(f"trigrams: {self.trigrams}")
         print(f"hexagram(s): {self.hexagrams}")
-        # self.print_hexagram(self.line_values)
+
+    def serialize(self):
+        """Return a dictionary of reading"""
+        return {
+            "moving_list": self.moving_list,
+            "lines": self.lines,
+            "trigrams": self.trigrams,
+            "hexagrams": self.hexagrams
+        }
+
+    def get_moving_lines(self) -> list:
+        """Return list of which lines are moving, if any"""
+        moving_list = []
+        if self.moving:
+            for idx, line in enumerate(self.line_values):
+                if line in [6, 9]:
+                    moving_list.append(idx)
+        return moving_list
 
     def get_lines(self) -> dict:
         """Return dictionary of stationary and, if moving, moving line values suitable for lookup"""
@@ -52,9 +75,12 @@ class Hexagram:
             hexagrams["moving"] = trigram_pair_to_hexagram_number[self.trigrams["moving"]]
         return hexagrams
 
-    def print_hexagram(self, line_values):
-        for line_value in line_values[::-1]:
-            print(line_string[line_value])
+    def print_hexagrams(self):
+        """A method to print ASCII portrayal of the hexagram(s)"""
+        for stationary_moving, lines in self.lines.items():
+            print(f"{stationary_moving}:")
+            for line_value in lines[::-1]:
+                print(line_string[line_value])
 
     def get_line_string(self, line_value):
         """What does our line look like?"""
