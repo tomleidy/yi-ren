@@ -18,15 +18,13 @@ parser = argparse.ArgumentParser(prog="yi-ren", description="an Yijing applicati
                                  epilog="A work in change")
 parser.add_argument("-r", "--reader", default="user")
 parser.add_argument("-c", "--client", default="user")
-parser.add_argument("-t", "--topic", default="user's unstated topic")
+parser.add_argument("-t", "--topic", default="")
+parser.add_argument("-i", "--interactive", action="store_true")
+parser.add_argument("-d", "--debug", action="store_true")
+
 args = parser.parse_args()
 
-print(args)
-
-
-# reader: message, default, 20
-# user: message, default, 20
-# topic: message, no default, 280
+# print(args)
 
 
 def get_response(message: str, max_len: int = 280, default: str = None):
@@ -48,33 +46,22 @@ def get_response(message: str, max_len: int = 280, default: str = None):
     return response
 
 
-if args.reader is None:
+if args.interactive:
     reader = get_response("Please enter reader username", 20, "testuser")
+    client = get_response("Please enter client username", 20, "testuser")
+    topic = get_response("Please enter topic of reading")
+    print(f"Welcome, {reader}! May your reading for {client} be insightful!")
+    print(f"Topic: {topic}")
 else:
     reader = args.reader
-
-if args.reader is None:
-    client = get_response("Please enter client username", 20, "testuser")
-else:
     client = args.client
-if args.topic is None:
-    topic = get_response("Please enter topic of reading")
-else:
     topic = args.topic
 
 
-print(f"Welcome, {reader}! May your reading for {client} be insightful!")
-print(f"Topic: {topic}")
-
-
-DEBUG = True
+DEBUG = args.debug
 
 if DEBUG:
     lines = []
     while len(lines) < 6:
         lines.append(ThreeCoins(False).get_value_sum())
-    # lower_trigram = Trigram(lines[0:3])
-    # upper_trigram = Trigram(lines[3:])
-    # print(lower_trigram)
-    # print(upper_trigram)
-    hexxus = Hexagram(lines)
+    print(Hexagram(lines))
