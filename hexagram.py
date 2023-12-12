@@ -18,14 +18,17 @@ class Hexagram:
         self.moving_list = self.get_moving_lines()
         self.trigrams = self.get_trigrams()
         self.hexagrams = self.get_hexagrams()
-        self.print_info()
+        print(self.__str__())
         # print(f"serialize(): {json.dumps(self.serialize())}")
         self.print_hexagrams()
 
-    def print_info(self):
-        print(f"lines: {json.dumps(self.lines)}")
-        print(f"trigrams: {self.trigrams}")
-        print(f"hexagram(s): {self.hexagrams}")
+    def __str__(self):
+        message_string = f"lines: {json.dumps(self.lines)}\n"
+        if self.moving:
+            message_string += f"moving lines: {self.moving_list}\n"
+        message_string += f"trigrams: {self.trigrams}\n"
+        message_string += f"hexagram(s): {self.hexagrams}\n"
+        return message_string
 
     def serialize(self):
         """Return a dictionary of reading"""
@@ -75,12 +78,13 @@ class Hexagram:
             hexagrams["moving"] = trigram_pair_to_hexagram_number[self.trigrams["moving"]]
         return hexagrams
 
-    def print_hexagrams(self):
+    def print_hexagrams(self) -> None:
         """A method to print ASCII portrayal of the hexagram(s)"""
         for stationary_moving, lines in self.lines.items():
             print(f"{stationary_moving}:")
             for line_value in lines[::-1]:
                 print(line_string[line_value])
+            print("")
 
     def get_line_string(self, line_value):
         """What does our line look like?"""
