@@ -65,3 +65,26 @@ if DEBUG:
     while len(lines) < 6:
         lines.append(ThreeCoins(False).get_value_sum())
     print(Hexagram(lines))
+
+# TODO: save reading to database
+# TODO: create a default user (can this be done with Alembic?)
+# TODO: development only users
+# TODO: add password authentication for readers
+# TODO: all users can see the history of their own readings
+# TODO: users who are readers can see all the readings they've performed for other users
+# TODO: clients can see reading notes
+# TODO: readers can see/write reading notes
+
+# TODO: non-readers cannot see user notes
+# TODO: readers can see user notes
+# TODO: admin can write notes about users
+# TODO: admin can see all readings received by any user or given by any reader
+
+# TODO: load readings from database and display them
+
+# TODO: figure out where these todo items should go
+# TODO: interface to add users (specifically readers)
+# TODO: interface for readers to look up reading information about users
+# TODO: interface to authenticate users
+# TODO:
+# TODO: Maja D'aoust style shadow moving lines (the same moving lines for the moving hexagram)

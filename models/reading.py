@@ -21,20 +21,7 @@ class Reading(Base):
 
     __tablename__ = "readings"
     reading_id = Column(Integer, primary_key=True, autoincrement=True)
-    reader_id = Column(Integer, nullable=False)
-    client_id = Column(Integer, nullable=False)
-    topic = Column(String, nullable=False, default="")
-    hexagram_primary = Column(Integer, nullable=False)
-    hexagram_secondary = Column(Integer, nullable=True)
-    line_moving_1 = Column(Boolean, nullable=False, default=False)
-    line_moving_2 = Column(Boolean, nullable=False, default=False)
-    line_moving_3 = Column(Boolean, nullable=False, default=False)
-    line_moving_4 = Column(Boolean, nullable=False, default=False)
-    line_moving_5 = Column(Boolean, nullable=False, default=False)
-    line_moving_6 = Column(Boolean, nullable=False, default=False)
-    created_at = Column(DateTime, nullable=False,
-                        default=lambda: datetime.now(timezone.utc))
-    reading_notes = Column(String, nullable=True)
+    # TODO: make reader_id and client_id nullable=False (requires more user table setup)
 
     def serialize(self):
         """Returns reading information in dictionary"""
