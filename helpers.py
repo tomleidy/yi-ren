@@ -1,9 +1,10 @@
 """Helper functions for looking up hexagram and trigram data"""
 from datetime import datetime, timezone
-from lines import original_to_lookup_values_moving, original_to_lookup_values_stationary
 from reference_data import lines_to_hexagram_number, hexagram_number_to_lines, trigram_pair_to_hexagram_number
 from reference_data import lines_to_trigram_name_pinyin, trigram_pinyin_info, hexagram_number_to_trigram_pair
+from reference_data import numeric_to_value_stationary, numeric_to_value_moving
 from unittests import assert_equal
+
 
 # Get lines
 
@@ -30,6 +31,24 @@ def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> tupl
 
 # TODO: test function comparing get_moving_lines_from_hexagram_pairs(1, 2). The response should be [1,2,3,4,5,6]
 # TODO: test function comparing get_moving_lines_from_hexagram_pairs(1, 1). The response should be []
+
+# Get line lookup values
+
+
+def original_to_lookup_values_stationary(lines: list) -> list:
+    """Return the stationary line values for a series of lines, i.e. 6->7, 9->8"""
+    sevens_and_eights_only = []
+    for line in lines:
+        sevens_and_eights_only.append(numeric_to_value_stationary[line])
+    return tuple(sevens_and_eights_only)
+
+
+def original_to_lookup_values_moving(lines: list) -> list:
+    """Return the moving line values for a series of lines, i.e. 6->8, 9->7"""
+    sevens_and_eights_only = []
+    for line in lines:
+        sevens_and_eights_only.append(numeric_to_value_moving[line])
+    return tuple(sevens_and_eights_only)
 
 
 # Get trigrams

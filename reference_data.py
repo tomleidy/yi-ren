@@ -1,5 +1,10 @@
 """Dictionaries for trigram and hexagram lookups"""
 
+# For converting original reading values to stationary values or moving values
+numeric_to_value_stationary = {6: 7, 7: 7, 8: 8, 9: 8}
+numeric_to_value_moving = {6: 8, 7: 7, 8: 8, 9: 7}
+
+
 lines_to_hexagram_number = {
     (8, 8, 8, 8, 8, 8): 1, (8, 8, 8, 8, 8, 7): 43, (8, 8, 8, 8, 7, 8): 14, (8, 8, 8, 8, 7, 7): 34,
     (8, 8, 8, 7, 8, 8): 9, (8, 8, 8, 7, 8, 7): 5, (8, 8, 8, 7, 7, 8): 26, (8, 8, 8, 7, 7, 7): 11,
