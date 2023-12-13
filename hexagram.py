@@ -1,8 +1,8 @@
 """Hexagram Class, which is different from Hexagon Staff"""
 
 import json
-from trigram_lookup import get_trigram_from_lines_stationary, get_trigram_from_lines_moving
-from hexagram_lookup import trigram_pair_to_hexagram_number
+from helpers import get_trigram_from_lines_stationary, get_trigram_from_lines_moving
+from helpers import trigram_pair_to_hexagram_number
 from lines import original_to_lookup_values_moving, original_to_lookup_values_stationary
 
 line_string = {6: "--- o ---", 7: "---   ---", 8: "---------", 9: "----x----"}
