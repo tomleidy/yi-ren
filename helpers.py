@@ -77,14 +77,20 @@ def get_trigram_pair_from_hexagram_number(hexagram: int) -> tuple:
 
 def get_hexagram_number_from_trigram_pair(trigrams: tuple) -> int:
     """Return hexagram number by looking up a pair of trigrams"""
-    # TODO: figure out where I implemented this already and move it here
-    pass
+    return trigram_pair_to_hexagram_number[trigrams]
 
 
-def get_hexagram_number_from_line_values(line_values: list) -> int:
-    """"""
-    # TODO: implement logic for identifying a hexagram based on all 6 line values
-    pass
+def get_hexagram_number_from_line_values(line_values: list) -> tuple:
+    """Return tuple with hexagram(s) from line_values"""
+    hexagram_list = []
+    # stationary
+    lookup_stationary = original_to_lookup_values_stationary(line_values)
+    hexagram_list.append(lines_to_hexagram_number[lookup_stationary])
+    if any(line in [6, 9] for line in line_values):
+        # moving
+        lookup_moving = original_to_lookup_values_moving(line_values)
+        hexagram_list.append(lines_to_hexagram_number[lookup_moving])
+    return tuple(hexagram_list)
 
 
 def get_mutual_hexagram_from_hexagram_number(hexagram: int) -> int:
@@ -102,7 +108,7 @@ def get_mutual_hexagram_from_hexagram_number(hexagram: int) -> int:
 
 def fill_reading_dictionary(reading: dict):
     """Fill reading dictionary with extra information"""
-    # TODO: take hexagram_stationary and moving (if extant), add moving and moving_lines
+    # TODO: take hexagram_stationary and moving (if extant), add moving (boolean) and moving_lines ([])
     # TODO: take hexagrams and add trigrams / trigram info
     # TODO: take hexagrams and add line values
     # TODO: take hexagrams and add mutual hexagram
