@@ -2,7 +2,7 @@
 from datetime import datetime, timezone
 from lines import original_to_lookup_values_moving, original_to_lookup_values_stationary
 from reference_data import lines_to_hexagram_number, hexagram_number_to_lines, trigram_pair_to_hexagram_number
-from reference_data import trigram_lines_to_trigram_pinyin, trigram_pinyin_info, hexagram_number_to_trigram_pair
+from reference_data import lines_to_trigram_name_pinyin, trigram_pinyin_info, hexagram_number_to_trigram_pair
 from unittests import assert_equal
 
 # Get lines
@@ -100,9 +100,9 @@ if __name__ == "__main__":
     def validate_trigram_lookups():
         """Validate trigram lookup methods. Keep test functions out of global scope"""
         hexagrams = {}
-        for lower_key, lower_gua in trigram_lines_to_trigram_pinyin.items():
+        for lower_key, lower_gua in lines_to_trigram_name_pinyin.items():
             print(lower_key, lower_gua)
-            for upper_key, upper_gua in trigram_lines_to_trigram_pinyin.items():
+            for upper_key, upper_gua in lines_to_trigram_name_pinyin.items():
                 combined_key = lower_key + upper_key
                 combined_gua = lower_gua + ", " + upper_gua
                 hexagrams[combined_key] = combined_gua

@@ -47,7 +47,7 @@ hexagram_number_to_trigram_pair = {
 }
 
 
-trigram_lines_to_trigram_pinyin = {
+lines_to_trigram_name_pinyin = {
     (8, 8, 8): "Qian", (8, 8, 7): "Dui", (8, 7, 8): "Li", (8, 7, 7): "Zhen",
     (7, 8, 8): "Xun", (7, 8, 7): "Kan", (7, 7, 8): "Gen", (7, 7, 7): "Kun"
 }
@@ -65,5 +65,5 @@ trigram_pinyin_info = {
 }
 
 # Add line information to the above
-for lines, pinyin in trigram_lines_to_trigram_pinyin.items():
+for lines, pinyin in lines_to_trigram_name_pinyin.items():
     trigram_pinyin_info[pinyin]["lines"] = lines
