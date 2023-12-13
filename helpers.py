@@ -1,0 +1,127 @@
+"""Helper functions for looking up hexagram and trigram data"""
+from datetime import datetime, timezone
+from lines import original_to_lookup_values_moving, original_to_lookup_values_stationary
+from reference_data import lines_to_hexagram_number, hexagram_number_to_lines, trigram_pair_to_hexagram_number
+from reference_data import trigram_lines_to_trigram_pinyin, trigram_pinyin_info, hexagram_number_to_trigram_pair
+from unittests import assert_equal
+
+# Get lines
+
+
+def get_lines_from_hexagram(hexagram: int) -> tuple:
+    """Return tuple of 6 line values for a hexagram"""
+    if hexagram in hexagram_number_to_lines:
+        return hexagram_number_to_lines[hexagram]
+    return None
+
+# TODO: figure out how to test this
+
+
+def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> tuple:
+    """Compare two hexagrams and get tuple of moving_lines"""
+    moving_lines = []
+    if hexagram1 != hexagram2:
+        lines1 = get_lines_from_hexagram(hexagram1)
+        lines2 = get_lines_from_hexagram(hexagram2)
+        for x in range(6):
+            if lines1[x] != lines2[x]:
+                moving_lines.append(x)
+    return tuple(moving_lines)
+
+# TODO: test function comparing get_moving_lines_from_hexagram_pairs(1, 2). The response should be [1,2,3,4,5,6]
+# TODO: test function comparing get_moving_lines_from_hexagram_pairs(1, 1). The response should be []
+
+
+# Get trigrams
+
+
+def get_trigram_from_lines_stationary(lines: list) -> str:
+    """Take a list of 3 integers and identify the trigram, default"""
+    lines = original_to_lookup_values_stationary(lines)
+    return lines_to_hexagram_number[tuple(lines)]
+
+
+def get_trigram_from_lines_moving(lines: list) -> str:
+    """Take a list of 3 integers and identify the trigram that the current one is moving to"""
+    lines = original_to_lookup_values_moving(lines)
+    return lines_to_hexagram_number[tuple(lines)]
+
+
+def get_trigram_pair_from_hexagram_number(hexagram: int) -> tuple:
+    """Look up trigram pair that makes up a specific hexagram"""
+    if hexagram in hexagram_number_to_trigram_pair:
+        return hexagram_number_to_trigram_pair[hexagram]
+    return None
+
+# Get hexagrams
+
+
+def get_hexagram_number_from_trigram_pair(trigrams: tuple) -> int:
+    """Return hexagram number by looking up a pair of trigrams"""
+    # TODO: figure out where I implemented this already and move it here
+    pass
+
+
+def get_hexagram_number_from_line_values(line_values: list) -> int:
+    """"""
+    # TODO: implement logic for identifying a hexagram based on all 6 line values
+    pass
+
+
+def get_mutual_hexagram_from_hexagram_number(hexagram: int) -> int:
+    """
+    Relevant to Alfred Huang style Yijing readings only.
+    The mutual hexagram is the hexagram that:
+        lower trigram is lines 2-4.
+        upper trigram is lines 3-5.
+    """
+    # TODO: implement logic for determining mutual hexagrams
+    pass
+
+
+# Fill hexagram dictionary with relevant information
+
+def fill_reading_dictionary(reading: dict):
+    """Fill reading dictionary with extra information"""
+    # TODO: take hexagram_stationary and moving (if extant), add moving and moving_lines
+    # TODO: take hexagrams and add trigrams / trigram info
+    # TODO: take hexagrams and add line values
+    # TODO: take hexagrams and add mutual hexagram
+    pass
+
+
+# Miscellaneous helper functions
+def utc_ts():
+    """Return UTC timestamp"""
+    return datetime.now(timezone.utc)
+
+
+if __name__ == "__main__":
+    def validate_trigram_lookups():
+        """Validate trigram lookup methods. Keep test functions out of global scope"""
+        hexagrams = {}
+        for lower_key, lower_gua in trigram_lines_to_trigram_pinyin.items():
+            print(lower_key, lower_gua)
+            for upper_key, upper_gua in trigram_lines_to_trigram_pinyin.items():
+                combined_key = lower_key + upper_key
+                combined_gua = lower_gua + ", " + upper_gua
+                hexagrams[combined_key] = combined_gua
+        print(hexagrams)
+
+    def validate_hexagram_lookups():
+        """
+        Validate hexagram lookup tables against each other.
+        Probably no longer necessary, but it was useful to validate the dictionaries and functions once.
+        """
+        for lower_gua_pinyin, lower_gua_info in trigram_pinyin_info.items():
+            for upper_gua_pinyin, upper_gua_info in trigram_pinyin_info.items():
+                lines_for_testing = (
+                    lower_gua_info["lines"] + upper_gua_info["lines"])
+                hexagram_from_lines = lines_to_hexagram_number[lines_for_testing]
+                hexagram_from_trigram_pairs = trigram_pair_to_hexagram_number[(
+                    lower_gua_pinyin, upper_gua_pinyin)]
+                assert_equal(hexagram_from_lines, hexagram_from_trigram_pairs,
+                             f"Hexagram lookup methods should match, {lower_gua_pinyin}, {upper_gua_pinyin}")
+
+    validate_trigram_lookups()
+    validate_hexagram_lookups()

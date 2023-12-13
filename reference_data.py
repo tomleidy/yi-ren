@@ -1,9 +1,6 @@
-"""Hexagram lookup dictionaries and functions"""
-from lines import original_to_lookup_values_moving, original_to_lookup_values_stationary
-from trigram_lookup import trigram_pinyin_info
-from unittests import assert_equal
+"""Dictionaries for trigram and hexagram lookups"""
 
-lines_to_hexagrams = {
+lines_to_hexagram_number = {
     (8, 8, 8, 8, 8, 8): 1, (8, 8, 8, 8, 8, 7): 43, (8, 8, 8, 8, 7, 8): 14, (8, 8, 8, 8, 7, 7): 34,
     (8, 8, 8, 7, 8, 8): 9, (8, 8, 8, 7, 8, 7): 5, (8, 8, 8, 7, 7, 8): 26, (8, 8, 8, 7, 7, 7): 11,
     (8, 8, 7, 8, 8, 8): 10, (8, 8, 7, 8, 8, 7): 58, (8, 8, 7, 8, 7, 8): 38, (8, 8, 7, 8, 7, 7): 54,
@@ -21,18 +18,9 @@ lines_to_hexagrams = {
     (7, 7, 7, 8, 8, 8): 12, (7, 7, 7, 8, 8, 7): 45, (7, 7, 7, 8, 7, 8): 35, (7, 7, 7, 8, 7, 7): 16,
     (7, 7, 7, 7, 8, 8): 20, (7, 7, 7, 7, 8, 7): 8, (7, 7, 7, 7, 7, 8): 23, (7, 7, 7, 7, 7, 7): 2
 }
-
-
-def get_trigram_from_lines_stationary(lines: list):
-    """Take a list of 3 integers and identify the trigram, default"""
-    lines = original_to_lookup_values_stationary(lines)
-    return lines_to_hexagrams[tuple(lines)]
-
-
-def get_trigram_from_lines_moving(lines: list):
-    """Take a list of 3 integers and identify the trigram that the current one is moving to"""
-    lines = original_to_lookup_values_moving(lines)
-    return lines_to_hexagrams[tuple(lines)]
+# Reverse the above
+hexagram_number_to_lines = {hexagram: lines for lines,
+                            hexagram in lines_to_hexagram_number.items()}
 
 
 trigram_pair_to_hexagram_number = {
@@ -53,15 +41,29 @@ trigram_pair_to_hexagram_number = {
     ('Zhen', 'Dui'): 17, ('Zhen', 'Gen'): 27, ('Zhen', 'Kan'): 3, ('Zhen', 'Kun'): 24,
     ('Zhen', 'Li'): 21, ('Zhen', 'Qian'): 25, ('Zhen', 'Xun'): 42, ('Zhen', 'Zhen'): 51
 }
+# Reverse the above
+hexagram_number_to_trigram_pair = {
+    hexagram: trigram_pair for trigram_pair, hexagram in trigram_pair_to_hexagram_number.items()
+}
 
-if __name__ == "__main__":
-    # validate lookup methods against each other
-    for lower_gua_pinyin, lower_gua_info in trigram_pinyin_info.items():
-        for upper_gua_pinyin, upper_gua_info in trigram_pinyin_info.items():
-            lines_for_testing = (
-                lower_gua_info["lines"] + upper_gua_info["lines"])
-            hexagram_from_lines = lines_to_hexagrams[lines_for_testing]
-            hexagram_from_trigram_pairs = trigram_pair_to_hexagram_number[(
-                lower_gua_pinyin, upper_gua_pinyin)]
-            assert_equal(hexagram_from_lines, hexagram_from_trigram_pairs,
-                         f"Hexagram lookup methods should match, {lower_gua_pinyin}, {upper_gua_pinyin}")
+
+trigram_lines_to_trigram_pinyin = {
+    (8, 8, 8): "Qian", (8, 8, 7): "Dui", (8, 7, 8): "Li", (8, 7, 7): "Zhen",
+    (7, 8, 8): "Xun", (7, 8, 7): "Kan", (7, 7, 8): "Gen", (7, 7, 7): "Kun"
+}
+
+
+trigram_pinyin_info = {
+    "Qian": {"zi": "乾", "gua": "☰", "meaning": "Heaven"},
+    "Dui": {"zi": "兌", "gua": "☱", "meaning": "Lake"},
+    "Li": {"zi": "兌", "gua": "☲", "meaning": "Fire"},
+    "Zhen": {"zi": "震", "gua": "☳", "meaning": "Thunder"},
+    "Xun": {"zi": "巽", "gua": "☴", "meaning": "Wind"},
+    "Kan": {"zi": "坎", "gua": "☵", "meaning": "Water"},
+    "Gen": {"zi": "艮", "gua": "☶", "meaning": "Mountain"},
+    "Kun": {"zi": "坤", "gua": "☷", "meaning": "Earth"}
+}
+
+# Add line information to the above
+for lines, pinyin in trigram_lines_to_trigram_pinyin.items():
+    trigram_pinyin_info[pinyin]["lines"] = lines
