@@ -22,7 +22,7 @@ class Hexagram:
         # print(f"serialize(): {json.dumps(self.serialize())}")
         self.print_hexagrams()
 
-    def __str__(self):
+    def __str__(self) -> str:
         message_string = f"lines: {json.dumps(self.lines)}\n"
         if self.moving:
             message_string += f"moving lines: {self.moving_list}\n"
@@ -30,7 +30,7 @@ class Hexagram:
         message_string += f"hexagram(s): {self.hexagrams}\n"
         return message_string
 
-    def serialize(self):
+    def serialize(self) -> dict:
         """Return a dictionary of reading"""
         return {
             "moving_list": self.moving_list,
