@@ -13,6 +13,10 @@ Started 11/9/2023
 import argparse
 from hexagram import Hexagram
 from three_coins import ThreeCoins
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 parser = argparse.ArgumentParser(prog="yi-ren", description="an Yijing application",
                                  epilog="A work in change")
@@ -20,7 +24,6 @@ parser.add_argument("-r", "--reader", default="user")
 parser.add_argument("-c", "--client", default="user")
 parser.add_argument("-t", "--topic", default="")
 parser.add_argument("-i", "--interactive", action="store_true")
-parser.add_argument("-d", "--debug", action="store_true")
 
 args = parser.parse_args()
 
@@ -57,13 +60,10 @@ else:
     client = args.client
     topic = args.topic
 
-
-DEBUG = args.debug
-
-if DEBUG:
+if os.getenv('ENVIRONMENT') == 'development':
     lines = []
     while len(lines) < 6:
-        lines.append(ThreeCoins(False).get_value_sum())
+        lines.append(ThreeCoins(interactive=args.interactive).get_value_sum())
     print(Hexagram(lines))
 
 # TODO: save reading to database
