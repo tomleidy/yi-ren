@@ -47,8 +47,8 @@ def get_response(message: str, max_len: int = 280, default: str = None):
 
 
 if args.interactive:
-    reader = get_response("Please enter reader username", 20, "testuser")
-    client = get_response("Please enter client username", 20, "testuser")
+    reader = get_response("Please enter reader username", 20, "defaultuser")
+    client = get_response("Please enter client username", 20, "defaultuser")
     topic = get_response("Please enter topic of reading")
     print(f"Welcome, {reader}! May your reading for {client} be insightful!")
     print(f"Topic: {topic}")
