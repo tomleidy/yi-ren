@@ -13,6 +13,8 @@ Started 11/9/2023
 import argparse
 from hexagram import Hexagram
 from three_coins import ThreeCoins
+from models.reading import Reading
+from models.user import User
 import os
 from dotenv import load_dotenv
 
@@ -65,8 +67,12 @@ if os.getenv('ENVIRONMENT') == 'development':
     while len(lines) < 6:
         lines.append(ThreeCoins(interactive=args.interactive).get_value_sum())
     print(Hexagram(lines))
-
 # TODO: save reading to database
+# next steps for the above:
+# copy over the list of things to put in the dictionary to send to Reading
+# add things to dictionary to send to Reading
+# add client_id / reader_id constraints
+# oh, add is_reader to defaultuser? maybe later.
 # TODO: add password authentication for readers (wait, how are we securing this? seems like we'd need a different database...)
 # TODO: all users can see the history of readings they've received
 # TODO: users who are readers can see all the readings they've performed for other users
