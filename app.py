@@ -67,10 +67,8 @@ if os.getenv('ENVIRONMENT') == 'development':
     print(Hexagram(lines))
 
 # TODO: save reading to database
-# TODO: create a default user (can this be done with Alembic?)
-# TODO: development only users
-# TODO: add password authentication for readers
-# TODO: all users can see the history of their own readings
+# TODO: add password authentication for readers (wait, how are we securing this? seems like we'd need a different database...)
+# TODO: all users can see the history of readings they've received
 # TODO: users who are readers can see all the readings they've performed for other users
 # TODO: clients can see reading notes
 # TODO: readers can see/write reading notes
