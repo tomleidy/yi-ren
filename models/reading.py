@@ -5,15 +5,18 @@ from helpers import utc_ts
 
 
 class Reading(Base):
-    """Handles SQLAlchemy model for readings table"""
+    """
+    Handles SQLAlchemy model for readings table.
+    Expects a dictionary. Desired keys:
+        "reader_id", "client_id", "hexagram_stationary",
+        "hexagram_moving", "topic", "reading_notes"
+    """
 
-    def __init__(self, hexagrams: dict, reading_info: dict = None):
-        if reading_info:
-            self.reader_id = reading_info.reader
-            self.client_id = reading_info.client
-            self.topic = reading_info.topic
-            self.reading_notes = reading_info.notes
-            self.hexagram_stationary = hexagrams["hexagram"]["stationary"]
+    def __init__(self, reading_data: dict):
+        # TODO: return the dictionary keys to hexagrams_stationary and hexagrams_moving to facilitate the below
+        for key, value in reading_data.items():
+            if key in self.__dict__:
+                setattr(self, key, value)
 
     __tablename__ = "readings"
     reading_id = Column(Integer, primary_key=True, autoincrement=True)
