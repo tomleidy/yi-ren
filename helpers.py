@@ -38,13 +38,13 @@ def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> tupl
 def get_trigram_from_lines_stationary(lines: list) -> str:
     """Take a list of 3 integers and identify the trigram, default"""
     lines = original_to_lookup_values_stationary(lines)
-    return lines_to_hexagram_number[tuple(lines)]
+    return lines_to_trigram_name_pinyin[tuple(lines)]
 
 
 def get_trigram_from_lines_moving(lines: list) -> str:
     """Take a list of 3 integers and identify the trigram that the current one is moving to"""
     lines = original_to_lookup_values_moving(lines)
-    return lines_to_hexagram_number[tuple(lines)]
+    return lines_to_trigram_name_pinyin[tuple(lines)]
 
 
 def get_trigram_pair_from_hexagram_number(hexagram: int) -> tuple:
