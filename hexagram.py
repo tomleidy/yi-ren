@@ -12,37 +12,37 @@ class Hexagram:
     """Instantiate with a 6 item long list of integers, 6 <= integers <= 9 """
 
     def __init__(self, six_line_values: list):
+
+        # TODO: modify this so once we get the hexagram(s), we drop everything else.
+        # TODO: if we want, add information to the serialize() with the future fill_dictionary_info() helper
         self.line_values = six_line_values
-        self.moving = any(line in [6, 9] for line in six_line_values)
         self.lines = self.get_lines()
         self.moving_list = self.get_moving_lines()
-        self.trigrams = self.get_trigrams()
-        self.hexagrams = self.get_hexagrams()
-        print(self.__str__())
-        # print(f"serialize(): {json.dumps(self.serialize())}")
+        self.hexagram_stationary, self.hexagram_moving = self.get_hexagrams()
         self.print_hexagrams()
 
     def __str__(self) -> str:
-        message_string = f"lines: {json.dumps(self.lines)}\n"
-        if self.moving:
-            message_string += f"moving lines: {self.moving_list}\n"
-        message_string += f"trigrams: {self.trigrams}\n"
-        message_string += f"hexagram(s): {self.hexagrams}\n"
+        message_string = json.dumps(self._get_self_attributes_dict())
         return message_string
+
+    def _get_self_attributes_dict(self):
+        """Prepare variables for sharing external to instance"""
+        attr_list = ["hexagram_stationary", "hexagram_moving"]
+        attr_dict = {}
+        for key, value in self.__dict__.items():
+            if key in attr_list:
+                attr_dict[key] = value
+        return attr_dict
 
     def serialize(self) -> dict:
         """Return a dictionary of reading"""
-        return {
-            "moving_list": self.moving_list,
-            "lines": self.lines,
-            "trigrams": self.trigrams,
-            "hexagrams": self.hexagrams
-        }
+        return self._get_self_attributes_dict()
 
     def get_moving_lines(self) -> list:
         """Return list of which lines are moving, if any"""
+        #
         moving_list = []
-        if self.moving:
+        if any(line in [6, 9] for line in self.line_values):
             for idx, line in enumerate(self.line_values):
                 if line in [6, 9]:
                     moving_list.append(idx)
@@ -53,30 +53,34 @@ class Hexagram:
         lines = {}
         lines["stationary"] = original_to_lookup_values_stationary(
             self.line_values)
-        if self.moving:
+        if any(line in [6, 9] for line in self.line_values):
             lines["moving"] = original_to_lookup_values_moving(
                 self.line_values)
         return lines
 
     def get_trigrams(self) -> dict:
         """Return dictionary of stationary, and if moving, trigram pairs"""
+        # TODO: refactor, turn into get_trigrams_from_hexagram(hexagram: int) -> tuple: and move to helpers
         trigrams = {}
         lower = get_trigram_from_lines_stationary(self.line_values[0:3])
         upper = get_trigram_from_lines_stationary(self.line_values[3:6])
         trigrams["stationary"] = (lower, upper)
-        if self.moving:
+        if any(line in [6, 9] for line in self.line_values):
             lower = get_trigram_from_lines_moving(self.line_values[0:3])
             upper = get_trigram_from_lines_moving(self.line_values[3:6])
             trigrams["moving"] = (lower, upper)
         return trigrams
 
     def get_hexagrams(self) -> int:
-        """Return hexagram number after looking up via lower and upper trigram names (pinyin)"""
-        hexagrams = {}
-        hexagrams["stationary"] = trigram_pair_to_hexagram_number[self.trigrams["stationary"]]
-        if self.moving:
-            hexagrams["moving"] = trigram_pair_to_hexagram_number[self.trigrams["moving"]]
-        return hexagrams
+        """Return hexagram number after looking up via lower and upper trigram names (pinyin). """
+        # TODO: refactor the above so that the trigram pairs come in as a tuple, stationary first, moving second
+        lines_stationary = original_to_lookup_values_stationary(
+            self.line_values)
+        lines_moving = original_to_lookup_values_moving(self.line_values)
+        hexagram_stationary = get_hexagram_number_from_line_values(
+            lines_stationary)
+        hexagram_moving = get_hexagram_number_from_line_values(lines_moving)
+        return (hexagram_stationary, hexagram_moving)
 
     def print_hexagrams(self) -> None:
         """A method to print ASCII portrayal of the hexagram(s)"""
