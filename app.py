@@ -22,18 +22,18 @@ load_dotenv()
 
 parser = argparse.ArgumentParser(prog="yi-ren", description="an Yijing application",
                                  epilog="A work in change")
-parser.add_argument("-r", "--reader", default="user")
-parser.add_argument("-c", "--client", default="user")
+parser.add_argument("-r", "--reader", default="defaultuser")
+parser.add_argument("-c", "--client", default="defaultuser")
 parser.add_argument("-t", "--topic", default="")
 parser.add_argument("-i", "--interactive", action="store_true")
-
+parser.add_argument("-n", "--no-database", action="store_true")
 args = parser.parse_args()
 
 # print(args)
 
 
 def get_response(message: str, max_len: int = 280, default: str = None):
-    """Ask user for information until satisfied"""
+    """Ask user for information until conditions are satisfied"""
     response = None
     message = f"{message}, maximum {max_len} characters"
     if default:
@@ -51,11 +51,11 @@ def get_response(message: str, max_len: int = 280, default: str = None):
     return response
 
 
-if args.interactive:
+if args.interactive and not args.no_database:
     reader = get_response("Please enter reader username", 20, "defaultuser")
     client = get_response("Please enter client username", 20, "defaultuser")
     topic = get_response("Please enter topic of reading")
-    print(f"Welcome, {reader}! May your reading for {client} be insightful!")
+    print(f"Welcome, {reader}!")
     print(f"Topic: {topic}")
 else:
     reader = args.reader
