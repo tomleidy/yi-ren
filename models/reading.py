@@ -1,7 +1,7 @@
 """SQLAlchemy model for readings table"""
 from sqlalchemy import Column, Integer, DateTime, Text
 from database.base import Base
-from helpers import utc_ts
+from gua.helpers import utc_ts
 
 
 class Reading(Base):

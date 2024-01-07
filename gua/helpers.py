@@ -18,7 +18,7 @@ def get_lines_from_hexagram(hexagram: int) -> tuple:
 # TODO: figure out how to test this
 
 
-def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> tuple:
+def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> list:
     """Compare two hexagrams and get tuple of moving_lines"""
     moving_lines = []
     if hexagram1 != hexagram2:
@@ -27,7 +27,7 @@ def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> tupl
         for x in range(6):
             if lines1[x] != lines2[x]:
                 moving_lines.append(x)
-    return tuple(moving_lines)
+    return moving_lines
 
 # TODO: test function comparing get_moving_lines_from_hexagram_pairs(1, 2). The response should be [1,2,3,4,5,6]
 # TODO: test function comparing get_moving_lines_from_hexagram_pairs(1, 1). The response should be []
@@ -40,6 +40,7 @@ def original_to_lookup_values_stationary(lines: list) -> list:
     sevens_and_eights_only = []
     for line in lines:
         sevens_and_eights_only.append(numeric_to_value_stationary[line])
+    print("lookup_values stationary:", sevens_and_eights_only)
     return tuple(sevens_and_eights_only)
 
 
@@ -48,6 +49,7 @@ def original_to_lookup_values_moving(lines: list) -> list:
     sevens_and_eights_only = []
     for line in lines:
         sevens_and_eights_only.append(numeric_to_value_moving[line])
+    print("lookup_values moving:", sevens_and_eights_only)
     return tuple(sevens_and_eights_only)
 
 
@@ -90,7 +92,7 @@ def get_hexagram_number_from_line_values(line_values: list) -> tuple:
         # moving
         lookup_moving = original_to_lookup_values_moving(line_values)
         hexagram_list.append(lines_to_hexagram_number[lookup_moving])
-    return tuple(hexagram_list)
+    return hexagram_list
 
 
 def get_mutual_hexagram_from_hexagram_number(hexagram: int) -> int:
