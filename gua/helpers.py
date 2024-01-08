@@ -101,13 +101,13 @@ def get_mutual_hexagram_from_hexagram_number(hexagram: int) -> int:
 
 # Fill hexagram dictionary with relevant information
 
-def fill_reading_dictionary(reading: dict):
+def fill_reading_dictionary(reading: dict) -> dict:
     """Fill reading dictionary with extra information"""
     # TODO: take hexagram_stationary and moving (if extant), add moving (boolean) and moving_lines ([])
     # TODO: take hexagrams and add trigrams / trigram info
     # TODO: take hexagrams and add line values
     # TODO: take hexagrams and add mutual hexagram
-    pass
+    return reading
 
 
 # Miscellaneous helper functions
