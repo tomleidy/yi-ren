@@ -21,10 +21,10 @@ set_line_string_pad_len()
 class PrintHexagram:
     """Class to automatically print hexagram(s) to the terminal"""
 
-    def __init__(self, line_values, moving):
+    def __init__(self, line_values, hexagrams, moving):
         self.line_values = line_values
-        print(line_values)
         self.moving = moving
+        self.hexagram_stationary, self.hexagram_moving = hexagrams
         self.print_hexagrams()
 
     def _get_title(self):
@@ -36,12 +36,14 @@ class PrintHexagram:
     def _get_print_message(self, lines, lines_moving) -> list:
         """Take hexagram lines and return combined message string for tty display"""
         message = []
+        message.append(f"    {self.hexagram_stationary}   ")
         for idx, line in enumerate(lines):
             message.append(line_string[line])
         if lines_moving:
+            message[0] += f"{' ' * line_string['pad_len']}   {self.hexagram_moving}"
             for idx, line in enumerate(lines_moving):
-                message[idx] += " " * line_string['pad_len']
-                message[idx] += line_string[line]
+                message[idx+1] += " " * line_string['pad_len']
+                message[idx+1] += line_string[line]
         return message
 
     def _print_title_and_message(self, message: list):

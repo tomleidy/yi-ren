@@ -17,7 +17,9 @@ class Hexagram:
             self.hexagram_moving = self.get_hexagram(get_stationary=False)
         else:
             self.moving = False
-        PrintHexagram(self.line_values, self.moving)
+            self.hexagram_moving = None
+        hexagrams = [self.hexagram_stationary, self.hexagram_moving]
+        PrintHexagram(self.line_values, hexagrams, self.moving)
 
     def __str__(self) -> str:
         message_string = json.dumps(self._get_self_attributes_dict())
