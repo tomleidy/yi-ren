@@ -93,10 +93,25 @@ def get_mutual_hexagram_from_hexagram_number(hexagram: int) -> int:
 
 def fill_reading_dictionary(reading: dict) -> dict:
     """Fill reading dictionary with extra information"""
-    # TODO: take hexagram_stationary and moving (if extant), add moving (boolean) and moving_lines ([])
-    # TODO: take hexagrams and add trigrams / trigram info
-    # TODO: take hexagrams and add line values
-    # TODO: take hexagrams and add mutual hexagram
+    hex_stationary = reading['hexagram_stationary']
+    trigrams_stationary = hexagram_number_to_trigram_pair[hex_stationary]
+    lines_stationary = get_lines_from_hexagram(hex_stationary)
+    reading['trigrams_stationary'] = trigrams_stationary
+    reading['lines_stationary'] = lines_stationary
+    mutual_lines = get_mutual_hexagram_from_hexagram_number(
+        hex_stationary)
+    mutual = get_hexagram_number_from_line_values(mutual_lines)
+    reading['mutual'] = mutual
+    if 'hexagram_moving' in reading:
+        reading['moving'] = True
+        hex_moving = reading['hexagram_moving']
+        moving_lines = get_moving_lines_from_hexagram_pairs(
+            hex_stationary, hex_moving)
+        trigrams_moving = hexagram_number_to_trigram_pair[hex_moving]
+        lines_moving = hexagram_number_to_lines[hex_moving]
+        reading['lines_moving'] = lines_moving
+        reading['moving_lines'] = moving_lines
+        reading['trigrams_moving'] = trigrams_moving
     return reading
 
 
