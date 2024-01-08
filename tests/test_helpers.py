@@ -8,7 +8,7 @@ def test_get_moving_lines_from_hexagram_pairs():
     """Test get_moving_lines_from_hexagram_pairs function"""
     result_all_moving = get_moving_lines_from_hexagram_pairs(1, 2)
     result_all_stationary = get_moving_lines_from_hexagram_pairs(1, 1)
-    assert result_all_moving == [1, 2, 3, 4, 5, 6]
+    assert result_all_moving == (1, 2, 3, 4, 5, 6)
     assert not result_all_stationary
 
 
