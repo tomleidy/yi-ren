@@ -2,9 +2,8 @@
 from datetime import datetime, timezone
 from reference_data import lines_to_hexagram_number, trigram_pair_to_hexagram_number
 from reference_data import hexagram_number_to_lines, hexagram_number_to_trigram_pair
-from reference_data import lines_to_trigram_name_pinyin, trigram_pinyin_info
+from reference_data import lines_to_trigram_name_pinyin
 from reference_data import numeric_to_value_stationary, numeric_to_value_moving
-from unittests import assert_equal
 
 
 def get_lines_from_hexagram(hexagram: int) -> tuple:
@@ -118,41 +117,3 @@ def fill_reading_dictionary(reading: dict) -> dict:
 def utc_ts():
     """Return UTC timestamp"""
     return datetime.now(timezone.utc)
-
-
-if __name__ == "__main__":
-    # TODO: find where these tests go. reference data?
-    def validate_trigram_lookups():
-        """Validate trigram lookup methods. Keep test functions out of global scope"""
-        hexagrams = {}
-        for lower_key, lower_gua in lines_to_trigram_name_pinyin.items():
-            print(lower_key, lower_gua)
-            for upper_key, upper_gua in lines_to_trigram_name_pinyin.items():
-                combined_key = lower_key + upper_key
-                combined_gua = lower_gua + ", " + upper_gua
-                hexagrams[combined_key] = combined_gua
-        print(hexagrams)
-
-    def validate_hexagram_lookups():
-        """
-        Validate hexagram lookup tables against each other.
-        Probably no longer necessary, but it was useful to validate the dictionaries and functions once.
-        """
-        for lower_gua_pinyin, lower_gua_info in trigram_pinyin_info.items():
-            for upper_gua_pinyin, upper_gua_info in trigram_pinyin_info.items():
-                lines_for_testing = (
-                    lower_gua_info["lines"] + upper_gua_info["lines"])
-                hexagram_from_lines = lines_to_hexagram_number[lines_for_testing]
-                hexagram_from_trigram_pairs = trigram_pair_to_hexagram_number[(
-                    lower_gua_pinyin, upper_gua_pinyin)]
-                assert_equal(hexagram_from_lines, hexagram_from_trigram_pairs,
-                             f"Hexagram lookup methods should match, {lower_gua_pinyin}, {upper_gua_pinyin}")
-
-#    validate_trigram_lookups()
-#    validate_hexagram_lookups()
-
-
-if __name__ == '__main__':
-    result = fill_reading_dictionary(
-        {'hexagram_stationary': 27, 'hexagram_moving': 28})
-    print(result)
