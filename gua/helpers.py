@@ -26,7 +26,7 @@ def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> list
         lines2 = get_lines_from_hexagram(hexagram2)
         for x in range(6):
             if lines1[x] != lines2[x]:
-                moving_lines.append(x)
+                moving_lines.append(x+1)
     return moving_lines
 
 # TODO: test function comparing get_moving_lines_from_hexagram_pairs(1, 2). The response should be [1,2,3,4,5,6]
