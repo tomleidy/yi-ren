@@ -19,7 +19,7 @@ def test_fill_reading_dictionary():
     result = fill_reading_dictionary(hexagrams_to_test)
     assert result['trigrams_stationary'] == ('Zhen', 'Gen')
     assert result['lines_stationary'] == (8, 7, 7, 7, 7, 8)
-    assert result['moving'] == True
+    assert result['moving'] is True
     assert result['trigrams_moving'] == ('Xun', 'Dui')
     assert result['lines_moving'] == (7, 8, 8, 8, 8, 7)
     assert result['moving_lines'] == (1, 2, 3, 4, 5, 6)
