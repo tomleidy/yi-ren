@@ -1,4 +1,5 @@
-import pytest
+"""Testing suite for Hexagram class serialization"""
+import pytest  # pylint: disable=W0611
 from gua.hexagram import Hexagram
 
 

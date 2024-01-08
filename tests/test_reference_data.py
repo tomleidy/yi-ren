@@ -1,3 +1,4 @@
+"""Testing suite to validate reference data. This stuff should never change."""
 import pytest
 from reference_data import lines_to_hexagram_number, trigram_pair_to_hexagram_number
 

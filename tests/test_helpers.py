@@ -1,4 +1,5 @@
-import pytest
+"""Testing suite for helper functions"""
+import pytest  # pylint: disable=W0611
 from gua.helpers import get_moving_lines_from_hexagram_pairs, fill_reading_dictionary
 
 
