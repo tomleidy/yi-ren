@@ -40,7 +40,6 @@ def original_to_lookup_values_stationary(lines: list) -> list:
     sevens_and_eights_only = []
     for line in lines:
         sevens_and_eights_only.append(numeric_to_value_stationary[line])
-    print("lookup_values stationary:", sevens_and_eights_only)
     return tuple(sevens_and_eights_only)
 
 
@@ -49,7 +48,6 @@ def original_to_lookup_values_moving(lines: list) -> list:
     sevens_and_eights_only = []
     for line in lines:
         sevens_and_eights_only.append(numeric_to_value_moving[line])
-    print("lookup_values moving:", sevens_and_eights_only)
     return tuple(sevens_and_eights_only)
 
 
