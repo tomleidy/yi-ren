@@ -85,8 +85,8 @@ def get_mutual_hexagram_from_hexagram_number(hexagram: int) -> int:
         lower trigram is lines 2-4.
         upper trigram is lines 3-5.
     """
-    # TODO: implement logic for determining mutual hexagrams
-    pass
+    lines = get_lines_from_hexagram(hexagram)
+    return tuple(lines[1:4] + lines[2:5])
 
 
 # Fill hexagram dictionary with relevant information
