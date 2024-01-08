@@ -1,7 +1,7 @@
 """SQLAlchemy model for readings table"""
 from sqlalchemy import Column, Integer, DateTime, Text
 from database.base import Base
-from gua.helpers import utc_ts
+from gua.helpers import utc_ts, fill_reading_dictionary
 
 
 class Reading(Base):
@@ -42,10 +42,8 @@ class Reading(Base):
             "topic": self.topic,
             "reading_notes": self.reading_notes,
             "reading_id": self.reading_id,
-            "hexagrams": {
-                "stationary": self.hexagram_stationary,
-                "moving": self.hexagram_moving
-            },
+            "hexagram_stationary": self.hexagram_stationary,
+            "hexagram_moving": self.hexagram_moving
         }
-        # TODO: add call to fill_dictionary helper once it's implemented
+        reading_dict = fill_reading_dictionary(reading_dict)
         return reading_dict
