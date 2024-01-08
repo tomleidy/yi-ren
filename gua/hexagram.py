@@ -28,11 +28,7 @@ class Hexagram:
     """Instantiate with a 6 item long list of integers, 6 <= integers <= 9 """
 
     def __init__(self, six_line_values: list):
-
-        # TODO: modify this so once we get the hexagram(s), we drop everything else.
-        # TODO: if we want, add information to the serialize() with the future fill_dictionary_info() helper
         self.line_values = six_line_values
-        self.lines = self.get_lines()
         self.hexagram_stationary = self.get_hexagram(get_stationary=True)
         if any(line in [6, 9] for line in self.line_values):
             self.moving = True
@@ -70,29 +66,6 @@ class Hexagram:
                 if line in [6, 9]:
                     moving_list.append(idx)
         return moving_list
-
-    def get_lines(self) -> dict:
-        """Return dictionary of stationary and, if moving, moving line values suitable for lookup"""
-        lines = {}
-        lines["stationary"] = original_to_lookup_values_stationary(
-            self.line_values)
-        if any(line in [6, 9] for line in self.line_values):
-            lines["moving"] = original_to_lookup_values_moving(
-                self.line_values)
-        return lines
-
-    def get_trigrams(self) -> dict:
-        """Return dictionary of stationary, and if moving, trigram pairs"""
-        # TODO: refactor, turn into get_trigrams_from_hexagram(hexagram: int) -> tuple: and move to helpers
-        trigrams = {}
-        lower = get_trigram_from_lines_stationary(self.line_values[0:3])
-        upper = get_trigram_from_lines_stationary(self.line_values[3:6])
-        trigrams["stationary"] = (lower, upper)
-        if any(line in [6, 9] for line in self.line_values):
-            lower = get_trigram_from_lines_moving(self.line_values[0:3])
-            upper = get_trigram_from_lines_moving(self.line_values[3:6])
-            trigrams["moving"] = (lower, upper)
-        return trigrams
 
     def get_hexagram(self, get_stationary: bool = True) -> int:
         """Return hexagram number after looking up via lower and upper trigram names (pinyin). """
