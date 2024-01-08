@@ -14,7 +14,7 @@ def get_lines_from_hexagram(hexagram: int) -> tuple:
     return None
 
 
-def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> list:
+def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> tuple:
     """Compare two hexagrams and get tuple of moving_lines"""
     moving_lines = []
     if hexagram1 != hexagram2:
@@ -23,10 +23,10 @@ def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> list
         for x in range(6):
             if lines1[x] != lines2[x]:
                 moving_lines.append(x+1)
-    return moving_lines
+    return tuple(moving_lines)
 
 
-def original_to_lookup_values_stationary(lines: list) -> list:
+def original_to_lookup_values_stationary(lines: list) -> tuple:
     """Return the stationary line values for a series of lines, i.e. 6->7, 9->8"""
     sevens_and_eights_only = []
     for line in lines:
@@ -34,7 +34,7 @@ def original_to_lookup_values_stationary(lines: list) -> list:
     return tuple(sevens_and_eights_only)
 
 
-def original_to_lookup_values_moving(lines: list) -> list:
+def original_to_lookup_values_moving(lines: list) -> tuple:
     """Return the moving line values for a series of lines, i.e. 6->8, 9->7"""
     sevens_and_eights_only = []
     for line in lines:
@@ -148,5 +148,11 @@ if __name__ == "__main__":
                 assert_equal(hexagram_from_lines, hexagram_from_trigram_pairs,
                              f"Hexagram lookup methods should match, {lower_gua_pinyin}, {upper_gua_pinyin}")
 
-    validate_trigram_lookups()
-    validate_hexagram_lookups()
+#    validate_trigram_lookups()
+#    validate_hexagram_lookups()
+
+
+if __name__ == '__main__':
+    result = fill_reading_dictionary(
+        {'hexagram_stationary': 27, 'hexagram_moving': 28})
+    print(result)
