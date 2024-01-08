@@ -1,7 +1,8 @@
 """Helper functions for looking up hexagram and trigram data"""
 from datetime import datetime, timezone
-from reference_data import lines_to_hexagram_number, hexagram_number_to_lines, trigram_pair_to_hexagram_number
-from reference_data import lines_to_trigram_name_pinyin, trigram_pinyin_info, hexagram_number_to_trigram_pair
+from reference_data import lines_to_hexagram_number, trigram_pair_to_hexagram_number
+from reference_data import hexagram_number_to_lines, hexagram_number_to_trigram_pair
+from reference_data import lines_to_trigram_name_pinyin, trigram_pinyin_info
 from reference_data import numeric_to_value_stationary, numeric_to_value_moving
 from unittests import assert_equal
 
