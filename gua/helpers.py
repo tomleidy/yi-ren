@@ -6,16 +6,11 @@ from reference_data import numeric_to_value_stationary, numeric_to_value_moving
 from unittests import assert_equal
 
 
-# Get lines
-
-
 def get_lines_from_hexagram(hexagram: int) -> tuple:
     """Return tuple of 6 line values for a hexagram"""
     if hexagram in hexagram_number_to_lines:
         return hexagram_number_to_lines[hexagram]
     return None
-
-# TODO: figure out how to test this
 
 
 def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> list:
@@ -28,11 +23,6 @@ def get_moving_lines_from_hexagram_pairs(hexagram1: int, hexagram2: int) -> list
             if lines1[x] != lines2[x]:
                 moving_lines.append(x+1)
     return moving_lines
-
-# TODO: test function comparing get_moving_lines_from_hexagram_pairs(1, 2). The response should be [1,2,3,4,5,6]
-# TODO: test function comparing get_moving_lines_from_hexagram_pairs(1, 1). The response should be []
-
-# Get line lookup values
 
 
 def original_to_lookup_values_stationary(lines: list) -> list:
@@ -117,6 +107,7 @@ def utc_ts():
 
 
 if __name__ == "__main__":
+    # TODO: find where these tests go. reference data?
     def validate_trigram_lookups():
         """Validate trigram lookup methods. Keep test functions out of global scope"""
         hexagrams = {}
