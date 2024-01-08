@@ -30,7 +30,6 @@ class Hexagram:
         for key, value in self.__dict__.items():
             if key in attr_list:
                 attr_dict[key] = value
-        print(attr_dict)
         return attr_dict
 
     def serialize(self) -> dict:
