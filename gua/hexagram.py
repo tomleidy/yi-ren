@@ -1,27 +1,9 @@
 """Hexagram Class, which is different from Hexagon Staff"""
 
 import json
-from math import ceil
-from gua.helpers import get_trigram_from_lines_stationary, get_trigram_from_lines_moving
 from gua.helpers import get_hexagram_number_from_line_values
 from gua.helpers import original_to_lookup_values_moving, original_to_lookup_values_stationary
-
-
-# TODO: move the display functions to a display_hexagrams module?
-line_string = {6: "--- o ---", 7: "---   ---", 8: "---------", 9: "----x----"}
-
-
-def get_lines_max_len():
-    """To dynamically adjust in case we ever want to change the length of the lines"""
-    max_len = 0
-    for line in line_string.values():
-        if len(line) > max_len:
-            max_len = len(line)
-    return max_len
-
-
-def two_gua_padding():
-    max_len = get_lines_max_len()
+from gua.print_hexagram import PrintHexagram
 
 
 class Hexagram:
@@ -36,7 +18,7 @@ class Hexagram:
         else:
             self.moving = False
 
-        self.print_hexagrams()
+        PrintHexagram(self.line_values, self.moving)
 
     def __str__(self) -> str:
         message_string = json.dumps(self._get_self_attributes_dict())
@@ -78,33 +60,3 @@ class Hexagram:
         lines_moving = original_to_lookup_values_moving(self.line_values)
         hexagram_moving = get_hexagram_number_from_line_values(lines_moving)
         return hexagram_moving
-
-    def print_hexagrams(self) -> None:
-        """A method to print ASCII portrayal of the hexagram(s)"""
-        if "moving" in self.lines:
-            message = []
-            max_len = 0
-            for idx, line in enumerate(self.lines["stationary"]):
-                message.append(line_string[line])
-                if len(line_string[line]) > max_len:
-                    max_len = len(line_string[line])
-            max_len = ceil(max_len * 1.2)
-
-            for idx, line in enumerate(self.lines["moving"]):
-                message[idx] += " " * max_len
-                message[idx] += line_string[line]
-            print(f"stationary{' '*max_len}moving")
-            for line in message[::-1]:
-                print(line)
-            print(f"{self.hexagram_stationary}".center(max_len))
-            return None
-
-        for stationary_moving, lines in self.lines.items():
-            print("stationary")
-            for line_value in lines[::-1]:
-                print(line_string[line_value])
-            print("")
-
-    def get_line_string(self, line_value):
-        """What does our line look like?"""
-        return line_string[line_value]
