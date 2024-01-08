@@ -29,8 +29,6 @@ parser.add_argument("-i", "--interactive", action="store_true")
 parser.add_argument("-n", "--no-database", action="store_true")
 args = parser.parse_args()
 
-# print(args)
-
 
 def get_response(message: str, max_len: int = 280, default: str = None):
     """Ask user for information until conditions are satisfied"""
@@ -66,7 +64,8 @@ if os.getenv('ENVIRONMENT') == 'development':
     lines = []
     while len(lines) < 6:
         lines.append(ThreeCoins(interactive=args.interactive).get_value_sum())
-    print(Hexagram(lines))
+    hexagram = Hexagram(lines)
+    # print(hexagram)
 # TODO: save reading to database
 # next steps for the above:
 # copy over the list of things to put in the dictionary to send to Reading
