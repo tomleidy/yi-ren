@@ -8,7 +8,7 @@ def test_serialize_with_only_stationary_yin():
     hexagram = Hexagram(line_values_stationary)
     result = hexagram.serialize()
     assert 'hexagram_stationary' in result
-    assert 'hexagram_stationary' == 2
+    assert result['hexagram_stationary'] == 2
     assert isinstance(result['hexagram_stationary'], int)
     assert 1 <= result['hexagram_stationary'] <= 64
 
@@ -19,7 +19,7 @@ def test_serialize_with_only_stationary_yang():
     hexagram = Hexagram(line_values_stationary)
     result = hexagram.serialize()
     assert 'hexagram_stationary' in result
-    assert 'hexagram_stationary' == 1
+    assert result['hexagram_stationary'] == 1
     assert isinstance(result['hexagram_stationary'], int)
     assert 1 <= result['hexagram_stationary'] <= 64
 
@@ -31,8 +31,8 @@ def test_serialize_with_moving_hexagram_yin():
     result = hexagram.serialize()
     assert 'hexagram_stationary' in result
     assert isinstance(result['hexagram_stationary'], int)
-    assert 'hexagram_stationary' == 2
-    assert 'hexagram_moving' == 1
+    assert result['hexagram_stationary'] == 2
+    assert result['hexagram_moving'] == 1
     assert 1 <= result['hexagram_stationary'] <= 64
 
 
@@ -43,16 +43,6 @@ def test_serialize_with_moving_hexagram_yang():
     result = hexagram.serialize()
     assert 'hexagram_stationary' in result
     assert isinstance(result['hexagram_stationary'], int)
-    assert 'hexagram_stationary' == 1
-    assert 'hexagram_moving' == 2
+    assert result['hexagram_stationary'] == 1
+    assert result['hexagram_moving'] == 2
     assert 1 <= result['hexagram_stationary'] <= 64
-
-
-def test_serialize_with_additional_attributes():
-    # Add test for optional attributes
-    pass
-
-
-def test_data_types():
-    # Test the data types of returned values
-    pass
