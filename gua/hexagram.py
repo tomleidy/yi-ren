@@ -68,8 +68,7 @@ class Hexagram:
         return moving_list
 
     def get_hexagram(self, get_stationary: bool = True) -> int:
-        """Return hexagram number after looking up via lower and upper trigram names (pinyin). """
-        # TODO: refactor the above so that the trigram pairs come in as a tuple, stationary first, moving second
+        """Return hexagram number after looking up via line numbers. """
         if get_stationary:
             lines_stationary = original_to_lookup_values_stationary(
                 self.line_values)
