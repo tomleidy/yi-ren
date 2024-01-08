@@ -11,8 +11,8 @@ Started 11/9/2023
 
 
 import argparse
-from hexagram import Hexagram
-from three_coins import ThreeCoins
+from gua.hexagram import Hexagram
+from gua.three_coins import ThreeCoins
 from models.reading import Reading
 from models.user import User
 import os
