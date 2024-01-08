@@ -17,7 +17,6 @@ class Hexagram:
             self.hexagram_moving = self.get_hexagram(get_stationary=False)
         else:
             self.moving = False
-
         PrintHexagram(self.line_values, self.moving)
 
     def __str__(self) -> str:

@@ -1,5 +1,7 @@
-from gua.helpers import original_to_lookup_values_moving
+"""Class for printing hexagram to TTY"""
+
 from math import ceil
+from gua.helpers import original_to_lookup_values_moving
 
 line_string = {6: "--- o ---", 7: "---   ---", 8: "---------", 9: "----x----"}
 
