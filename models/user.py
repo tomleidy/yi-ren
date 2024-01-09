@@ -11,7 +11,7 @@ class User(Base):
     username = Column(Text, nullable=False)
     personal_name = Column(Text)
     family_name = Column(Text)
-    chosen_personal_name = Column(Text, nullable=False)
+    nickname = Column(Text, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(
         timezone.utc), nullable=False)
     last_modified = Column(DateTime, default=lambda: datetime.now(
