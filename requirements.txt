@@ -1,8 +1,13 @@
 alembic==1.13.0
+colorama==0.4.6
 greenlet==3.0.1
+iniconfig==2.0.0
 Mako==1.3.0
 MarkupSafe==2.1.3
+packaging==23.2
+pluggy==1.3.0
 psycopg2==2.9.9
+pytest==7.4.4
 python-dotenv==1.0.0
 SQLAlchemy==2.0.23
 typing==3.7.4.3
