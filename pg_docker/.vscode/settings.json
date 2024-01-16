@@ -1,0 +1,14 @@
+{
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.bracketPairColorization.enabled": true,
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/instance": true
+    },
+    "search.exclude": {
+        "week3/venv/**": true,
+        "data/**": true
+    }
+}
