@@ -10,6 +10,7 @@ class User(Base):
     __tablename__ = "users"
     user_id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(Text, nullable=False, unique=True)
+    chosen_personal_name = Column(Text, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(
         timezone.utc), nullable=False)
     last_modified = Column(DateTime, default=lambda: datetime.now(
@@ -17,6 +18,8 @@ class User(Base):
     safe_to_email = Column(Boolean, default=False)
     safe_to_call = Column(Boolean, default=False)
     safe_to_text = Column(Boolean, default=False)
+    personal_name = Column(Text)
+    family_name = Column(Text)
     date_of_birth = Column(Date)
     pronouns = Column(Text)
     gender = Column(Text)
