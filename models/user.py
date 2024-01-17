@@ -16,6 +16,9 @@ class User(Base):
         timezone.utc), nullable=False)
     last_modified = Column(DateTime, default=lambda: datetime.now(
         timezone.utc), nullable=False)
+    safe_to_email = Column(Boolean, default=False)
+    safe_to_call = Column(Boolean, default=False)
+    safe_to_text = Column(Boolean, default=False)
     date_of_birth = Column(Date)
     pronouns = Column(Text)
     gender = Column(Text)
