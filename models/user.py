@@ -44,7 +44,7 @@ class User(Base):
         timestamps = ["created_at", "last_modified"]
         user_dict = {}
         for key, val in vars(self).items():
-            if key in serialize_list:
+            if key in serialize_list and val:
                 user_dict[key] = val if key not in timestamps else val.isoformat()
         return user_dict
 
