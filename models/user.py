@@ -9,10 +9,7 @@ class User(Base):
 
     __tablename__ = "users"
     user_id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(Text, nullable=False)
-    personal_name = Column(Text)
-    family_name = Column(Text)
-    nickname = Column(Text, nullable=False)
+    username = Column(Text, nullable=False, unique=True)
     created_at = Column(DateTime, default=lambda: datetime.now(
         timezone.utc), nullable=False)
     last_modified = Column(DateTime, default=lambda: datetime.now(
@@ -27,9 +24,6 @@ class User(Base):
     email = Column(Text)
     phone_number = Column(Text)
     user_notes = Column(Text)
-    safe_to_email = Column(Boolean, default=True)
-    safe_to_call = Column(Boolean, default=True)
-    safe_to_text = Column(Boolean, default=True)
     preferred_contact_method = Column(Text)
     safety_notes = Column(Text)
     is_reader = Column(Boolean, default=False)
