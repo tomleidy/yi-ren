@@ -53,3 +53,10 @@ class User(Base):
         session = Session()
         users = session.query(User.username, User.user_id).all()
         return users
+
+    def lookup_username(self, username):
+        """Get and return user info from username"""
+        session = Session()
+        user = session.query(User).filter(User.username == username).first()
+        return user.serialize()
+
