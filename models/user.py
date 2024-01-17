@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, DateTime, Text, Date, Boolean
 from database.base import Base
+from models import Session
 
 
 class User(Base):
@@ -46,3 +47,9 @@ class User(Base):
             if key in serialize_list:
                 user_dict[key] = val if key not in timestamps else val.isoformat()
         return user_dict
+
+    def get_all_users(self):
+        """Get and return usernames and user_ids"""
+        session = Session()
+        users = session.query(User.username, User.user_id).all()
+        return users
