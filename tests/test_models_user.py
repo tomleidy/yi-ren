@@ -26,3 +26,23 @@ def test_user_get_all_users():
     result = user.get_all_users()
     assert result[0].username == 'defaultuser'
     assert result[0].user_id == 1
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_user_add():
+    pass
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_user_delete():
+    pass
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_user_update():
+    pass
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_user_login():
+    pass
