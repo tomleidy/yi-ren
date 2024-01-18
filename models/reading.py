@@ -1,5 +1,5 @@
 """SQLAlchemy model for readings table"""
-from sqlalchemy import Column, Integer, DateTime, Text
+from sqlalchemy import Column, Integer, DateTime, Text, CheckConstraint
 from database.base import Base
 from gua.helpers import utc_ts, fill_reading_dictionary
 
@@ -28,8 +28,10 @@ class Reading(Base):
     reading_notes = Column(Text, nullable=True)
     created_at = Column(DateTime, nullable=False, default=utc_ts())
 
-    hexagram_stationary = Column(Integer, nullable=False)
-    hexagram_moving = Column(Integer, nullable=True)
+    hexagram_stationary = Column(Integer, CheckConstraint(
+        'hexagram_stationary >= 1 and hexagram_stationary <= 64'), nullable=False)
+    hexagram_moving = Column(Integer, CheckConstraint(
+        'hexagram_stationary >= 1 and hexagram_stationary <= 64'), nullable=True)
 
     def serialize(self):
         """Returns reading information in dictionary"""
