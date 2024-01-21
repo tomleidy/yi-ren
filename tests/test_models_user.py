@@ -3,6 +3,9 @@ import pytest
 from models.user import User
 # from models import Session
 
+username = "test_user_add"
+nickname = "testing 1 2 3"
+
 
 # def test_user_serialize():
 #     user = User()
@@ -10,6 +13,7 @@ from models.user import User
 #     result = query.serialize()
 #     assert result is not None
 #     assert result.username == 'defaultuser'
+
 
 def test_user_lookup_username():
     """Validate User.lookup_username()"""
@@ -28,14 +32,25 @@ def test_user_get_all_users():
     assert result[0].user_id == 1
 
 
-@pytest.mark.skip(reason="not implemented yet")
 def test_user_add():
-    pass
+    user = User()
+    # really depending on this to work.
+    user.deluser({"username": username})
+    result = user.adduser({"username": username, "nickname": nickname})
+    assert result['success']
+    result = result['result']
+    assert isinstance(result['user_id'], int)
+    assert result['username'] == username
+    assert result['nickname'] == nickname
+    # assert result['password'] == password
 
 
-@pytest.mark.skip(reason="not implemented yet")
 def test_user_delete():
-    pass
+    user = User()
+    # added_user = user.adduser()
+    user.adduser({"username": username, "nickname": nickname})
+    result = user.deluser({"username": username})
+    assert result['success']
 
 
 @pytest.mark.skip(reason="not implemented yet")
