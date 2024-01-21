@@ -3,6 +3,11 @@ from sqlalchemy import Column, Integer, DateTime, Text, Date, Boolean
 from database.base import Base
 from models import Session
 
+user_column_list = [
+            "user_id", "username", "personal_name", "family_name",
+            "nickname", "created_at", "last_modified", "date_of_birth",
+            "gender", "referred_by", "email", "phone_number", "user_notes", "is_reader"
+        ]
 
 class User(Base):
     """Handles SQLAlchemy model for users table"""
@@ -33,15 +38,10 @@ class User(Base):
 
     def serialize(self):
         """Returns user information in dictionary"""
-        serialize_list = [
-            "user_id", "username", "personal_name", "family_name",
-            "nickname", "created_at", "last_modified", "date_of_birth",
-            "gender", "referred_by", "email", "phone_number", "user_notes", "is_reader"
-        ]
         timestamps = ["created_at", "last_modified"]
         user_dict = {}
         for key, val in vars(self).items():
-            if key in serialize_list and val:
+            if key in user_column_list and val:
                 user_dict[key] = val if key not in timestamps else val.isoformat()
         return user_dict
 
