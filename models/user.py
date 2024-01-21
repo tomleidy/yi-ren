@@ -4,10 +4,13 @@ from database.base import Base
 from models import Session
 
 user_column_list = [
-            "user_id", "username", "personal_name", "family_name",
-            "nickname", "created_at", "last_modified", "date_of_birth",
-            "gender", "referred_by", "email", "phone_number", "user_notes", "is_reader"
-        ]
+    "user_id", "username", "personal_name", "family_name",
+    "nickname", "created_at", "last_modified", "date_of_birth",
+    "gender", "referred_by", "email", "phone_number", "user_notes", "is_reader"
+]
+timestamp_columns = ["created_at", "last_modified"]
+protected_columns = ["user_id", *timestamp_columns]
+
 
 class User(Base):
     """Handles SQLAlchemy model for users table"""
