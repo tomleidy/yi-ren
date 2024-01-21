@@ -59,3 +59,43 @@ class User(Base):
         session = Session()
         user = session.query(User).filter(User.username == username).first()
         return user.serialize()
+
+    def adduser(self, userinfo):
+        """Add user to database"""
+        if 'username' not in userinfo or 'nickname' not in userinfo:
+            return {"success": False, "error": "Missing username or nickname"}
+
+        new_user = User()
+        for key, val in userinfo.items():
+            if key in user_column_list and key not in protected_columns:
+                setattr(new_user, key, val)
+
+        session = Session()
+        try:
+            session.add(new_user)
+            session.commit()
+            return {"success": True, "result": new_user.serialize()}
+        except Exception as e:
+            session.rollback()
+            return {"success": False, "error": str(e)}
+
+    def deluser(self, userinfo):
+        """Delete user"""
+        session = Session()
+        user_to_delete = None
+        if 'username' in userinfo:
+            user_to_delete = session.query(User).filter(
+                User.username == userinfo['username']).first()
+        elif 'user_id' in userinfo.keys():
+            user_to_delete = session.query(User).filter(
+                User.user_id == userinfo['user_id']).first()
+
+        if user_to_delete is None:
+            return {"success": False, "error": "User not found"}
+
+        session.delete(user_to_delete)
+        try:
+            session.commit()
+            return {"success": True}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
