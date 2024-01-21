@@ -10,7 +10,7 @@ class User(Base):
     __tablename__ = "users"
     user_id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(Text, nullable=False, unique=True)
-    chosen_personal_name = Column(Text, nullable=False)
+    nickname = Column(Text, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(
         timezone.utc), nullable=False)
     last_modified = Column(DateTime, default=lambda: datetime.now(
@@ -35,7 +35,7 @@ class User(Base):
         """Returns user information in dictionary"""
         serialize_list = [
             "user_id", "username", "personal_name", "family_name",
-            "chosen_personal_name", "created_at", "last_modified", "date_of_birth",
+            "nickname", "created_at", "last_modified", "date_of_birth",
             "gender", "referred_by", "email", "phone_number", "user_notes", "is_reader"
         ]
         timestamps = ["created_at", "last_modified"]
@@ -56,4 +56,3 @@ class User(Base):
         session = Session()
         user = session.query(User).filter(User.username == username).first()
         return user.serialize()
-
