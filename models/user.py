@@ -38,11 +38,11 @@ class User(Base):
 
     def serialize(self):
         """Returns user information in dictionary"""
-        timestamps = ["created_at", "last_modified"]
         user_dict = {}
-        for key, val in vars(self).items():
-            if key in user_column_list and val:
-                user_dict[key] = val if key not in timestamps else val.isoformat()
+        for key in user_column_list:
+            val = getattr(self, key)
+            if val:
+                user_dict[key] = val if key not in timestamp_columns else val.isoformat()
         return user_dict
 
     def get_all_users(self):
