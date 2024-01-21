@@ -16,7 +16,7 @@ def test_user_lookup_username():
     user = User()
     result = user.lookup_username("defaultuser")
     assert result['user_id'] == 1
-    assert result['chosen_personal_name'] == "default"
+    assert result['nickname'] == "default"
     assert result['created_at']
     assert result['last_modified']
 
