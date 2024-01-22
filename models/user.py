@@ -9,7 +9,10 @@ user_column_list = [
     "gender", "referred_by", "email", "phone_number", "user_notes", "is_reader"
 ]
 timestamp_columns = ["created_at", "last_modified"]
-protected_columns = ["user_id", *timestamp_columns]
+protected_create_columns = ["user_id", *timestamp_columns]
+protected_update_columns = ["username", *protected_create_columns]
+unprotected_update_columns = [
+    attr for attr in user_column_list if attr not in protected_update_columns]
 
 
 class User(Base):
