@@ -64,7 +64,10 @@ class User(Base):
         """Get and return user info from username"""
         session = Session()
         user = session.query(User).filter(User.username == username).first()
-        return user.serialize()
+        if user:
+            result = user.serialize()
+            return {"success": True, "userinfo": result}
+        return {"success": False, "error": "User not found"}
 
     def adduser(self, userinfo):
         """Add user to database"""
