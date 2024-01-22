@@ -54,8 +54,11 @@ class User(Base):
     def get_all_users(self):
         """Get and return usernames and user_ids"""
         session = Session()
-        users = session.query(User.username, User.user_id).all()
-        return users
+        try:
+            users = session.query(User.username, User.user_id).all()
+            return {"success": True, "userlist": users}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def lookup_username(self, username):
         """Get and return user info from username"""

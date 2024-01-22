@@ -29,6 +29,8 @@ def test_user_lookup_username():
 def test_user_get_all_users():
     user = User()
     result = user.get_all_users()
+    assert result['success']
+    result = result['userlist']
     assert result[0].username == 'defaultuser'
     assert result[0].user_id == 1
 
