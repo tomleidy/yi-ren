@@ -128,3 +128,36 @@ class User(Base):
             return {"success": True}
         except Exception as e:
             return {"success": False, "error": str(e)}
+
+    def updateuser(self, userinfo):
+        """Update user information, except username and protected columns"""
+        update_object = {}
+        result = self._lookup_user(userinfo)
+        with Session() as session:
+            user = None
+            if result['success']:
+                user = result.get('userinfo')
+                user_id = user.user_id
+                for key, val in userinfo.items():
+                    print(f"key: {key}, val: {val}")
+                    if key in unprotected_update_columns:
+                        print(f"unprotectedkey: {key}, val: {val}")
+                        update_object[key] = val
+                try:
+                    session.query(User).filter(User.user_id == user_id).update(update_object)
+                    print("user.serialize(): ", user.serialize())
+                    return {"success": True, "userinfo": user.serialize()}
+                except Exception as e:
+                    return {"success": False, "error": str(e)}
+        return result
+
+        # TODO: requery the database so we can return the item
+        # TODO: or return the dictionary with the updated items to avoid a db call
+        # TODO: check if user_id exists
+        # TODO: add fields in userinfo to update_object if they're in protected_update_columns
+        # TODO: try to update
+        # TODO: catch exception, return {"success": False, "error": str(e)}
+        # TODO: return updated record in {"success": bool, "userinfo": result} format
+
+
+# TODO: enable ability to change username
