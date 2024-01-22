@@ -72,6 +72,25 @@ class User(Base):
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+    def _lookup_user(self, userinfo: dict, serialize: bool = False) -> dict:
+        try:
+            with Session() as session:
+                user_id = userinfo.get('user_id')
+                username = userinfo.get('username')
+                if user_id:
+                    user = session.query(User).filter(User.user_id == user_id).first()
+                elif username:
+                    user = session.query(User).filter(User.username == username).first()
+                else:
+                    return {"success": False, "error": "No username or user_id provided for lookup"}
+                if user:
+                    if serialize:
+                        return {"success": True, "userinfo": user.serialize()}
+                    return {"success": True, "userinfo": user}
+                return {"success": False, "error": "User not found"}
+        except Exception as e:
+            return {"success": False, "error": f"error: {str(e)}"}
+
     def adduser(self, userinfo):
         """Add user to database"""
         if 'username' not in userinfo or 'nickname' not in userinfo:
