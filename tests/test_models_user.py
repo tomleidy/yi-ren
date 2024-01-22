@@ -3,6 +3,7 @@ import pytest
 from models.user import User
 from models.user import user_column_list, protected_update_columns, unprotected_update_columns
 # from models import Session
+from faker import Faker
 
 username = "test_user_add"
 nickname = "testing 1 2 3"
@@ -20,10 +21,20 @@ def test_user_lookup_username():
     """Validate User.lookup_username()"""
     user = User()
     result = user.lookup_username("defaultuser")
+    assert result['success']
+    result = result['userinfo']
     assert result['user_id'] == 1
     assert result['nickname'] == "default"
     assert result['created_at']
     assert result['last_modified']
+
+
+def test_user_lookup_username_nonexistant():
+    fake = Faker()
+    username = fake.user_name()
+    user = User()
+    result = user.lookup_username(username)
+    assert result['success'] is False
 
 
 def test_user_get_all_users():
