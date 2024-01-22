@@ -55,7 +55,31 @@ def test_user_delete():
 
 
 @pytest.mark.skip(reason="not implemented yet")
-def test_user_update():
+@pytest.mark.skip(reason="not implemented yet")
+def test_user_getuserid():
+    user = User()
+    user.adduser({"username": username, "nickname": nickname})
+    # this should be "defaultuser"
+    result = user.get_userid({"username": 1})
+    assert isinstance(result, int)
+    user.deluser({"username": username})
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_user_update_protected_attributes():
+    # TODO: add user with minimal information
+    # TODO: attempt to change username/created_at/modified_at/user_id (should fail)
+    # TODO: delete user
+    user.adduser({"username": username, "nickname": nickname})
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_user_change_username():
+    pass
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_user_change_password():
     pass
 
 
