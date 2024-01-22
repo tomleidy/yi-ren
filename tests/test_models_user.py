@@ -1,6 +1,7 @@
 """"Testing suite for user models"""
 import pytest
 from models.user import User
+from models.user import user_column_list, protected_update_columns, unprotected_update_columns
 # from models import Session
 
 username = "test_user_add"
@@ -38,7 +39,7 @@ def test_user_add():
     user.deluser({"username": username})
     result = user.adduser({"username": username, "nickname": nickname})
     assert result['success']
-    result = result['result']
+    result = result['userinfo']
     assert isinstance(result['user_id'], int)
     assert result['username'] == username
     assert result['nickname'] == nickname
