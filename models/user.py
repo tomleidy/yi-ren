@@ -70,14 +70,14 @@ class User(Base):
 
         new_user = User()
         for key, val in userinfo.items():
-            if key in user_column_list and key not in protected_columns:
+            if key in user_column_list and key not in protected_create_columns:
                 setattr(new_user, key, val)
 
         session = Session()
         try:
             session.add(new_user)
             session.commit()
-            return {"success": True, "result": new_user.serialize()}
+            return {"success": True, "userinfo": new_user.serialize()}
         except Exception as e:
             session.rollback()
             return {"success": False, "error": str(e)}
