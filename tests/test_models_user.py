@@ -67,9 +67,36 @@ def test_user_delete():
     assert result['success']
 
 
-@pytest.mark.skip(reason="not implemented yet")
-@pytest.mark.skip(reason="not implemented yet")
-def test_user_getuserid():
+def test_user_lookup_user_no_username_or_id():
+    user = User()
+    temp_username = fake.user_name()
+    result = user._lookup_user({"nothing_to_find": ""})
+    print(result)
+    assert result['success'] is False
+    assert result['error'] == "No username or user_id provided for lookup"
+
+
+def test_user_lookup_user_nonexistent_username():
+    user = User()
+    temp_username = fake.user_name()
+    result = user._lookup_user({"username": temp_username})
+    print(result)
+    assert result['success'] is False
+    assert result['error'] == "User not found"
+
+
+def test_user_lookup_user():
+    user = User()
+    temp_username = fake.user_name()
+    user.adduser({"username": temp_username, "nickname": nickname})
+
+    result = user._lookup_user({"username": temp_username})
+    print(result)
+    assert result['success']
+    assert result['userinfo']
+    serial_results = result['userinfo'].serialize()
+    assert serial_results['username'] == temp_username
+    user.deluser({"username": username})
     user = User()
     user.adduser({"username": username, "nickname": nickname})
     # this should be "defaultuser"
