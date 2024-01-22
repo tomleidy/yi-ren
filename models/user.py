@@ -98,10 +98,8 @@ class User(Base):
         elif 'user_id' in userinfo.keys():
             user_to_delete = session.query(User).filter(
                 User.user_id == userinfo['user_id']).first()
-
         if user_to_delete is None:
             return {"success": False, "error": "User not found"}
-
         session.delete(user_to_delete)
         try:
             session.commit()
