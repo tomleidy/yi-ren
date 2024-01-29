@@ -3,14 +3,22 @@ from sqlalchemy import Column, Integer, DateTime, Text, Date, Boolean
 from database.base import Base
 from models import Session
 
-user_column_list = [
-    "user_id", "username", "personal_name", "family_name",
-    "nickname", "created_at", "last_modified", "date_of_birth",
-    "gender", "referred_by", "email", "phone_number", "user_notes", "is_reader"
+pk_column = ["user_id"]
+fixed_column = ["username"]
+text_columns = [
+    "personal_name", "family_name", "nickname", "gender",
+    "referred_by", "email", "phone_number", "user_notes"
 ]
-timestamp_columns = ["created_at", "last_modified"]
-protected_create_columns = ["user_id", *timestamp_columns]
+time_columns = ["created_at", "last_modified", "date_of_birth"]
+boolean_columns = ["safe_to_email", "safe_to_call", "safe_to_text", "is_reader"]
+
+# TODO: clean this up. dictionary?
+user_column_list = [*pk_column, *fixed_column, *text_columns, *time_columns, *boolean_columns]
+# these columns cannot be specified during user create
+protected_create_columns = ["user_id", *time_columns]
+# these columns cannot be changed during user update
 protected_update_columns = ["username", *protected_create_columns]
+# these are the columns that can be updated
 unprotected_update_columns = [
     attr for attr in user_column_list if attr not in protected_update_columns]
 
@@ -48,8 +56,19 @@ class User(Base):
         for key in user_column_list:
             val = getattr(self, key)
             if val:
-                user_dict[key] = val if key not in timestamp_columns else val.isoformat()
+                user_dict[key] = val if key not in time_columns else val.isoformat()
         return user_dict
+
+    def get_user_by_id(self, user_id):
+        session = Session()
+        user = session.query(User).filter(User.user_id == user_id).first()
+        try:
+            if user:
+                result = user.serialize()
+                return {"success": True, "userinfo": result}
+            return {"success": False, "error": "User not found"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def get_all_users(self):
         """Get and return usernames and user_ids"""
@@ -133,11 +152,13 @@ class User(Base):
         """Update user information, except username and protected columns"""
         update_object = {}
         result = self._lookup_user(userinfo)
+        print(userinfo)
+        print(result)
         with Session() as session:
             user = None
             if result['success']:
                 user = result.get('userinfo')
-                user_id = user.user_id
+                user_id = getattr(user, 'user_id')
                 for key, val in userinfo.items():
                     print(f"key: {key}, val: {val}")
                     if key in unprotected_update_columns:
@@ -145,8 +166,10 @@ class User(Base):
                         update_object[key] = val
                 try:
                     session.query(User).filter(User.user_id == user_id).update(update_object)
-                    print("user.serialize(): ", user.serialize())
-                    return {"success": True, "userinfo": user.serialize()}
+                    confirmed_result = session.query(User).filter(User.user_id == user_id).first()
+                    session.commit()
+                    # print("result.serialize(): ", result.serialize)
+                    return {"success": True, "userinfo": confirmed_result.serialize()}
                 except Exception as e:
                     return {"success": False, "error": str(e)}
         return result
