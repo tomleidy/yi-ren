@@ -12,6 +12,7 @@ text_columns = [
 time_columns = ["created_at", "last_modified", "date_of_birth"]
 boolean_columns = ["safe_to_email", "safe_to_call", "safe_to_text", "is_reader"]
 
+# TODO: refactor updateuser so it fits on one screen
 # TODO: enable ability to change username
 # TODO: clean this up. dictionary?
 user_column_list = [*pk_column, *fixed_column, *text_columns, *time_columns, *boolean_columns]
@@ -165,11 +166,11 @@ class User(Base):
                     error_keys = []
                     if key in unprotected_update_columns:
                         update_object[key] = val
-                    else:
+                    elif key != 'username':
                         error_keys.append(key)
                 if len(error_keys) > 0:
                     return {"success": False, "error": f"Invalid key(s): {', '.join(error_keys)}"}
-                if len(update_object) <= 1:
+                if len(update_object) == 0:
                     return {"success": False, "error": "Insufficient data provided"}
                 try:
                     session.query(User).filter(User.user_id == user_id).update(update_object)
