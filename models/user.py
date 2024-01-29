@@ -152,23 +152,27 @@ class User(Base):
         """Update user information, except username and protected columns"""
         update_object = {}
         result = self._lookup_user(userinfo)
-        print(userinfo)
-        print(result)
+        if not result['success']:
+            return {'success': False, "error": "User not found"}
         with Session() as session:
             user = None
             if result['success']:
                 user = result.get('userinfo')
                 user_id = getattr(user, 'user_id')
                 for key, val in userinfo.items():
-                    print(f"key: {key}, val: {val}")
+                    error_keys = []
                     if key in unprotected_update_columns:
-                        print(f"unprotectedkey: {key}, val: {val}")
                         update_object[key] = val
+                    else:
+                        error_keys.append(key)
+                if len(error_keys) > 0:
+                    return {"success": False, "error": f"Invalid key(s): {', '.join(error_keys)}"}
+                if len(update_object) <= 1:
+                    return {"success": False, "error": "Insufficient data provided"}
                 try:
                     session.query(User).filter(User.user_id == user_id).update(update_object)
                     confirmed_result = session.query(User).filter(User.user_id == user_id).first()
                     session.commit()
-                    # print("result.serialize(): ", result.serialize)
                     return {"success": True, "userinfo": confirmed_result.serialize()}
                 except Exception as e:
                     return {"success": False, "error": str(e)}
