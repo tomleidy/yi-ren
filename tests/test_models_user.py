@@ -2,7 +2,7 @@
 import pytest
 from models.user import User
 from models.user import unprotected_update_columns as uuc
-from models.user import protected_update_columns
+from models.user import text_columns
 # from models import Session
 from faker import Faker
 from datetime import datetime, timezone
@@ -13,7 +13,12 @@ fake = Faker()
 
 # TODO: make a separate list here. we don't want these changing lightly.
 
-purge_from_uuc = ['is_reader', 'safe_to_call', 'safe_to_email', 'safe_to_text']
+# These columns are boolean and dates. The test function as extant is for text.
+# TODO: create lists based on type of test to be done
+# TODO: tests for booleans
+# TODO: tests for dates
+# TODO: rename functions based on type of test
+purge_from_uuc = ['is_reader']
 unprotected_update_columns = [attr for attr in uuc if attr not in purge_from_uuc]
 
 
@@ -106,19 +111,21 @@ def test_user_lookup_user():
     user.deluser({"username": username})
 
 
-@pytest.mark.parametrize('update_attr', unprotected_update_columns)
-def test_user_update_unprotected_attributes(update_attr):
+@pytest.mark.parametrize('update_attr', text_columns)
+def test_user_update_text_attributes(update_attr):
+    """Test the user update function for text attributes"""
     user = User()
-    user.adduser({"username": username, "nickname": nickname})
+    temp_username = fake.user_name()
+    user.adduser({"username": temp_username, "nickname": temp_username})
     user = User()
-    update_dict = {"username": username, update_attr: "update"}
+    update_dict = {"username": temp_username, update_attr: "update"}
     result = user.updateuser(update_dict)
-    print(f"result: {result}")
     assert result['success']
-    result = result.get('userinfo')
-    assert result.get(update_attr)
+    assert isinstance(result['userinfo'], dict)
+    result = result['userinfo']
+    assert update_attr in result
     assert result.get(update_attr) == "update"
-    user.deluser({"username": username})
+    user.deluser({"username": temp_username})
 
 
 @pytest.mark.skip(reason="not implemented yet")
