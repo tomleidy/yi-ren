@@ -2,7 +2,7 @@
 import pytest
 from models.user import User
 from models.user import unprotected_update_columns as uuc
-from models.user import text_columns
+from models.user import text_columns, time_columns
 # from models import Session
 from faker import Faker
 from datetime import datetime, timezone
@@ -128,19 +128,29 @@ def test_user_update_text_attributes(update_attr):
     user.deluser({"username": temp_username})
 
 
-@pytest.mark.skip(reason="not implemented yet")
-@pytest.mark.parametrize('update_attr', ['created_at', 'last_modified'])
+@pytest.mark.parametrize('update_attr', time_columns)
 def test_user_update_time_attributes(update_attr):
-    # TODO: attempt to change username/created_at/last_odified/user_id (should fail)
-    # TODO: attempt to change username/user_id (should fail)
-    # TODO: delete user
+    # TODO: attempt to change user_id (should fail)
+    # TODO:
     user = User()
     temp_username = fake.user_name()
     user.adduser({"username": temp_username, "nickname": temp_username})
     timenow = datetime.now(timezone.utc)
     result = user.updateuser({"username": temp_username, update_attr: timenow})
     assert result['success'] is False
-    assert result[update_attr] is not timenow
+    assert result['error'] == f'Invalid key(s): {update_attr}'
+    user.deluser({"username": temp_username})
+
+# TODO: test user update for user who doesn't exist
+
+
+def test_user_update_empty_attributes():
+    user = User()
+    temp_username = fake.user_name()
+    user.adduser({"username": temp_username, "nickname": temp_username})
+    result = user.updateuser({"username": temp_username})
+    assert result['success'] is False
+    assert result['error'] == 'Insufficient data provided'
     user.deluser({"username": temp_username})
 
 
