@@ -35,7 +35,7 @@ def test_user_lookup_username():
     user = User()
     result = user.lookup_username("defaultuser")
     assert result['success']
-    result = result['userinfo']
+    result = result.get('userinfo')
     assert result['user_id'] == 1
     assert result['nickname'] == "default"
     assert result['created_at']
@@ -53,7 +53,7 @@ def test_user_get_all_users():
     user = User()
     result = user.get_all_users()
     assert result['success']
-    result = result['userlist']
+    result = result.get('userlist')
     assert result[0].username == 'defaultuser'
     assert result[0].user_id == 1
 
@@ -64,7 +64,7 @@ def test_user_add():
     user.deluser({"username": username})
     result = user.adduser({"username": username, "nickname": nickname})
     assert result['success']
-    result = result['userinfo']
+    result = result.get('userinfo')
     assert isinstance(result['user_id'], int)
     assert result['username'] == username
     assert result['nickname'] == nickname
@@ -122,7 +122,7 @@ def test_user_update_text_attributes(update_attr):
     result = user.updateuser(update_dict)
     assert result['success']
     assert isinstance(result['userinfo'], dict)
-    result = result['userinfo']
+    result = result.get('userinfo')
     assert update_attr in result
     assert result.get(update_attr) == "update"
     user.deluser({"username": temp_username})
