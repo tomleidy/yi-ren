@@ -12,6 +12,7 @@ text_columns = [
 time_columns = ["created_at", "last_modified", "date_of_birth"]
 boolean_columns = ["safe_to_email", "safe_to_call", "safe_to_text", "is_reader"]
 
+# TODO: enable ability to change username
 # TODO: clean this up. dictionary?
 user_column_list = [*pk_column, *fixed_column, *text_columns, *time_columns, *boolean_columns]
 # these columns cannot be specified during user create
@@ -60,6 +61,7 @@ class User(Base):
         return user_dict
 
     def get_user_by_id(self, user_id):
+        """Lookup user by user_id"""
         session = Session()
         user = session.query(User).filter(User.user_id == user_id).first()
         try:
@@ -177,14 +179,3 @@ class User(Base):
                 except Exception as e:
                     return {"success": False, "error": str(e)}
         return result
-
-        # TODO: requery the database so we can return the item
-        # TODO: or return the dictionary with the updated items to avoid a db call
-        # TODO: check if user_id exists
-        # TODO: add fields in userinfo to update_object if they're in protected_update_columns
-        # TODO: try to update
-        # TODO: catch exception, return {"success": False, "error": str(e)}
-        # TODO: return updated record in {"success": bool, "userinfo": result} format
-
-
-# TODO: enable ability to change username
