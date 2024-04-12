@@ -1,5 +1,7 @@
 alembic==1.13.0
 colorama==0.4.6
+exceptiongroup==1.2.0
+Faker==24.8.0
 greenlet==3.0.1
 iniconfig==2.0.0
 Mako==1.3.0
@@ -8,7 +10,10 @@ packaging==23.2
 pluggy==1.3.0
 psycopg2==2.9.9
 pytest==7.4.4
+python-dateutil==2.9.0.post0
 python-dotenv==1.0.0
+six==1.16.0
 SQLAlchemy==2.0.23
+tomli==2.0.1
 typing==3.7.4.3
 typing_extensions==4.8.0
