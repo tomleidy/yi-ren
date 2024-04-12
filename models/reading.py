@@ -3,6 +3,10 @@ from sqlalchemy import Column, Integer, DateTime, Text, CheckConstraint
 from database.base import Base
 from gua.helpers import utc_ts, fill_reading_dictionary
 
+# TODO: error handling around invalid hexagram numbers
+# TODO: add constraint linking reader_id and client_id to the users table.
+# TODO: make reader_id and client_id nullable=False
+
 
 class Reading(Base):
     """
@@ -20,8 +24,7 @@ class Reading(Base):
 
     __tablename__ = "readings"
     reading_id = Column(Integer, primary_key=True, autoincrement=True)
-    # TODO: add constraint linking reader_id and client_id to the users table.
-    # TODO: make reader_id and client_id nullable=False
+
     reader_id = Column(Integer, nullable=True)
     client_id = Column(Integer, nullable=True)
     topic = Column(Text, nullable=False, default="")
