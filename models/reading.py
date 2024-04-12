@@ -43,7 +43,7 @@ class Reading(Base):
     hexagram_stationary = Column(Integer, CheckConstraint(
         'hexagram_stationary >= 1 and hexagram_stationary <= 64'), nullable=False)
     hexagram_moving = Column(Integer, CheckConstraint(
-        'hexagram_stationary >= 1 and hexagram_stationary <= 64'), nullable=True)
+        'hexagram_moving >= 1 and hexagram_moving <= 64'), nullable=True)
 
     def serialize(self):
         """Returns reading information in dictionary"""
