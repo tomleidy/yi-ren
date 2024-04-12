@@ -90,3 +90,28 @@ def test_add_valid_reading_two_hexagrams(hexagram2):
             session.delete(new_reading)
             session.commit()
             session.close()
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_get_readings_by_reader_id():
+    pass
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_get_readings_by_client_id():
+    pass
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_get_readings():
+    pass
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_delete_reading():
+    pass
+
+
+@pytest.mark.skip(reason="not implemented yet")
+def test_update_reading():
+    pass
