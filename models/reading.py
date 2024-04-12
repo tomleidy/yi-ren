@@ -38,7 +38,7 @@ class Reading(Base):
     topic = Column(Text, nullable=False, default="")
     reading_notes = Column(Text, nullable=True)
     created_at = Column(DateTime, nullable=False, default=utc_ts())
-    last_modified = Column(DateTime, nullable=False, default=utc_ts())
+    modified_at = Column(DateTime, nullable=False, default=utc_ts())
 
     hexagram_stationary = Column(Integer, CheckConstraint(
         'hexagram_stationary >= 1 and hexagram_stationary <= 64'), nullable=False)
@@ -52,6 +52,7 @@ class Reading(Base):
             "reader_id": self.reader_id,
             "client_id": self.client_id,
             "created_at": self.created_at.isoformat(),
+            "modified_at": self.modified_at.isoformat(),
             # reading data
             "topic": self.topic,
             "reading_notes": self.reading_notes,
