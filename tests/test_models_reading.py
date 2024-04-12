@@ -15,22 +15,16 @@ fake = Faker()
 # update_reading (can update hexagrams, reading_notes, topic)
 # delete_reading
 
-# TODO: define CRUD operation tests
-
-# @pytest.mark.parametrize('update_attr', time_columns)
-# def test_user_update_time_attributes(update_attr):
+# TODO: test invalid readings: <0, >64, hexagram1 == hexagram 2
+# TODO: test for update_reading
+# TODO: attempt to edit the uneditable fields.
+# TODO: make sure to test for all the extra data added via helper fill_reading_dictionary()
 
 valid_fields = {"reader_id", "client_id", "hexagram_stationary",
                 "hexagram_moving", "topic", "reading_notes"}
-# created_at
-# modified_at
-# reading_id
-
-reading_ids = set({})
-# TODO: make sure to test for all the extra data added via helper fill_reading_dictionary()
+# Uneditable fields: created_at, modified_at, reading_id
 
 
-# @pytest.mark.skip(reason="not implemented yet")
 @pytest.mark.parametrize("hexagram1", list(range(1, 65)))
 def test_add_valid_reading_single_hexagrams(hexagram1):
     """Test each hexagram, 1-64"""
