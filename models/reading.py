@@ -17,10 +17,18 @@ class Reading(Base):
     """
 
     def __init__(self, reading_data: dict):
-        # TODO: return the dictionary keys to hexagrams_stationary and hexagrams_moving to facilitate the below
-        for key, value in reading_data.items():
-            if key in self.__dict__:
-                setattr(self, key, value)
+        valid_fields = {"reader_id", "client_id", "hexagram_stationary", "hexagram_moving", "topic", "reading_notes"}
+        if not reading_data['hexagram_stationary']:
+            return None
+        if reading_data['hexagram_stationary'] < 0 or reading_data['hexagram_stationary'] > 64:
+            return None
+        if reading_data['hexagram_moving']:
+            if reading_data['hexagram_moving'] < 0 or reading_data['hexagram_moving'] > 64:
+                return None
+
+            for key, value in reading_data.items():
+                if key in valid_fields:
+                    setattr(self, key, value)
 
     __tablename__ = "readings"
     reading_id = Column(Integer, primary_key=True, autoincrement=True)
