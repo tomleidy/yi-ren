@@ -1,5 +1,5 @@
 """Test Reading class methods"""
-from datetime import datetime, timezone
+# from datetime import datetime, timezone
 import pytest
 from faker import Faker
 
