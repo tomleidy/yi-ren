@@ -2,6 +2,8 @@
 from sqlalchemy import Column, Integer, DateTime, Text, CheckConstraint
 from database.base import Base
 from gua.helpers import utc_ts, fill_reading_dictionary
+from models import Session
+
 
 # TODO: error handling around invalid hexagram numbers
 # TODO: add constraint linking reader_id and client_id to the users table.
@@ -22,13 +24,15 @@ class Reading(Base):
 
     def __init__(self, reading_data: dict):
         valid_fields = {"reader_id", "client_id", "hexagram_stationary", "hexagram_moving", "topic", "reading_notes"}
-        if not reading_data['hexagram_stationary']:
-            return None
+        if 'hexagram_stationary' not in reading_data:
+            raise KeyError("reading_data requires a hexagram_stationary value")
         if reading_data['hexagram_stationary'] < 0 or reading_data['hexagram_stationary'] > 64:
-            return None
-        if reading_data['hexagram_moving']:
+            raise ValueError("reading_data: 1 <= hexagram_stationary <= 64 must be true")
+        if 'hexagram_moving' in reading_data:
             if reading_data['hexagram_moving'] < 0 or reading_data['hexagram_moving'] > 64:
-                return None
+                raise ValueError("reading_data: 1 <= hexagram_moving <= 64 must be true")
+            if reading_data['hexagram_stationary'] == reading_data['hexagram_moving']:
+                del reading_data['hexagram_moving']
 
         for key, value in reading_data.items():
             if key in valid_fields:
