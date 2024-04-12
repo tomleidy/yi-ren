@@ -15,6 +15,10 @@ class Reading(Base):
         "reader_id", "client_id", "hexagram_stationary",
         "hexagram_moving", "topic", "reading_notes"
     """
+    save_fields = [
+        "reading_id", "reader_id", "client_id", "topic", "reading_notes",
+        "created_at", "modified_at", "hexagram_stationary", "hexagram_moving"
+    ]
 
     def __init__(self, reading_data: dict):
         valid_fields = {"reader_id", "client_id", "hexagram_stationary", "hexagram_moving", "topic", "reading_notes"}
@@ -26,9 +30,9 @@ class Reading(Base):
             if reading_data['hexagram_moving'] < 0 or reading_data['hexagram_moving'] > 64:
                 return None
 
-            for key, value in reading_data.items():
-                if key in valid_fields:
-                    setattr(self, key, value)
+        for key, value in reading_data.items():
+            if key in valid_fields:
+                setattr(self, key, value)
 
     __tablename__ = "readings"
     reading_id = Column(Integer, primary_key=True, autoincrement=True)
