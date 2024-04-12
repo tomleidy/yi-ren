@@ -53,6 +53,22 @@ class Reading(Base):
     hexagram_moving = Column(Integer, CheckConstraint(
         'hexagram_moving >= 1 and hexagram_moving <= 64'), nullable=True)
 
+    def create_reading(self):
+        """Create and reading to database"""
+        save_dict = {}
+        for key in self.save_fields:
+            if key in self.__dict__:
+                save_dict[key] = getattr(self, key)
+        with Session() as session:
+            try:
+                session.add(self)
+                session.commit()
+            except Exception as e:
+                session.rollback()
+                print(f"error: {str(e)}")
+            finally:
+                session.close()
+
     def serialize(self):
         """Returns reading information in dictionary"""
         reading_dict = {
