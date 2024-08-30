@@ -1,0 +1,21 @@
+/*
+MongoDB created: _id
+create:
+  username
+  password
+  email
+  firstName
+  lastName
+  dateOfBirth
+  createdAt
+  updatedAt
+  isActive
+  profilePicture
+  roles
+  address
+  phoneNumber
+  lastLogin
+  isVerified
+  resetToken
+  resetTokenExpiry
+ */
