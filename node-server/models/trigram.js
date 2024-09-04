@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const trigramSchema = new Schema({
     "binary": { type: String, immutable: true, index: true },
-    "fu xi": { type: String, immutable: true },
-    "king wen": { type: String, immutable: true },
+    "fu xi": { type: Number, immutable: true },
+    "king wen": { type: Number, immutable: true },
     "hanzi": { type: String, immutable: true },
     "pinyin": { type: String, immutable: true },
     "unicode": { type: String, immutable: true },
