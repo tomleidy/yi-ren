@@ -43,7 +43,18 @@ app.get("/hexagram/:hex1", (req, res, next) => {
             res.status(400).json({ error: "Invalid hexagram request" });
             return;
     }
-    Hexagram.findOne(queryDoc)
+
+    let queryLowerTrigram = { from: 'trigrams', localField: 'lowerBinary', foreignField: 'binary', as: 'lowerTrigram' }
+    let queryUpperTrigram = { from: 'trigrams', localField: 'upperBinary', foreignField: 'binary', as: 'upperTrigram' }
+    Hexagram.aggregate(
+        [
+            { $match: queryDoc },
+            { $lookup: queryLowerTrigram },
+            { $lookup: queryUpperTrigram },
+            { $unwind: { path: '$lowerTrigram', preserveNullAndEmptyArrays: true } },
+            { $unwind: { path: '$upperTrigram', preserveNullAndEmptyArrays: true } },
+            { $project: { "lowerTrigram._id": 0, "upperTrigram._id": 0, "_id": 0 } }
+        ])
         .then(hex1 => {
             if (!hex1) {
                 res.status(400).json({ error: "Hexagram not found, where did it go?" });
