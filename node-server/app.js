@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const config = require('./config');
 
 const Hexagram = require("./models/hexagram");
+const hexagramRouter = require("./routes/hexagram");
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -23,46 +24,12 @@ const mongoOptions = {
 
 const connect = mongoose.connect(mongoUrl, {});
 
-
 connect.then(() => {
     console.log('Connected correctly to server');
 }, err => console.log(err));
 
-app.get("/hexagram/:hex1", (req, res, next) => {
-    let searchPath = hexagramIndexType(req.params.hex1);
-    let queryDoc = {}
-    switch (searchPath) {
-        case "binary":
-            queryDoc.lowerBinary = req.params.hex1.substring(0, 3);
-            queryDoc.upperBinary = req.params.hex1.substring(3, 6);
-            break;
-        case "king wen":
-            queryDoc["king wen"] = Number(req.params.hex1);
-            break;
-        default:
-            res.status(400).json({ error: "Invalid hexagram request" });
-            return;
-    }
+app.use("/hexagram", hexagramRouter);
 
-    let queryLowerTrigram = { from: 'trigrams', localField: 'lowerBinary', foreignField: 'binary', as: 'lowerTrigram' }
-    let queryUpperTrigram = { from: 'trigrams', localField: 'upperBinary', foreignField: 'binary', as: 'upperTrigram' }
-    Hexagram.aggregate(
-        [
-            { $match: queryDoc },
-            { $lookup: queryLowerTrigram },
-            { $lookup: queryUpperTrigram },
-            { $unwind: { path: '$lowerTrigram', preserveNullAndEmptyArrays: true } },
-            { $unwind: { path: '$upperTrigram', preserveNullAndEmptyArrays: true } },
-            { $project: { "lowerTrigram._id": 0, "upperTrigram._id": 0, "_id": 0 } }
-        ])
-        .then(hex1 => {
-            if (!hex1) {
-                res.status(400).json({ error: "Hexagram not found, where did it go?" });
-            }
-            res.status(200).json(hex1);
-        })
-        .catch(err => next(err));
-})
 
 
 
@@ -87,14 +54,6 @@ router.get("/logout", (req, res, next) => { })
 
 */
 
-function hexagramIndexType(paramsHex) {
-    if (/^([1-9]|[1-5][0-9]|6[0-4])$/.test(paramsHex)) {
-        return "king wen";
-    } else if (/^[01]{6}$/.test(paramsHex)) {
-        return "binary";
-    }
-    return false;
-}
 
 
 
