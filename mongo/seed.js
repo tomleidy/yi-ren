@@ -1,4 +1,4 @@
-db.trigram.insertMany([
+db.trigrams.insertMany([
     { "tbinary": "111", "fu xi": 1, "king wen": 1, "pinyin": "Qián", "hanzi": "乾", "unicode": "☰", "english": "Heaven" },
     { "tbinary": "011", "fu xi": 7, "king wen": 2, "pinyin": "Duì", "hanzi": "兌", "unicode": "☱", "english": "Lake" },
     { "tbinary": "101", "fu xi": 6, "king wen": 3, "pinyin": "Lí", "hanzi": "離", "unicode": "☲", "english": "Fire" },
@@ -11,7 +11,7 @@ db.trigram.createIndex({ "binary": 1 })
 
 
 
-db.hexagram.insertMany([
+db.hexagrams.insertMany([
     { "lowerBinary": "111", "upperBinary": "111", "king wen": 1, "pinyin": "Qián", "hanzi": "乾", "unicode": "䷀" },
     { "lowerBinary": "000", "upperBinary": "000", "king wen": 2, "pinyin": "Kūn", "hanzi": "坤", "unicode": "䷁" },
     { "lowerBinary": "100", "upperBinary": "010", "king wen": 3, "pinyin": "Zhūn", "hanzi": "屯", "unicode": "䷂" },
