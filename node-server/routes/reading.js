@@ -1,14 +1,17 @@
-/*
-router.post("/newreading/", (req, res) => {
-    // req.params: { hex1: 1-64, hex2?: 1-64 }
-    // free? redirect to /gua/hex1/hex2
-    // paid? add to database, redirect to /reading/new_readingId
-})
+const express = require("express");
+
+const readingRouter = express.Router();
 
 
-router.get("/reading/:readingId", (req, res) => { })
-router.get("/reading/list", (req, res) => { })
-router.put("/reading/:readingId", (req, res) => { })
-router.delete("/reading/:readingId", (req, res) => { })
 
-*/
+readingRouter.post("/reading/new/", (req, res) => { });
+// body-parser?
+// verifyPaid, if unpaid: redirect to hexgrams/:hex1[/:hex2]
+// verifyPaid, if paid, add to database then redirect to GET /reading/id/:readingId
+readingRouter.get("/reading/list", (req, res) => { });
+readingRouter.get("/reading/id/:readingId", (req, res) => { });
+readingRouter.put("/reading/id/:readingId", (req, res) => { });
+readingRouter.delete("/reading/id/:readingId", (req, res) => { });
+
+
+module.exports = readingRouter;
