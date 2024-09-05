@@ -62,6 +62,10 @@ async function lookupHexagrams(hex1, hex2) {
         if (!hexagrams || hexagrams.length === 0) {
             return { status: 404, data: "Hexagrams not found, where did they go?" };
         }
+        // reorder the results if the order doesn't match the query
+        if (hexagrams[0][searchPath] == hex2) {
+            hexagrams.push(hexagrams.shift());
+        }
         return { status: 200, data: hexagrams };
     }
     catch (err) {
