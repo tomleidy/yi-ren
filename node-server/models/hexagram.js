@@ -103,7 +103,7 @@ async function lookupHexagram(hex1) {
         return { status: 200, data: hexagram };
     }
     catch (err) {
-        next(err);
+        return ({ status: 500, data: err });
     }
 }
 function hexagramIndexType(paramsHex) {
