@@ -15,55 +15,30 @@ const HexagramSchema = new Schema({
 })
 
 HexagramSchema.index({ "king wen": 1 });
-HexagramSchema.index({ "lowerBinary": 1, "upperBinary": 1 });
 
 const Hexagram = mongoose.model("Hexagram", HexagramSchema)
 
-
-
-let queryLowerTrigram = { from: 'trigrams', localField: 'lowerBinary', foreignField: 'binary', as: 'lowerTrigram' }
-let queryUpperTrigram = { from: 'trigrams', localField: 'upperBinary', foreignField: 'binary', as: 'upperTrigram' }
 let queryOmit = {
     "lowerTrigram._id": 0, "upperTrigram._id": 0, "_id": 0,
     "lowerTrigram.binary": 0, "upperTrigram.binary": 0
 }
 
+
 async function lookupHexagrams(hex1, hex2) {
-    let searchPath = hexagramIndexType(hex1);
-    let searchPath2 = hexagramIndexType(hex2);
-    if (searchPath != searchPath2) return { status: 400, data: "Hexagram Lookup Method Mismatch" };
-    let queryDoc = {};
-    switch (searchPath) {
-        case "binary":
-            queryDoc = {
-                $or: [
-                    { lowerBinary: hex1.substring(0, 3), upperBinary: hex1.substring(3, 6) },
-                    { lowerBinary: hex2.substring(0, 3), upperBinary: hex2.substring(3, 6) }
-                ]
-            }
-            //queryDoc = { $match: queryDoc };
-            break;
-        case "king wen":
-            queryDoc = { "king wen": { $in: [Number(hex1), Number(hex2)] } };
-            break;
-        default:
-            return { status: 400, data: "Invalid hexagram request" };
+    let lookup1 = getHexagramNumber(hex1);
+    let lookup2 = getHexagramNumber(hex2);
+    if (!lookup1 || !lookup2) {
+        return { status: 400, data: "Invalid hexagram request" };
     }
+    let queryDoc = { "king wen": { $in: [lookup1, lookup2] } };
+
     try {
-        const hexagrams = await Hexagram.aggregate(
-            [
-                { $match: queryDoc },
-                { $lookup: queryLowerTrigram },
-                { $lookup: queryUpperTrigram },
-                { $unwind: { path: '$lowerTrigram', preserveNullAndEmptyArrays: true } },
-                { $unwind: { path: '$upperTrigram', preserveNullAndEmptyArrays: true } },
-                { $project: queryOmit }
-            ])
+        const hexagrams = await Hexagram.find(queryDoc, queryOmit)
         if (!hexagrams || hexagrams.length === 0) {
             return { status: 404, data: "Hexagrams not found, where did they go?" };
         }
         // reorder the results if the order doesn't match the query
-        if (hexagrams[0][searchPath] == hex2) {
+        if (hexagrams[0]["king wen"] == lookup2) {
             hexagrams.push(hexagrams.shift());
         }
         return { status: 200, data: hexagrams };
@@ -74,29 +49,12 @@ async function lookupHexagrams(hex1, hex2) {
 };
 
 async function lookupHexagram(hex1) {
-    let searchPath = hexagramIndexType(hex1);
-    let queryDoc = {}
-    switch (searchPath) {
-        case "binary":
-            queryDoc.lowerBinary = hex1.substring(0, 3);
-            queryDoc.upperBinary = hex1.substring(3, 6);
-            break;
-        case "king wen":
-            queryDoc["king wen"] = Number(hex1);
-            break;
-        default:
-            return { status: 400, data: "Invalid hexagram request" }
+    if (!validateHexagramString(hex1)) {
+        return { status: 400, data: "Invalid hexagram request" }
     }
+    let queryDoc = { "king wen": getHexagramNumber(hex1) };
     try {
-
-        const hexagram = await Hexagram.aggregate([
-            { $match: queryDoc },
-            { $lookup: queryLowerTrigram },
-            { $lookup: queryUpperTrigram },
-            { $unwind: { path: '$lowerTrigram', preserveNullAndEmptyArrays: true } },
-            { $unwind: { path: '$upperTrigram', preserveNullAndEmptyArrays: true } },
-            { $project: queryOmit }
-        ])
+        const hexagram = await Hexagram.find(queryDoc, queryOmit)
         if (!hexagram) {
             return { status: 404, data: "Hexagram not found, where did it go?" };
         }
@@ -106,14 +64,29 @@ async function lookupHexagram(hex1) {
         return ({ status: 500, data: err });
     }
 }
-function hexagramIndexType(paramsHex) {
-    if (/^([1-9]|[1-5][0-9]|6[0-4])$/.test(paramsHex)) {
-        return "king wen";
-    } else if (/^[01]{6}$/.test(paramsHex)) {
-        return "binary";
+
+
+const binaryToHexagram = { "111111": 1, "000000": 2, "100010": 3, "010001": 4, "111010": 5, "010111": 6, "010000": 7, "000010": 8, "111011": 9, "110111": 10, "111000": 11, "000111": 12, "101111": 13, "111101": 14, "001000": 15, "000100": 16, "100110": 17, "011001": 18, "110000": 19, "000011": 20, "100101": 21, "101001": 22, "000001": 23, "100000": 24, "100111": 25, "111001": 26, "100001": 27, "011110": 28, "010010": 29, "101101": 30, "001110": 31, "011100": 32, "001111": 33, "111100": 34, "000101": 35, "101000": 36, "101011": 37, "110101": 38, "001010": 39, "010100": 40, "110001": 41, "100011": 42, "111110": 43, "011111": 44, "000110": 45, "011000": 46, "010110": 47, "011010": 48, "101110": 49, "011101": 50, "100100": 51, "001001": 52, "001011": 53, "110100": 54, "101100": 55, "001101": 56, "011011": 57, "110110": 58, "010011": 59, "110010": 60, "110011": 61, "001100": 62, "101010": 63, "010101": 64 }
+
+
+function getHexagramNumber(hexParameter) {
+    if (/^([1-9]|[1-5][0-9]|6[0-4])$/.test(hexParameter)) {
+        return Number(hexParameter);
+    }
+    if (/^[01]{6}$/.test(hexParameter)) {
+        return binaryToHexagram[hexParameter];
     }
     return false;
 }
+
+
+function validateHexagramString(hexParameter) {
+    // compare hex string paramter to only valid formats for
+    if (/^([1-9]|[1-5][0-9]|6[0-4])$/.test(hexParameter)) return true;
+    if (/^[01]{6}$/.test(hexParameter)) return true;
+    return false;
+}
+
 
 
 
