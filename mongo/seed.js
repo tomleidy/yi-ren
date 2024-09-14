@@ -1,15 +1,3 @@
-const binaryToTrigrams = {
-    "111": { "fu xi": "1", "king wen": "1", "pinyin": "Qián", "hanzi": "乾", "unicode": "☰", "english": "Heaven" },
-    "011": { "fu xi": "7", "king wen": "2", "pinyin": "Duì", "hanzi": "兌", "unicode": "☱", "english": "Lake" },
-    "101": { "fu xi": "6", "king wen": "3", "pinyin": "Lí", "hanzi": "離", "unicode": "☲", "english": "Fire" },
-    "001": { "fu xi": "5", "king wen": "4", "pinyin": "Zhèn", "hanzi": "震", "unicode": "☳", "english": "Thunder" },
-    "110": { "fu xi": "4", "king wen": "5", "pinyin": "Xùn", "hanzi": "巽", "unicode": "☴", "english": "Wind" },
-    "010": { "fu xi": "2", "king wen": "6", "pinyin": "Kǎn", "hanzi": "坎", "unicode": "☵", "english": "Water" },
-    "100": { "fu xi": "3", "king wen": "7", "pinyin": "Gèn", "hanzi": "艮", "unicode": "☶", "english": "Mountain" },
-    "000": { "fu xi": "8", "king wen": "8", "pinyin": "Kūn", "hanzi": "坤", "unicode": "☷", "english": "Earth" }
-};
-
-
 db.hexagrams.insertMany([
     { "binary": "111111", "king wen": 1, "pinyin": "Qián", "hanzi": "乾", "unicode": "䷀" },
     { "binary": "000000", "king wen": 2, "pinyin": "Kūn", "hanzi": "坤", "unicode": "䷁" },
@@ -27,7 +15,7 @@ db.hexagrams.insertMany([
     { "binary": "111101", "king wen": 14, "pinyin": "Dà Yǒu", "hanzi": "大有", "unicode": "䷍" },
     { "binary": "001000", "king wen": 15, "pinyin": "Qiān", "hanzi": "謙", "unicode": "䷎" },
     { "binary": "000100", "king wen": 16, "pinyin": "Yù", "hanzi": "豫", "unicode": "䷏" }
-], { ordered: false })
+], { ordered: false });
 db.hexagrams.insertMany([
     { "binary": "100110", "king wen": 17, "pinyin": "Suí", "hanzi": "隨", "unicode": "䷐" },
     { "binary": "011001", "king wen": 18, "pinyin": "Gŭ", "hanzi": "蠱", "unicode": "䷑" },
@@ -45,7 +33,7 @@ db.hexagrams.insertMany([
     { "binary": "101101", "king wen": 30, "pinyin": "Lí", "hanzi": "離", "unicode": "䷝" },
     { "binary": "001110", "king wen": 31, "pinyin": "Xián", "hanzi": "咸", "unicode": "䷞" },
     { "binary": "011100", "king wen": 32, "pinyin": "Héng", "hanzi": "恆", "unicode": "䷟" },
-], { ordered: false })
+], { ordered: false });
 db.hexagrams.insertMany([
     { "binary": "001111", "king wen": 33, "pinyin": "Dùn", "hanzi": "遯", "unicode": "䷠" },
     { "binary": "111100", "king wen": 34, "pinyin": "Dà Zhuàng", "hanzi": "大壯", "unicode": "䷡" },
@@ -63,7 +51,7 @@ db.hexagrams.insertMany([
     { "binary": "011000", "king wen": 46, "pinyin": "Shēng", "hanzi": "升", "unicode": "䷭" },
     { "binary": "010110", "king wen": 47, "pinyin": "Kùn", "hanzi": "困", "unicode": "䷮" },
     { "binary": "011010", "king wen": 48, "pinyin": "Jǐng", "hanzi": "井", "unicode": "䷯" },
-], { ordered: false })
+], { ordered: false });
 db.hexagrams.insertMany([
     { "binary": "101110", "king wen": 49, "pinyin": "Gé", "hanzi": "革", "unicode": "䷰" },
     { "binary": "011101", "king wen": 50, "pinyin": "Dǐng", "hanzi": "鼎", "unicode": "䷱" },
@@ -81,5 +69,5 @@ db.hexagrams.insertMany([
     { "binary": "001100", "king wen": 62, "pinyin": "Xiǎo Guò", "hanzi": "小過", "unicode": "䷽" },
     { "binary": "101010", "king wen": 63, "pinyin": "Jì Jì", "hanzi": "既濟", "unicode": "䷾" },
     { "binary": "010101", "king wen": 64, "pinyin": "Wèi Jì", "hanzi": "未濟", "unicode": "䷿" },
-], { ordered: false })
-db.hexagrams.createIndex({ "king wen": 1 })
+], { ordered: false });
+db.hexagrams.createIndex({ "king wen": 1 });
