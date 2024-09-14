@@ -9,20 +9,20 @@ const config = require('./config');
 const hexagramRouter = require("./routes/hexagram");
 const authRouter = require("./routes/auth");
 const readingRouter = require("./routes/reading");
+const userRouter = require("./routes/users");
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/hexagram", hexagramRouter);
 app.use("/auth", authRouter);
 app.use("/reading", readingRouter);
+app.use("/users", userRouter);
+app.use("/auth", authRouter);
 
 
 app.use(function (req, res, next) {
     res.status(404).send('<a href="https://http.cat/status/404">404 Not Found</a>')
 });
-
-
-
 
 let mongoUrl = config.mongoUrl;
 
@@ -37,7 +37,6 @@ const connect = mongoose.connect(mongoUrl, {});
 connect.then(() => {
     console.log('Connected correctly to server');
 }, err => console.log(err));
-
 
 
 module.exports = app;
