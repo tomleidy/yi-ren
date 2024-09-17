@@ -44,7 +44,12 @@ async function userCreate(body) {
   }
   catch (err) {
     if (err.code === 11000) {
-      return { status: 409, data: "username " + username + " already in use" }
+      if ("email" in err.keyPattern) {
+        return { status: 409, data: ["email address " + email + " already in use"] }
+      }
+      if ("username" in err.keyPattern) {
+        return { status: 409, data: ["username " + username + " already in use"] }
+      }
     }
     return { status: 500, data: err };
   }
