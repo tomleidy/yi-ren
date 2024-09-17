@@ -9,6 +9,27 @@ const { User, userCreate } = require("../models/user");
 require("dotenv").config();
 
 
+let dummyUserBody = { username: "dummyuser202409", password: "dummy password", email: "dummy@dummy.org" };
+if (process.env.TEST_ENV === "true") {
+    createDummy();
+} else {
+    // deleteDummy();
+}
+
+
+async function createDummy() {
+    try {
+        let result = await userCreate(dummyUserBody);
+        if (result) {
+            console.log(result);
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+
+
 
 authRouter.post('/register', async (req, res, next) => {
     if (req.body.username === "" || req.body.password === "") {
