@@ -3,15 +3,32 @@ const app = express();
 const morgan = require('morgan')
 const path = require("path");
 const mongoose = require('mongoose');
-
+const bodyParser = require("body-parser");
+const passport = require("passport")
 const config = require('./config');
+
+require("dotenv").config();
 
 const hexagramRouter = require("./routes/hexagram");
 const authRouter = require("./routes/auth");
 const readingRouter = require("./routes/reading");
 const userRouter = require("./routes/users");
+const session = require("express-session");
 
 app.use(morgan('dev'));
+
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser((id, done) => {
+    User.findById(id, (err, user) => done(err, user));
+});
+
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/hexagram", hexagramRouter);
 app.use("/auth", authRouter);

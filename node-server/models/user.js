@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 const Schema = mongoose.Schema;
+const bcrypt = require("bcrypt");
+const saltRounds = 12;
 
 const userSchema = new Schema({
   username: { type: String, default: '' },
@@ -23,6 +25,30 @@ const userSchema = new Schema({
 })
 
 
+async function userCreate(body) {
+  const { username, email, password } = body;
+  try {
+    let hashedPassword = await bcrypt.hash(password, saltRounds);
+    let createdAt = new Date().toISOString();
+    const user = new User({
+      username,
+      email,
+      password: hashedPassword,
+      createdAt,
+      updatedAt: createdAt
+    });
+    const result = await user.save();
+    return { status: 201, data: result };
+  }
+  catch (err) {
+    if (err.code === 11000) {
+      return { status: 409, data: "username " + username + " already in use" }
+    }
+    return { status: 500, data: err };
+  }
+}
+
+const User = mongoose.model('User', userSchema);
 userSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = { User, userCreate };
