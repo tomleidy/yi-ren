@@ -25,6 +25,7 @@ const userSchema = new Schema({
   resetTokenExpiry: { type: Date, default: null },
 })
 
+const userCanSet = new Set(["password", "firstName", "lastName", "dateOfBirth", "profilePicture", "address", "phoneNumber"])
 
 async function userCreate(body) {
   const { username, email, password } = body;
