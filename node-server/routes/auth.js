@@ -3,7 +3,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const authRouter = express.Router();
 const bcrypt = require("bcrypt");
-const { User, userCreate } = require("../models/user");
+const { User, userCreate, userLogin } = require("../models/user");
 
 
 require("dotenv").config();
@@ -13,7 +13,7 @@ let dummyUserBody = { username: "dummyuser202409", password: "dummy password", e
 if (process.env.TEST_ENV === "true") {
     createDummy();
 } else {
-    // deleteDummy();
+    User.findOneAndDelete({ username: dummyUserBody.username })
 }
 
 
@@ -45,12 +45,32 @@ authRouter.post('/register', async (req, res, next) => {
 
 });
 
-exports.local = passport.use(new LocalStrategy(User.authenticate()));
+//exports.local = passport.use(new LocalStrategy(User.authenticate()));
 
 
 
+authRouter.post("/login", passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+}));
 
+async function passportVerifyLogin(username, password, next) {
+    let authenticationIncorrectError = { status: 401, message: "Incorrect username or password" };
+    try {
+        const user = await User.findOne({ username: username });
+        if (!user) { return next(null, false, authenticationIncorrectError); }
+        const passwordsMatch = await bcrypt.compare(password, user.password);
+        if (passwordsMatch) {
+            return next(null, user);
+        }
+        return next(null, false, authenticationError);
+    }
+    catch (err) {
+        return next(err);
+    }
+}
 
+passport.use(new LocalStrategy(passportVerifyLogin));
 
 
 module.exports = authRouter;

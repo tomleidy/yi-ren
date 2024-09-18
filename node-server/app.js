@@ -6,30 +6,41 @@ const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const passport = require("passport")
 const config = require('./config');
+const { User } = require("./models/user");
 
 require("dotenv").config();
 
-const hexagramRouter = require("./routes/hexagram");
-const authRouter = require("./routes/auth");
-const readingRouter = require("./routes/reading");
-const userRouter = require("./routes/users");
 const session = require("express-session");
 
 app.use(morgan('dev'));
-
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+    secret: 'keyboard cat',
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: false
+}))
+app.use(passport.authenticate('session'));
+const hexagramRouter = require("./routes/hexagram");
+const readingRouter = require("./routes/reading");
+const userRouter = require("./routes/users");
+const authRouter = require("./routes/auth");
+
 
 passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => done(err, user));
+passport.deserializeUser(async (id, done) => {
+    try {
+        let result = await User.findOne({ _id: id });
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
 
 
-app.use(express.static(path.join(__dirname, 'public')));
 app.use("/hexagram", hexagramRouter);
 app.use("/auth", authRouter);
 app.use("/reading", readingRouter);
