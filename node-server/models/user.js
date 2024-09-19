@@ -11,8 +11,6 @@ const userSchema = new Schema({
   firstName: { type: String, default: '' },
   lastName: { type: String, default: '' },
   admin: { type: Boolean, default: false },
-  createdAt: { type: Date, default: null },
-  updatedAt: { type: Date, default: null },
   lastLogin: { type: Date, default: null },
   dateOfBirth: { type: Date, default: null },
   isActive: { type: Boolean, default: false },
@@ -23,7 +21,7 @@ const userSchema = new Schema({
   roles: { type: Array, default: [] },
   resetToken: { type: String, default: null },
   resetTokenExpiry: { type: Date, default: null },
-})
+}, { timestamps: true })
 
 const userCanSet = new Set(["password", "firstName", "lastName", "dateOfBirth", "profilePicture", "address", "phoneNumber"])
 
@@ -46,13 +44,10 @@ async function userCreate(body) {
   const { username, email, password } = body;
   try {
     let hashedPassword = await bcrypt.hash(password, saltRounds);
-    let createdAt = new Date().toISOString();
     const user = new User({
       username,
       email,
-      password: hashedPassword,
-      createdAt,
-      updatedAt: createdAt
+      password: hashedPassword
     });
     const result = await user.save();
     return { status: 201, data: result };
