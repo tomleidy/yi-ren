@@ -5,7 +5,7 @@ const { getHexagramNumber, validateHexagramString } = require('../helpers/hexagr
 
 const HexagramSchema = new Schema({
     "binary": { type: String, immutable: true },
-    "king wen": { type: Number, immutable: true, index: true },
+    "kingwen": { type: Number, immutable: true, index: true },
     "hanzi": { type: String, immutable: true },
     "pinyin": { type: String, immutable: true },
     "unicode": { type: String, immutable: true }
@@ -19,7 +19,7 @@ async function lookupHexagrams(hex1, hex2) {
     if (!lookup1 || !lookup2) {
         return { status: 400, data: "Invalid hexagram request" };
     }
-    let queryDoc = { "king wen": { $in: [lookup1, lookup2] } };
+    let queryDoc = { "kingwen": { $in: [lookup1, lookup2] } };
 
     try {
         const hexagrams = await Hexagram.find(queryDoc, queryOmit)
@@ -27,7 +27,7 @@ async function lookupHexagrams(hex1, hex2) {
             return { status: 404, data: "Hexagrams not found, where did they go?" };
         }
         // reorder the results if the order doesn't match the query
-        if (hexagrams[0]["king wen"] == lookup2) {
+        if (hexagrams[0]["kingwen"] == lookup2) {
             hexagrams.push(hexagrams.shift());
         }
         return { status: 200, data: hexagrams };
@@ -41,7 +41,7 @@ async function lookupHexagram(hex1) {
     if (!validateHexagramString(hex1)) {
         return { status: 400, data: "Invalid hexagram request" }
     }
-    let queryDoc = { "king wen": getHexagramNumber(hex1) };
+    let queryDoc = { "kingwen": getHexagramNumber(hex1) };
     try {
         const hexagram = await Hexagram.find(queryDoc, queryOmit)
         if (!hexagram) {
