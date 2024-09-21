@@ -12,6 +12,7 @@ const HexagramSchema = new Schema({
 })
 
 const Hexagram = mongoose.model("Hexagram", HexagramSchema)
+let queryOmit = { _id: 0 }
 
 async function lookupHexagrams(hex1, hex2) {
     let lookup1 = getHexagramNumber(hex1);
