@@ -1,6 +1,6 @@
 const express = require("express");
 const readingRouter = express.Router();
-const { readingCreate, readingList } = require("../models/reading")
+const { readingCreate, readingList, readingGet } = require("../models/reading")
 const { validateHexagramString } = require("../helpers/hexagrams");
 
 readingRouter.post("/new", async (req, res, next) => {
@@ -13,8 +13,8 @@ readingRouter.post("/new", async (req, res, next) => {
         return res.status(406).json({ message: "406 Not Acceptable: Hexagram2" })
     }
     let { hexagram1, hexagram2, topic } = req.body;
-    let { _id, username } = req.session['passport']['user']
-    let readingInfo = { _id, username, hexagram1, hexagram2, topic }
+    let { userId: _id, username } = req.session['passport']['user']
+    let readingInfo = { userId, username, hexagram1, hexagram2, topic }
     try {
         let result = await readingCreate(readingInfo);
         if (!result) {
@@ -33,9 +33,9 @@ readingRouter.post("/new", async (req, res, next) => {
 
 readingRouter.get("/list", async (req, res, next) => {
     if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
-    let { _id } = req.session['passport']['user'];
+    let { userId: _id } = req.session['passport']['user'];
     try {
-        let result = await readingList({ _id })
+        let result = await readingList({ userId })
         if (!result) {
             return next({ error: "missing result" });
         }
@@ -45,7 +45,21 @@ readingRouter.get("/list", async (req, res, next) => {
         next(err);
     }
 });
-readingRouter.get("/id/:readingId", (req, res) => { });
+readingRouter.get("/id/:readingId", async (req, res, next) => {
+    if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
+    let { _id: userId } = req.session['passport']['user'];
+    let readingId = req.params.readingId;
+    try {
+        let result = await readingGet({ userId, readingId });
+        if (!result) {
+            return next({ error: "missing result" });
+        }
+        res.status(result.status).json(result.data);
+    }
+    catch (err) {
+        next(err);
+    }
+});
 readingRouter.put("/id/:readingId", (req, res) => { });
 readingRouter.delete("/id/:readingId", (req, res) => { });
 

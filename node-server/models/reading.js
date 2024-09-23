@@ -44,12 +44,12 @@ async function readingCreate(readingInfo) {
     }
 }
 
+let internalFields = { deletedPermanent: 0, userId: 0, __v: 0 };
+
 async function readingList(readingInfo) {
     const { _id } = readingInfo;
     try {
-        let reading = await Reading.find(
-            { userId: _id, deletedPermanent: false },
-            { deletedPermanent: 0, userId: 0, __v: 0 });
+        let reading = await Reading.find({ userId: _id, deletedPermanent: false }, internalFields);
         return { status: 200, data: reading }
     }
     catch (err) {
@@ -58,7 +58,19 @@ async function readingList(readingInfo) {
     }
 }
 
+async function readingGet(readingInfo) {
+    const { userId, readingId } = readingInfo;
+    try {
+        let reading = await Reading.findOne({ userId, _id: readingId }, internalFields);
+        return { status: 200, data: reading }
+    }
+    catch (err) {
+        console.log("models/reading.js/readingGet:", err);
+        return { status: 500, data: "unknown error" };
+    }
+}
+
 const Reading = mongoose.model('Reading', readingSchema);
 readingSchema.plugin(passportLocalMongoose);
 
-module.exports = { Reading, readingCreate, readingList };
+module.exports = { Reading, readingCreate, readingList, readingGet };
