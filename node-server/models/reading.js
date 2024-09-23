@@ -43,6 +43,11 @@ async function readingCreate(readingInfo) {
         return { status: 500, data: "server error" };
     }
 }
+let externalUpdateFields = {
+    "deleted": 1, "deletedAt": 1,
+    "topic": 1, "notes": 1, "hexagram1": 1,
+    "hexagram2": 1, "createdAt": 1, "updatedAt": 1
+}
 
 let internalFields = { deletedPermanent: 0, userId: 0, __v: 0 };
 
@@ -70,7 +75,31 @@ async function readingGet(readingInfo) {
     }
 }
 
+async function readingUpdate(readingInfo) {
+    let updateObject = {}
+    if (!"readingId" in readingInfo || !"userId" in readingInfo) {
+        return { status: 403, data: "not authorized" };
+    }
+    const { userId, readingId } = readingInfo;
+    for (let key of Object.keys(readingInfo)) {
+        if (key in externalUpdateFields) {
+            updateObject[key] = readingInfo[key];
+        }
+    }
+    try {
+        let reading = await Reading.findOneAndUpdate({ userId, _id: readingId }, updateObject, { new: true });
+        if (!reading) {
+            return { status: 500, data: "unknown error" };
+        }
+        return { status: 200, data: reading };
+    }
+    catch (err) {
+        console.log("models/raeding.js/readingUpdate:", err);
+        return { status: 500, data: "unknown error" };
+    }
+}
+
 const Reading = mongoose.model('Reading', readingSchema);
 readingSchema.plugin(passportLocalMongoose);
 
-module.exports = { Reading, readingCreate, readingList, readingGet };
+module.exports = { Reading, readingCreate, readingList, readingGet, readingUpdate };
