@@ -125,10 +125,7 @@ async function readingUpdate(readingInfo) {
         if (!reading) {
             return { status: 500, data: "unknown error" };
         }
-        let readingStrungOut = JSON.parse(JSON.stringify(reading));
-        for (let key in internalFields) {
-            delete readingStrungOut[key];
-        }
+        let readingStrungOut = removeInternalFields(reading);
         return { status: 200, data: readingStrungOut };
     }
     catch (err) {
@@ -136,6 +133,15 @@ async function readingUpdate(readingInfo) {
         return { status: 500, data: "unknown error" };
     }
 }
+
+function removeInternalFields(reading) {
+    let readingDeJSON = JSON.parse(JSON.stringify(reading));
+    for (const key in internalFields) {
+        delete readingDeJSON[key];
+    }
+    return readingDeJSON;
+}
+
 async function readingDelete(readingInfo) {
     if (!"readingId" in readingInfo || !"userId" in readingInfo) {
         return { status: 403, data: "not authorized" };
@@ -150,10 +156,7 @@ async function readingDelete(readingInfo) {
         if (!reading) {
             return { status: 500, data: "unknown error" };
         }
-        let readingStrungOut = JSON.parse(JSON.stringify(reading));
-        for (let key in internalFields) {
-            delete readingStrungOut[key];
-        }
+        let readingStrungOut = removeInternalFields(reading);
         return { status: 200, data: readingStrungOut };
     }
     catch (err) {
