@@ -4,7 +4,7 @@ const { lookupHexagrams, Hexagram } = require('./hexagram');
 const Schema = mongoose.Schema;
 
 const readingSchema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: 'User._id' },
+    userId: { type: Schema.Types.ObjectId, ref: 'User._id', index: true },
     deleted: { type: Boolean, default: false },
     deletedAt: { type: Date, default: null },
     deletedPermanent: { type: Boolean, default: false },
@@ -33,7 +33,7 @@ async function readingCreate(readingInfo) {
         });
 
         let result = await reading.save();
-        result = JSON.parse(JSON.stringify(result));
+        //result = JSON.parse(JSON.stringify(result));
         if (hexLookup.status === 200) { result.hexagrams = hexLookup.data; }
 
         return { status: 201, data: result };
@@ -44,7 +44,21 @@ async function readingCreate(readingInfo) {
     }
 }
 
+async function readingList(readingInfo) {
+    const { _id } = readingInfo;
+    try {
+        let reading = await Reading.find(
+            { userId: _id, deletedPermanent: false },
+            { deletedPermanent: 0, userId: 0, __v: 0 });
+        return { status: 200, data: reading }
+    }
+    catch (err) {
+        console.log("models/reading.js/readingList:", err);
+        return { status: 500, data: "unknown error" };
+    }
+}
+
 const Reading = mongoose.model('Reading', readingSchema);
 readingSchema.plugin(passportLocalMongoose);
 
-module.exports = { Reading, readingCreate };
+module.exports = { Reading, readingCreate, readingList };
