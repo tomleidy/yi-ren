@@ -60,7 +60,6 @@ async function readingCreate(readingInfo) {
         });
 
         let result = await reading.save();
-        //result = JSON.parse(JSON.stringify(result));
         if (hexLookup.status === 200) { result.hexagrams = hexLookup.data; }
 
         return { status: 201, data: result };
@@ -129,7 +128,7 @@ async function readingUpdate(readingInfo) {
         return { status: 200, data: readingStrungOut };
     }
     catch (err) {
-        console.log("models/raeding.js/readingUpdate:", err);
+        console.log("models/reading.js/readingUpdate:", err);
         return { status: 500, data: "unknown error" };
     }
 }
