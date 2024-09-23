@@ -3,6 +3,17 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const { lookupHexagrams, Hexagram } = require('./hexagram');
 const Schema = mongoose.Schema;
 
+const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+const baseQuery = {
+    deletedAt: {
+        $or: [{ $gt: thirtyDaysAgo }, { $eq: null }],
+    },
+    deletedPermanent: false
+}
+
+
+
 const readingSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User._id', index: true },
     deleted: { type: Boolean, default: false },
@@ -72,7 +83,7 @@ let internalFields = { deletedPermanent: 0, userId: 0 };
 async function readingList(readingInfo) {
     const { _id } = readingInfo;
     try {
-        let reading = await Reading.find({ userId: _id, deletedPermanent: false }, internalFields);
+        let reading = await Reading.find({ userId: _id, ...baseQuery }, internalFields);
         return { status: 200, data: reading }
     }
     catch (err) {
@@ -84,7 +95,7 @@ async function readingList(readingInfo) {
 async function readingGet(readingInfo) {
     const { userId, readingId } = readingInfo;
     try {
-        let reading = await Reading.findOne({ userId, _id: readingId }, internalFields);
+        let reading = await Reading.findOne({ userId, _id: readingId, ...baseQuery }, internalFields);
         return { status: 200, data: reading }
     }
     catch (err) {
@@ -109,7 +120,7 @@ async function readingUpdate(readingInfo) {
     }
     try {
         let reading = await Reading.findOneAndUpdate(
-            { userId, _id: readingId },
+            { userId, _id: readingId, ...baseQuery },
             updateObject,
             { new: true }
         );
@@ -117,7 +128,7 @@ async function readingUpdate(readingInfo) {
             return { status: 500, data: "unknown error" };
         }
         let readingStrungOut = JSON.parse(JSON.stringify(reading));
-        for (let key in Object.keys(internalFields)) {
+        for (let key in internalFields) {
             delete readingStrungOut[key];
         }
         return { status: 200, data: readingStrungOut };
