@@ -5,7 +5,7 @@ const { getHexagramNumber, validateHexagramString } = require('../helpers/hexagr
 
 const HexagramSchema = new Schema({
     "binary": { type: String, immutable: true },
-    "kingwen": { type: Number, immutable: true, index: true },
+    "kingwen": { type: Number, immutable: true, index: { unique: true } },
     "hanzi": { type: String, immutable: true },
     "pinyin": { type: String, immutable: true },
     "unicode": { type: String, immutable: true }
