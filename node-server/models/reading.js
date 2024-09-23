@@ -136,8 +136,41 @@ async function readingUpdate(readingInfo) {
         return { status: 500, data: "unknown error" };
     }
 }
+async function readingDelete(readingInfo) {
+    if (!"readingId" in readingInfo || !"userId" in readingInfo) {
+        return { status: 403, data: "not authorized" };
+    }
+    const { userId, readingId } = readingInfo;
+    try {
+        let reading = await Reading.findOneAndUpdate(
+            { userId, _id: readingId, ...baseQuery },
+            { deleted: true, deletedAt: new Date().toISOString() },
+            { new: true }
+        );
+        if (!reading) {
+            return { status: 500, data: "unknown error" };
+        }
+        let readingStrungOut = JSON.parse(JSON.stringify(reading));
+        for (let key in internalFields) {
+            delete readingStrungOut[key];
+        }
+        return { status: 200, data: readingStrungOut };
+    }
+    catch (err) {
+        console.log("models/reading.js/readingDelete:", err);
+        return { status: 500, data: "unknown error" };
+    }
+}
+
 
 const Reading = mongoose.model('Reading', readingSchema);
 readingSchema.plugin(passportLocalMongoose);
 
-module.exports = { Reading, readingCreate, readingList, readingGet, readingUpdate };
+module.exports = {
+    Reading,
+    readingCreate,
+    readingList,
+    readingGet,
+    readingUpdate,
+    readingDelete
+};

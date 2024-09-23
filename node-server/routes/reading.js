@@ -1,6 +1,6 @@
 const express = require("express");
 const readingRouter = express.Router();
-const { readingCreate, readingList, readingGet, readingUpdate } = require("../models/reading")
+const { readingCreate, readingList, readingGet, readingUpdate, readingDelete } = require("../models/reading")
 const { validateHexagramString } = require("../helpers/hexagrams");
 
 readingRouter.post("/new", async (req, res, next) => {
@@ -79,7 +79,23 @@ readingRouter.put("/id/:readingId", async (req, res, next) => {
     }
 });
 
-readingRouter.delete("/id/:readingId", (req, res) => { });
+readingRouter.delete("/id/:readingId", async (req, res, next) => {
+    if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
+    let { _id: userId } = req.session['passport']['user'];
+    let readingId = req.params.readingId;
+    let readingInfo = { userId, readingId };
+    try {
+        let result = await readingDelete(readingInfo);
+        if (!result) {
+            return next({ error: "missing result" });
+        }
+        res.status(result.status).json(result.data);
+    }
+    catch (err) {
+        next(err);
+    }
+
+});
 
 
 module.exports = readingRouter;
