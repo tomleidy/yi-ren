@@ -14,6 +14,24 @@ const readingSchema = new Schema({
     hexagram2: { type: Number, default: null, }
 }, { timestamps: true })
 
+readingSchema.pre('findOneAndUpdate', function () {
+    const update = this.getUpdate();
+    if (update.__v != null) {
+        delete update.__v;
+    }
+    const keys = ['$set', '$setOnInsert'];
+    for (const key of keys) {
+        if (update[key] != null && update[key].__v != null) {
+            delete update[key].__v;
+            if (Object.keys(update[key]).length === 0) {
+                delete update[key];
+            }
+        }
+    }
+    update.$inc = update.$inc || {};
+    update.$inc.__v = 1;
+});
+
 const userCanEdit = new Set(["deleted", "topic", "notes", "topic"])
 
 async function readingCreate(readingInfo) {
@@ -49,7 +67,7 @@ let externalUpdateFields = {
     "hexagram2": 1, "createdAt": 1, "updatedAt": 1
 }
 
-let internalFields = { deletedPermanent: 0, userId: 0, __v: 0 };
+let internalFields = { deletedPermanent: 0, userId: 0 };
 
 async function readingList(readingInfo) {
     const { _id } = readingInfo;
@@ -76,7 +94,7 @@ async function readingGet(readingInfo) {
 }
 
 async function readingUpdate(readingInfo) {
-    let updateObject = {}
+    let updateObject = {};
     if (!"readingId" in readingInfo || !"userId" in readingInfo) {
         return { status: 403, data: "not authorized" };
     }
@@ -87,11 +105,19 @@ async function readingUpdate(readingInfo) {
         }
     }
     try {
-        let reading = await Reading.findOneAndUpdate({ userId, _id: readingId }, updateObject, { new: true });
+        let reading = await Reading.findOneAndUpdate(
+            { userId, _id: readingId },
+            updateObject,
+            { new: true }
+        );
         if (!reading) {
             return { status: 500, data: "unknown error" };
         }
-        return { status: 200, data: reading };
+        let readingStrungOut = JSON.parse(JSON.stringify(reading));
+        for (let key in Object.keys(internalFields)) {
+            delete readingStrungOut[key];
+        }
+        return { status: 200, data: readingStrungOut };
     }
     catch (err) {
         console.log("models/raeding.js/readingUpdate:", err);
