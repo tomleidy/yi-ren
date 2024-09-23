@@ -145,11 +145,18 @@ async function readingDelete(readingInfo) {
     if (!"readingId" in readingInfo || !"userId" in readingInfo) {
         return { status: 403, data: "not authorized" };
     }
+    let deleteObject = { deleted: true, deletedAt: new Date().toISOString() };
+    if (readingInfo.deletedPermanent) {
+        deleteObject.deletedPermanent = true;
+    }
+    if (readingInfo.undelete) {
+        deleteObject = { deleted: false, deletedAt: null, deletedPermanent: false };
+    }
     const { userId, readingId } = readingInfo;
     try {
         let reading = await Reading.findOneAndUpdate(
             { userId, _id: readingId, ...baseQuery },
-            { deleted: true, deletedAt: new Date().toISOString() },
+            deleteObject,
             { new: true }
         );
         if (!reading) {
