@@ -35,13 +35,14 @@ connect.then(() => {
 
 app.use(session({
     secret: 'keyboard cat',
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 14 * 24 * 60 * 60 * 1000 }, // 14 days
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
         mongoUrl,
         collectionName: 'sessions',
-        ttl: 14 * 24 * 60 * 60
+        ttl: 14 * 24 * 60 * 60,
+        autoRemove: 'native'
     })
 }))
 app.use(passport.initialize());
