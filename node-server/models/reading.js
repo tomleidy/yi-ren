@@ -43,8 +43,6 @@ readingSchema.pre('findOneAndUpdate', function () {
     update.$inc.__v = 1;
 });
 
-const userCanEdit = new Set(["deleted", "topic", "notes", "topic"])
-
 async function readingCreate(readingInfo) {
     const { hexagram1, hexagram2, topic, _id } = readingInfo;
     try {
@@ -74,8 +72,8 @@ async function readingCreate(readingInfo) {
 }
 let externalUpdateFields = {
     "deleted": 1, "deletedAt": 1,
-    "topic": 1, "notes": 1, "hexagram1": 1,
-    "hexagram2": 1, "createdAt": 1, "updatedAt": 1
+    "topic": 1, "notes": 1,
+    "createdAt": 1, "updatedAt": 1
 }
 
 let internalFields = { deletedPermanent: 0, userId: 0 };
