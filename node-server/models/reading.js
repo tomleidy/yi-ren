@@ -104,6 +104,9 @@ async function readingUpdate(readingInfo) {
             updateObject[key] = readingInfo[key];
         }
     }
+    if (Object.keys(updateObject).length === 0) {
+        return { status: 304, data: "Not modified" }
+    }
     try {
         let reading = await Reading.findOneAndUpdate(
             { userId, _id: readingId },
