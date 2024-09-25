@@ -97,8 +97,9 @@ async function readingList(readingInfo) {
 
 async function readingGet(readingInfo) {
     const { userId, readingId } = readingInfo;
+    const queryObject = { userId, _id: readingId }
     try {
-        let reading = await Reading.findOne({ userId, _id: readingId, ...baseQuery });
+        let reading = await Reading.findOne({ ...queryObject, ...baseQuery })
         return { status: 200, data: reading }
     }
     catch (err) {
@@ -118,15 +119,10 @@ async function readingUpdate(readingInfo) {
             updateObject[key] = readingInfo[key];
         }
     }
-    if (Object.keys(updateObject).length === 0) {
-        return { status: 304, data: "Not modified" }
-    }
+    if (Object.keys(updateObject).length === 0) { return { status: 304, data: "Not modified" } }
     try {
-        let reading = await Reading.findOneAndUpdate(
-            { userId, _id: readingId, ...baseQuery },
-            updateObject,
-            { new: true }
-        );
+        let queryObject = { userId, _id: readingId, ...baseQuery };
+        let reading = await Reading.findOneAndUpdate(queryObject, updateObject, { new: true })
         if (!reading) {
             return { status: 500, data: "unknown error" };
         }
