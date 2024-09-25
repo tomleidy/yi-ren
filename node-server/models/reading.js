@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 const { lookupHexagrams, Hexagram } = require('./hexagram');
+
 const Schema = mongoose.Schema;
 
 const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
 const baseQuery = {
-    deletedAt: {
-        $or: [{ $gt: thirtyDaysAgo }, { $eq: null }],
-    },
+    deletedAt: null,
     deletedPermanent: false
 }
 
