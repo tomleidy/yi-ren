@@ -84,12 +84,10 @@ let externalUpdateFields = {
     "createdAt": 1, "updatedAt": 1
 }
 
-let internalFields = { deletedPermanent: 0, userId: 0 };
-
 async function readingList(readingInfo) {
     const { _id } = readingInfo;
     try {
-        let reading = await Reading.find({ userId: _id, ...baseQuery }, internalFields);
+        let reading = await Reading.find({ userId: _id, ...baseQuery });
         return { status: 200, data: reading }
     }
     catch (err) {
@@ -101,7 +99,7 @@ async function readingList(readingInfo) {
 async function readingGet(readingInfo) {
     const { userId, readingId } = readingInfo;
     try {
-        let reading = await Reading.findOne({ userId, _id: readingId, ...baseQuery }, internalFields);
+        let reading = await Reading.findOne({ userId, _id: readingId, ...baseQuery });
         return { status: 200, data: reading }
     }
     catch (err) {
@@ -133,8 +131,7 @@ async function readingUpdate(readingInfo) {
         if (!reading) {
             return { status: 500, data: "unknown error" };
         }
-        let readingStrungOut = removeInternalFields(reading);
-        return { status: 200, data: readingStrungOut };
+        return { status: 200, data: reading };
     }
     catch (err) {
         console.log("models/reading.js/readingUpdate:", err);
@@ -142,13 +139,6 @@ async function readingUpdate(readingInfo) {
     }
 }
 
-function removeInternalFields(reading) {
-    let readingDeJSON = JSON.parse(JSON.stringify(reading));
-    for (const key in internalFields) {
-        delete readingDeJSON[key];
-    }
-    return readingDeJSON;
-}
 
 async function readingDelete(readingInfo) {
     if (!"readingId" in readingInfo || !"userId" in readingInfo) {
@@ -171,8 +161,7 @@ async function readingDelete(readingInfo) {
         if (!reading) {
             return { status: 500, data: "unknown error" };
         }
-        let readingStrungOut = removeInternalFields(reading);
-        return { status: 200, data: readingStrungOut };
+        return { status: 200, data: reading };
     }
     catch (err) {
         console.log("models/reading.js/readingDelete:", err);
