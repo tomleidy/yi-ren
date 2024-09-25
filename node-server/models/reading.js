@@ -17,7 +17,7 @@ const transformHandler = (doc, ret) => {
 }
 
 const readingSchema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: 'User._id', index: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', index: true, required: true },
     deleted: { type: Boolean, default: false },
     deletedAt: { type: Date, default: null },
     deletedPermanent: { type: Boolean, default: false },
@@ -62,13 +62,13 @@ readingSchema.pre('findOneAndUpdate', function () {
 });
 
 async function readingCreate(readingInfo) {
-    let { hexagram1, hexagram2, topic, _id } = readingInfo;
+    let { hexagram1, hexagram2, topic, userId } = readingInfo;
     hexagram1 = parseInt(hexagram1, 10);
     if (hexagram2) {
         hexagram2 = parseInt(hexagram2, 10);
     }
     try {
-        const reading = new Reading({ userId: _id, hexagram1, hexagram2, topic });
+        const reading = new Reading({ userId, hexagram1, hexagram2, topic });
         let result = await reading.save();
         return { status: 201, data: result };
     }
