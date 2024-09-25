@@ -100,6 +100,8 @@ async function readingGet(readingInfo) {
     const queryObject = { userId, _id: readingId }
     try {
         let reading = await Reading.findOne({ ...queryObject, ...baseQuery })
+            .populate('hexagram1').populate('hexagram2');
+        console.log(query, reading);
         return { status: 200, data: reading }
     }
     catch (err) {
@@ -123,6 +125,7 @@ async function readingUpdate(readingInfo) {
     try {
         let queryObject = { userId, _id: readingId, ...baseQuery };
         let reading = await Reading.findOneAndUpdate(queryObject, updateObject, { new: true })
+            .populate('hexagram1').populate('hexagram2');
         if (!reading) {
             return { status: 500, data: "unknown error" };
         }
