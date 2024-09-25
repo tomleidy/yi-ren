@@ -13,7 +13,7 @@ readingRouter.post("/new", async (req, res, next) => {
         return res.status(406).json({ message: "406 Not Acceptable: Hexagram2" })
     }
     let { hexagram1, hexagram2, topic } = req.body;
-    let { userId: _id, username } = req.session['passport']['user']
+    let { _id: userId, username } = req.session['passport']['user']
     let readingInfo = { userId, username, hexagram1, hexagram2, topic }
     try {
         let result = await readingCreate(readingInfo);
@@ -33,7 +33,7 @@ readingRouter.post("/new", async (req, res, next) => {
 
 readingRouter.get("/list", async (req, res, next) => {
     if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
-    let { userId: _id } = req.session['passport']['user'];
+    let { _id: userId } = req.session['passport']['user'];
     try {
         let result = await readingList({ userId })
         if (!result) {
