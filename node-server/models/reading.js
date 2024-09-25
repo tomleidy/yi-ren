@@ -12,7 +12,10 @@ const baseQuery = {
     deletedPermanent: false
 }
 
-
+transformDelete = ["id", "deletedPermanent", "__v", "userId"]
+const transformHandler = (doc, ret) => {
+    transformDelete.forEach(key => { delete ret[key]; });
+}
 
 const readingSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User._id', index: true },
@@ -21,9 +24,25 @@ const readingSchema = new Schema({
     deletedPermanent: { type: Boolean, default: false },
     topic: { type: String, default: "" },
     notes: { type: String, default: "" },
-    hexagram1: { type: Number, default: 0, required: true, ref: 'Hexagram.kingwen' },
-    hexagram2: { type: Number, default: null, }
-}, { timestamps: true })
+    hexagram1: { type: Number, required: true, ref: 'Hexagram' },
+    hexagram2: { type: Number, default: null, ref: 'Hexagram' },
+}, {
+    timestamps: true,
+    id: false,
+    toJSON: { virtuals: true, transform: transformHandler },
+    toObject: { virtuals: true, transform: transformHandler }
+})
+
+readingSchema.post('save', function (doc, next) {
+    Promise.all([
+        doc.populate({ path: 'hexagram1' }),
+        doc.populate({ path: 'hexagram2' })
+    ])
+        .then(() => next())
+        .catch(err => next(err));
+});
+
+
 
 readingSchema.pre('findOneAndUpdate', function () {
     const update = this.getUpdate();
@@ -44,24 +63,14 @@ readingSchema.pre('findOneAndUpdate', function () {
 });
 
 async function readingCreate(readingInfo) {
-    const { hexagram1, hexagram2, topic, _id } = readingInfo;
+    let { hexagram1, hexagram2, topic, _id } = readingInfo;
+    hexagram1 = parseInt(hexagram1, 10);
+    if (hexagram2) {
+        hexagram2 = parseInt(hexagram2, 10);
+    }
     try {
-        let hexLookup = {};
-        hexLookup = await lookupHexagrams(hexagram1, hexagram2 ? hexagram2 : hexagram1);
-        // need to figure out how to use populate for hexagram details.
-        // will probably have to create two new keys.
-        // wondering if this will be the stepping stone to pulling up information from Yijing sources
-        console.log(hexLookup.data)
-        const reading = new Reading({
-            userId: _id,
-            hexagram1,
-            hexagram2,
-            topic
-        });
-
+        const reading = new Reading({ userId: _id, hexagram1, hexagram2, topic });
         let result = await reading.save();
-        if (hexLookup.status === 200) { result.hexagrams = hexLookup.data; }
-
         return { status: 201, data: result };
     }
     catch (err) {
