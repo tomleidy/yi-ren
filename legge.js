@@ -7,7 +7,10 @@ let title = {
     "fieldOrder": ["name", "judgment", "1", "2", "3", "4", "5", "6", "7", "footnote"]
 }
 
-let content = import('./legge_reference.json')
+let content = require('./legge_reference.json');
+
+
+
 
 module.exports = {
     title,
