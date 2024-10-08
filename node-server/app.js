@@ -52,6 +52,7 @@ app.use(passport.authenticate('session'));
 const hexagramRouter = require("./routes/hexagram");
 const readingRouter = require("./routes/reading");
 const userRouter = require("./routes/users");
+const referenceRouter = require("./routes/reference");
 console.log("\n\n\n".repeat(15));
 
 
@@ -59,7 +60,7 @@ app.use("/hexagram", hexagramRouter);
 app.use("/", authRouter);
 app.use("/reading", readingRouter);
 app.use("/users", userRouter);
-
+app.use("/reference", referenceRouter);
 
 app.use(function (req, res, next) {
     res.status(404).send('<a href="https://http.cat/status/404">404 Not Found</a>')
