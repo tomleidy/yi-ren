@@ -4,7 +4,7 @@ let title = {
     "author": "Confucius",
     "translator": "James Legge",
     "kingwenField": "kingwen",
-    "fieldOrder": ["name", "judgment", "1", "2", "3", "4", "5", "6", "7", "footnote"]
+    "columnOrder": ["name", "judgment", "1", "2", "3", "4", "5", "6", "7", "footnote"]
 }
 
 let content = require('./legge_reference.json');
