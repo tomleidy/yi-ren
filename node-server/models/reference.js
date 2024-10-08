@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { User } = require('./user');
 
-const leggeData = require('../../legge.js');
 
 const titleSchema = new Schema({
     title: { type: String, required: true },
@@ -39,20 +38,16 @@ async function createTitle(title) {
 
 async function createReference(userId, { title, content }, public = false) {
     console.log("createReference called");
-
-
     let check;
     let titleId = await createTitle(title);
-    console.log("titleId:", titleId);
     check = await Reference.find({ titleId });
-    console.log("check:", check);
     if (!check || check.length === 0) {
         console.log(`Attempting to add reference ${title.title} to database`);
         let reference = formatReferenceDocuments(userId, titleId, { title, content }, public);
         let result = await Reference.insertMany(reference);
-        console.log("Reference info added to references:", result);
-
+        console.log("Reference info added to references:", result.title);
     }
+    console.log("createReference reference exists:", title.title);
     return check
 }
 
@@ -75,28 +70,6 @@ function formatReferenceDocuments(userId, titleId, { title, content }, public = 
     return result;
 }
 
-async function testAddSource() {
-    console.log("testAddSource called");
-    try {
-
-        let admin = await User.findOne({ admin: true });
-
-        if (!admin) {
-            console.log("testAddSource admin missing, what?");
-            return
-        }
-        let adminId = admin._id;
-        let result = await createReference(adminId, leggeData, true);
-        console.log("result:", result);
-    }
-    catch (err) {
-        console.log("testAddSource error:", err);
-    }
-
-}
-setTimeout(() => {
-    testAddSource();
-}, 2000);
 
 
 

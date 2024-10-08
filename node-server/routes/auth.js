@@ -4,7 +4,7 @@ const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
 const { User, userCreate, userLogin } = require("../models/user");
 const authRouter = express.Router();
-const { createDummy } = require("../helpers/users");
+const { createLeggeReference } = require("../helpers/devSetup");
 
 passport.use(new LocalStrategy(async function verify(username, password, next) {
     let authenticationIncorrectError = { status: 401, message: "Incorrect username or password" };
