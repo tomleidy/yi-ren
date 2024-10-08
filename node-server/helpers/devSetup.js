@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { User } = require("../models/user");
-const { createReference } = require("../models/reference");
+const { createReference } = require("./references");
 const leggeData = require('../../legge.js');
 
 if (process.env.TEST_ENV === "true") {
@@ -15,7 +15,6 @@ if (process.env.TEST_ENV === "true") {
 }
 
 async function createTestAdmin() {
-
     try {
         let exists = await User.findOne({ username });
         if (exists) {
