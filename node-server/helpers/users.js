@@ -6,14 +6,15 @@ User.findOneAndDelete({ username: dummyUserBody.username });
 if (process.env.TEST_ENV === "true") {
     createDummy();
 }
-let adminId = null;
+
 async function createDummy() {
     try {
         await User.findOneAndDelete({ username: dummyUserBody.username });
+
         let result = await userCreate(dummyUserBody);
         if (result) {
-            console.log(`createDummy "${dummyUserBody.username}", "${dummyUserBody.password}" successful`);
-            adminId = result.data._id;
+            console.log(dummyUserBody);
+            console.log(`createDummy "${dummyUserBody.username}", "${dummyUserBody.password}" successful:`, result);
         }
     }
     catch (err) {
@@ -22,4 +23,3 @@ async function createDummy() {
 }
 
 module.export = createDummy;
-module.export = adminId;
