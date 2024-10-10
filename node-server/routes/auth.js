@@ -2,7 +2,8 @@ const express = require("express");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
-const { User, userCreate, userLogin } = require("../models/user");
+const { User } = require("../models/user");
+const { userCreate } = require("../helpers/users");
 const authRouter = express.Router();
 const { createLeggeReference } = require("../helpers/devSetup");
 
