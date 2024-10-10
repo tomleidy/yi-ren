@@ -1,14 +1,20 @@
 #!/usr/bin/env node
-
 const app = require('./app.js');
 const debug = require('debug')('yi-ren:server');
-const http = require("http");
+const https = require("https");
+const fs = require('fs');
 
-// Get port from env, store in Express
+const options = {
+    key: fs.readFileSync('https/localhost-key.pem'),
+    cert: fs.readFileSync('https/localhost.pem')
+};
+
+
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-const server = http.createServer(app);
+const server = https.createServer(options, app);
+
 
 // Listen on port, on all network interfaces
 server.listen(port);
