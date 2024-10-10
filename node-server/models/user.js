@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 const Schema = mongoose.Schema;
-const bcrypt = require("bcrypt");
-const saltRounds = 12;
 
 const userSchema = new Schema({
   username: { type: String, default: '', unique: true },
