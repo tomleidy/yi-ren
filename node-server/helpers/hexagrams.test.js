@@ -25,7 +25,7 @@ for (let num in binaryArray) {
 const expectUndefined = ["65", "0", "1011011", "10110", "word"]
 for (let incorrect of expectUndefined) {
     test(`${incorrect} should be undefined`, () => {
-        expect(getHexagramNumber(incorrect)).toBe(undefined);
+        expect(getHexagramNumber(incorrect)).toBeUndefined();
     });
 }
 // test isValidHexagramString as above
