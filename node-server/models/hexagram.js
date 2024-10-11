@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { getHexagramNumber, isValidHexagramString } = require('../helpers/hexagrams');
 
-
-const HexagramSchema = new Schema({
+const hexagramSchema = new Schema({
     "_id": { type: Number, immutable: true },
     "binary": { type: String, immutable: true },
     "hanzi": { type: String, immutable: true },
@@ -11,7 +10,7 @@ const HexagramSchema = new Schema({
     "unicode": { type: String, immutable: true }
 })
 
-const Hexagram = mongoose.model("Hexagram", HexagramSchema)
+const Hexagram = mongoose.model("Hexagram", hexagramSchema)
 
 const response400InvalidRequest = { status: 400, data: "Invalid hexagram request" };
 const response404Hexagram = { status: 404, data: "Hexagram not found, where did it go?" };
