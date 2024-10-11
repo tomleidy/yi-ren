@@ -12,15 +12,12 @@ const HexagramSchema = new Schema({
 })
 
 const Hexagram = mongoose.model("Hexagram", HexagramSchema)
-let queryOmit = { _id: 0 }
+let queryOmit = {}
 
 async function lookupHexagrams(hex1, hex2) {
     let lookup1 = getHexagramNumber(hex1);
     let lookup2 = getHexagramNumber(hex2);
-    if (!lookup1 || !lookup2) {
-        return { status: 400, data: "Invalid hexagram request" };
-    }
-    let queryDoc = { "kingwen": { $in: [lookup1, lookup2] } };
+    let queryDoc = { "_id": { $in: [lookup1, lookup2] } };
 
     try {
         const hexagrams = await Hexagram.find(queryDoc, queryOmit)
@@ -28,7 +25,7 @@ async function lookupHexagrams(hex1, hex2) {
             return { status: 404, data: "Hexagrams not found, where did they go?" };
         }
         // reorder the results if the order doesn't match the query
-        if (hexagrams[0]["kingwen"] == lookup2) {
+        if (hexagrams[0]["_id"] == lookup2) {
             hexagrams.push(hexagrams.shift());
         }
         return { status: 200, data: hexagrams };
@@ -39,10 +36,7 @@ async function lookupHexagrams(hex1, hex2) {
 };
 
 async function lookupHexagram(hex1) {
-    if (!isValidHexagramString(hex1)) {
-        return { status: 400, data: "Invalid hexagram request" }
-    }
-    let queryDoc = { "kingwen": getHexagramNumber(hex1) };
+    let queryDoc = { "_id": getHexagramNumber(hex1) };
     try {
         const hexagram = await Hexagram.find(queryDoc, queryOmit)
         if (!hexagram) {
