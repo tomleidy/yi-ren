@@ -29,7 +29,8 @@ async function userLogin(username, password) {
         return incorrectUsernameOrPasswordObject;
     }
     catch (err) {
-        return { status: 500, data: err }
+        console.log(err);
+        return { status: 500, data: "Internal server error" };
     }
 }
 
