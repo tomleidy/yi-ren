@@ -12,7 +12,7 @@ hexagramRouter.route("/:hex1/:hex2")
 
 hexagramRouter.route("/:hex1")
     .get(async (req, res, next) => {
-        let result = await lookupHexagram(req.params.hex1);
+        let result = await lookupHexagrams(req.params.hex1);
         res.status(result.status).json(result.data);
     })
 
