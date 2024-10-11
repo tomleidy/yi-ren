@@ -15,7 +15,7 @@ function getHexagramNumber(hexParameter) {
 }
 
 
-function validateHexagramString(hexParameter) {
+function isValidHexagramString(hexParameter) {
     // compare hex string paramter to only valid formats for
     if (/^([1-9]|[1-5][0-9]|6[0-4])$/.test(hexParameter)) return true;
     if (/^[01]{6}$/.test(hexParameter)) return true;
@@ -26,5 +26,5 @@ function validateHexagramString(hexParameter) {
 module.exports = {
     binaryToHexagram,
     getHexagramNumber,
-    validateHexagramString
+    isValidHexagramString
 }

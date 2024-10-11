@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const { getHexagramNumber, validateHexagramString } = require('../helpers/hexagrams')
+const { getHexagramNumber, isValidHexagramString } = require('../helpers/hexagrams')
 
 
 const HexagramSchema = new Schema({
@@ -39,7 +39,7 @@ async function lookupHexagrams(hex1, hex2) {
 };
 
 async function lookupHexagram(hex1) {
-    if (!validateHexagramString(hex1)) {
+    if (!isValidHexagramString(hex1)) {
         return { status: 400, data: "Invalid hexagram request" }
     }
     let queryDoc = { "kingwen": getHexagramNumber(hex1) };

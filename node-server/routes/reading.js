@@ -1,15 +1,15 @@
 const express = require("express");
 const readingRouter = express.Router();
 const { readingCreate, readingList, readingGet, readingUpdate, readingDelete } = require("../models/reading")
-const { validateHexagramString } = require("../helpers/hexagrams");
+const { isValidHexagramString } = require("../helpers/hexagrams");
 
 readingRouter.post("/new", async (req, res, next) => {
     if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
     // check if SaaS type user, 403 if not
-    if (!req.body.hexagram1 || !validateHexagramString(req.body.hexagram1)) {
+    if (!req.body.hexagram1 || !isValidHexagramString(req.body.hexagram1)) {
         return res.status(406).json({ message: "406 Not Acceptable: Hexagram1" })
     }
-    if (req.body.hexagram2 && !validateHexagramString(req.body.hexagram2)) {
+    if (req.body.hexagram2 && !isValidHexagramString(req.body.hexagram2)) {
         return res.status(406).json({ message: "406 Not Acceptable: Hexagram2" })
     }
     let { hexagram1, hexagram2, topic } = req.body;
