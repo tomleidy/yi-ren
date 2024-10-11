@@ -1,5 +1,6 @@
 const User = require('../models/user');
-
+const bcrypt = require('bcrypt');
+const saltRounds = 12;
 
 const userCanSet = new Set(["password", "firstName", "lastName", "dateOfBirth", "profilePicture", "address", "phoneNumber"])
 
