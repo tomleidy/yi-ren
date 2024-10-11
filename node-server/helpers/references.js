@@ -14,14 +14,14 @@ async function createTitle(title) {
 }
 
 
-async function createReference(userId, { title, content }, public = false) {
+async function createReference(userId, { title, content }, publicReference = false) {
     console.log("createReference called");
     let check;
     let titleId = await createTitle({ ...title, userId });
     check = await Reference.find({ titleId });
     if (!check || check.length === 0) {
         console.log(`Attempting to add reference ${title.title} to database`);
-        let reference = formatReferenceDocuments(userId, titleId, { title, content }, public);
+        let reference = formatReferenceDocuments(userId, titleId, { title, content }, publicReference);
         let result = await Reference.insertMany(reference);
         console.log(`Reference info for ${title} added to references`);
         return result;
@@ -31,7 +31,7 @@ async function createReference(userId, { title, content }, public = false) {
 }
 
 
-function formatReferenceDocuments(userId, titleId, { title, content }, public = false) {
+function formatReferenceDocuments(userId, titleId, { title, content }, publicReference = false) {
     let result = content.map(column => {
         let kingwen = column[title.kingwenField];
         delete column[title.kingwenField];
@@ -39,7 +39,7 @@ function formatReferenceDocuments(userId, titleId, { title, content }, public = 
             userId,
             titleId,
             kingwen,
-            public,
+            publicReference,
             columns: column
         }
         return hexObject
@@ -47,4 +47,4 @@ function formatReferenceDocuments(userId, titleId, { title, content }, public = 
     return result;
 }
 
-module.exports = { createReference };
+module.exports = { createReference, createTitle, formatReferenceDocuments };
