@@ -35,14 +35,10 @@ async function userLogin(username, password) {
 }
 
 async function userCreate(body) {
-    const { username, email, password } = body;
+    const { username, email, userPassword } = body;
     try {
-        let hashedPassword = await bcrypt.hash(password, saltRounds);
-        const user = new User({
-            username,
-            email,
-            password: hashedPassword
-        });
+        let password = await bcrypt.hash(userPassword, saltRounds);
+        const user = new User({ username, email, password });
         const result = await user.save();
         return { status: 201, data: result };
     }
