@@ -36,6 +36,7 @@ async function lookupHexagrams(hex1, hex2) {
         return { status: 200, data: hexagrams };
     }
     catch (err) {
+        console.log("Error in lookupHexagrams:", err);
         return response500ServerError;
     }
 };
@@ -51,6 +52,7 @@ async function lookupHexagram(hex1) {
         return { status: 200, data: hexagram };
     }
     catch (err) {
+        console.log("Error in lookupHexagram:", err);
         return response500ServerError;
     }
 }
