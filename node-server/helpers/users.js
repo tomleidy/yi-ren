@@ -2,7 +2,21 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
+const userCanUpdate = new Set(["firstName", "lastName", "dateOfBirth", "profilePicture", "address", "phoneNumber"])
+
+function getUserUpdateObject(body) {
+    let updatedUser = {};
+    for (let key in body) {
+        if (userCanUpdate.has(key)) {
+            updatedUser[key] = body[key];
+        }
+    }
+    return updatedUser;
+}
+
 const getUserAndPassword = async (username) => await User.findOne({ username }, { username: 1, password: 1 });
+
+const getUserForUpdate = async (username) => await User.findOne({ username }, { username: 1, email: 1, firstName: 1, lastName: 1, dateOfBirth: 1, profilePicture: 1, address: 1, phoneNumber: 1, password: 1 });
 
 
 async function userLogin(username, password) {
@@ -41,6 +55,40 @@ async function userCreate(body) {
             }
         }
         return { status: 500, data: err };
+    }
+}
+
+async function userUpdatePassword(body) {
+    const { username, oldPassword, newPassword } = body;
+    try {
+        const user = await getUserAndPassword(username);
+        if (!user) { return { status: 404, data: "User not found" } }
+        const passwordMatches = await bcrypt.compare(oldPassword, user.password);
+        if (!passwordMatches) { return { status: 403, data: "Incorrect password" } }
+        const password = await bcrypt.hash(newPassword, saltRounds);
+        const result = await User.findOneAndUpdate({ username }, { password }, { new: true });
+        return { status: 200, data: result };
+    }
+    catch (err) {
+        console.log(err);
+        return { status: 500, data: "Internal server error" };
+    }
+}
+
+async function userUpdate(body) {
+    const { username, password } = body;
+    try {
+        const user = await getUserForUpdate(username);
+        if (!user) { return { status: 404, data: "User not found" } }
+        const passwordMatches = await bcrypt.compare(password, user.password);
+        if (!passwordMatches) { return { status: 403, data: "Incorrect password" } }
+        const updatedUser = getUserUpdateObject(body);
+        const result = await User.findOneAndUpdate({ username }, updatedUser, { new: true });
+        return { status: 200, data: result };
+    }
+    catch (err) {
+        console.log(err);
+        return { status: 500, data: "Internal server error" };
     }
 }
 
