@@ -2,15 +2,15 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
-const userCanSet = new Set(["password", "firstName", "lastName", "dateOfBirth", "profilePicture", "address", "phoneNumber"])
+const getUserAndPassword = async (username) => await User.findOne({ username }, { username: 1, password: 1 });
 
 
 async function userLogin(username, password) {
     let incorrectUsernameOrPasswordObject = { status: 403, data: "Incorrect username / password" }
     try {
-        const dbuser = await User.findOne({ username }, { username: 1, password: 1 })
-        if (!dbuser) { return incorrectUsernameOrPasswordObject }
-        const passwordMatches = await bcrypt.compare(password, dbuser.password);
+        const user = await getUserAndPassword(username);
+        if (!user) { return incorrectUsernameOrPasswordObject }
+        const passwordMatches = await bcrypt.compare(password, user.password);
         if (passwordMatches) { return { status: 200, data: "Successfully logged in!" } }
         return incorrectUsernameOrPasswordObject;
     }
