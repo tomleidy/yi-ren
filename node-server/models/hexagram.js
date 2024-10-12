@@ -16,7 +16,6 @@ const response400InvalidRequest = { status: 400, data: "Invalid hexagram request
 const response404Hexagram = { status: 404, data: "Hexagram not found, where did it go?" };
 const response500ServerError = { status: 500, data: "Server error, please try again later" };
 
-let queryOmit = {}
 
 async function lookupHexagrams(hex1, hex2 = 0) {
     let lookup = [getHexagramNumber(hex1), getHexagramNumber(hex2)]
@@ -24,9 +23,7 @@ async function lookupHexagrams(hex1, hex2 = 0) {
     if (lookup.length === 0) return response400InvalidRequest;
 
     let queryDoc = { "_id": { $in: lookup } };
-
-    try {
-        const hexagrams = await Hexagram.find(queryDoc, queryOmit)
+        const hexagrams = await Hexagram.find(queryDoc)
         if (!hexagrams || hexagrams.length === 0) return response404Hexagram;
         // reorder the results if the order doesn't match the query
 
