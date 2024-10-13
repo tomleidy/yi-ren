@@ -89,4 +89,4 @@ async function userUpdate(body) {
     }
 }
 
-module.exports = { userCreate, userLogin };
+module.exports = { userCreate, userLogin, userUpdatePassword, userUpdate, getUserUpdateObject };
