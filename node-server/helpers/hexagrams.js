@@ -40,7 +40,7 @@ async function lookupHexagrams(hex1, hex2 = 0, userId = null) {
     if (userId) {
         orMatch.push({ userId: userId });
     }
-    let matchObject = {
+    let referencesMatchObject = {
         path: 'references',
         select: "titleId userId kingwen columns",
         match: {
@@ -49,9 +49,9 @@ async function lookupHexagrams(hex1, hex2 = 0, userId = null) {
     };
 
     try {
-        console.log("attempting to find hexagrams", lookup, matchObject);
-        const hexagrams = await Hexagram.find(queryDoc)
-            .populate(matchObject)
+        console.log("attempting to find hexagrams", lookup, referencesMatchObject);
+        let hexagrams = await Hexagram.find(queryDoc)
+            .populate(referencesMatchObject)
             .lean()
             .exec();
         if (!hexagrams || hexagrams.length === 0) return response404Hexagram;
