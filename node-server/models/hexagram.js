@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const { getHexagramNumber, isValidHexagramString } = require('../helpers/hexagrams');
 
 const hexagramSchema = new Schema({
     "_id": { type: Number, immutable: true },

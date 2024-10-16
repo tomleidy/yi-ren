@@ -1,5 +1,5 @@
 const express = require("express");
-const { lookupHexagrams } = require("../helpers/hexagram");
+const { lookupHexagrams } = require("../helpers/hexagrams");
 
 const hexagramRouter = express.Router();
 
