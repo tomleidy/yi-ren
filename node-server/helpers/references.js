@@ -1,6 +1,11 @@
 const { Reference } = require("../models/reference");
 const { Title } = require("../models/title");
 
+const forbiddenKeys = new Set(["id", "_id", "public", "__v"])
+const removeServerSideKeysReviver = (k, v) => forbiddenKeys.has(k) ? undefined : v
+const removeServerSideKeys = (obj) => JSON.parse(JSON.stringify(obj, removeServerSideKeysReviver));
+
+
 async function createTitle(title) {
     let check;
     check = await Title.findOne({ title: title.title, userId: title.userId });
@@ -47,4 +52,4 @@ function formatReferenceDocuments({ userId, titleId, title, content }, publicRef
     return result;
 }
 
-module.exports = { createReference, createTitle, formatReferenceDocuments };
+module.exports = { createReference, createTitle, formatReferenceDocuments, removeServerSideKeys };
