@@ -2,7 +2,6 @@ import importPlugin from 'eslint-plugin-import';
 
 export default [
   {
-    // Add rules or plugins directly instead of using "extends"
     plugins: {
       import: importPlugin
     },
@@ -13,3 +12,4 @@ export default [
   }
 ];
 
+// postponing implementation of ESLint. Learning to use ES without Common JS is apparently going to be a process that I want to consider only _after_ implementing MVP.
