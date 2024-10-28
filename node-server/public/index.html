@@ -4,12 +4,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>You've been indexed! Wait, I mean...</title>
+    <title>Hexagram Coin Flip</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #000;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-mode {
+            background-color: #1a1a1a;
+            color: #f5f5dc;
+        }
+
+        header {
+            padding: 20px;
+            text-align: right;
+            position: sticky;
+            top: 0;
+            background: inherit;
+            transition: opacity 0.3s;
+        }
+
+        header img {
+            width: 80px;
+            height: auto;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hexagram-line {
+            display: block;
+            width: 100px;
+            height: 10px;
+            background: #ccc;
+            margin: 5px auto;
+        }
+
+
+        .coin-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .coin-row img {
+            width: 60px;
+            height: auto;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .hide-on-scroll {
+            opacity: 0;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Introduction</h1>
-    <p>Welcome to the index.html placeholder</p>
+    <!-- Header with logo -->
+    <header id="header">
+        <img src="logo.png" alt="Logo">
+    </header>
+
+    <!-- Main content section -->
+    <div class="main-content">
+        <!-- Hexagram lines -->
+        <div id="hexagram-lines">
+            <div id="line6" class="hexagram-line"></div>
+            <div id="line5" class="hexagram-line"></div>
+            <div id="line4" class="hexagram-line"></div>
+            <div id="line3" class="hexagram-line"></div>
+            <div id="line2" class="hexagram-line"></div>
+            <div id="line1" class="hexagram-line"></div>
+        </div>
+
+        <!-- figure out how to change coin images via JS -->
+        <div class="coin-row">
+            <img src="coinHeads.jpg" alt="Coin 1" id="coin1">
+            <img src="coinHeads.jpg" alt="Coin 2" id="coin2">
+            <img src="coinHeads.jpg" alt="Coin 3" id="coin3">
+        </div>
+
+        <!-- button and summed result -->
+        <button onclick="flipCoins()">Flip or Generate Line</button>
+        <span id="result" style="margin-left: 10px;"></span>
+    </div>
+
+    <script>
+        // watch for light / dark mode changes
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-mode');
+        }
+
+        // hide that logo if we scroll down.
+        let lastScrollTop = 0;
+        window.addEventListener("scroll", function () {
+            let st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > lastScrollTop) {
+                document.getElementById("header").classList.add("hide-on-scroll");
+            } else {
+                document.getElementById("header").classList.remove("hide-on-scroll");
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+        }, false);
+
+        let hexagramPrimaryBinary = []
+        let hexagramSecondaryBinary = [];
+        const addLine = value => {
+            // check if hexagram length is 6, do nothing if so
+            if (hexagramPrimaryBinary.length === 6) {
+                // eventually, we want this to initiate the hexagram lookup
+                return;
+            }
+            switch (value) {
+                case 6:
+                    hexagramPrimaryBinary.push("0");
+                    hexagramSecondaryBinary.push("1");
+                    break;
+                case 7:
+                    hexagramPrimaryBinary.push("1");
+                    hexagramSecondaryBinary.push("1");
+                    break;
+                case 8:
+                    hexagramPrimaryBinary.push("0");
+                    hexagramSecondaryBinary.push("0");
+                    break;
+                case 9:
+                    hexagramPrimaryBinary.push("1");
+                    hexagramSecondaryBinary.push("0");
+                    break;
+            }
+        }
+        function flipCoins() {
+            const coinElements = [document.getElementById("coin1"), document.getElementById("coin2"), document.getElementById("coin3")];
+            const coinImages = { heads: "coinHeads.jpg", tails: "coinTails.jpg" };
+            let headsCount = 0, tailsCount = 0;
+
+            coinElements.forEach(coin => {
+                const isHeads = Math.random() < 0.5;
+                coin.src = isHeads ? coinImages.heads : coinImages.tails;
+                isHeads ? headsCount++ : tailsCount++;
+            });
+
+            const result = (headsCount * 3) + (tailsCount * 2);
+            document.getElementById("result").textContent = result;
+        }
+    </script>
 </body>
 
 </html>
