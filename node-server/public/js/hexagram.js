@@ -82,4 +82,4 @@ const hexagramsBasicInfo = {
     64: { "pinyin": "Wèi Jì", "hanzi": "未濟", "unicode": "䷿" }
 }
 
-export { hexagramsBasicInfo, hexagramToBinary, binaryToHexagram }
+export default { hexagramsBasicInfo, hexagramToBinary, binaryToHexagram };

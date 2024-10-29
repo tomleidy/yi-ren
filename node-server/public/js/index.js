@@ -1,5 +1,5 @@
-import * from './js/hexagram.js';
-
+import * as Hexagram from './hexagram.js';
+import * as Trigram from './trigram.js';
 
 // watch for light / dark mode changes
 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {

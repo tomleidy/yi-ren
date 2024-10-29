@@ -17,4 +17,4 @@ const trigramsBasicInfo = {
     8: { "fuxi": "8", "pinyin": "Kūn", "hanzi": "坤", "unicode": "☷", "english": "Earth" }
 }
 
-export { binaryToTrigram, trigramToBinary, trigramsBasicInfo };
+export default { binaryToTrigram, trigramToBinary, trigramsBasicInfo };
