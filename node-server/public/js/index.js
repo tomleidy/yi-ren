@@ -64,7 +64,8 @@ function resetReading() {
     hexagramLineValues = [];
     hexagramMoving = false;
     document.getElementById("buttonFlipper").textContent = "Flip Coins";
-    document.getElementById("buttonFlipper").onclick = flipCoins;
+    document.getElementById("buttonFlipper").addEventListener("click", flipCoins);
+    document.getElementById("buttonFlipper").removeEventListener("click", hexagramLookup);
 }
 
 
@@ -86,8 +87,13 @@ function flipCoins() {
     if (result === 6 || result === 9) { hexagramMoving = true; }
     reclassLines()
     document.getElementById("result").textContent = result;
+    console.log(hexagramLineValues);
     if (hexagramLineValues.length === 6) {
         document.getElementById("buttonFlipper").textContent = "Look up your hexagram";
-        document.getElementById("buttonFlipper").onclick = hexagramLookup;
+        document.getElementById("buttonFlipper").removeEventListener('click', flipCoins);
+        document.getElementById("buttonFlipper").addEventListener('click', hexagramLookup);
     }
 }
+
+document.getElementById('buttonFlipper').addEventListener('click', flipCoins);
+document.getElementById('buttonReset').addEventListener('click', resetReading);
