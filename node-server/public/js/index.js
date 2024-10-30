@@ -92,7 +92,7 @@ function flipCoins() {
     document.getElementById("result").textContent = result;
     if (hexagramLineValues.length === 6) {
         hexagramKingWenNumbers = Hexagram.getHexagramFromValues(hexagramLineValues);
-        prefetch = getReading(hexagramKingWenNumbers);
+        getReadingString(hexagramKingWenNumbers);
         document.getElementById("buttonFlipper").textContent = "Look up your hexagram";
         document.getElementById("buttonFlipper").removeEventListener('click', flipCoins);
         document.getElementById("buttonFlipper").addEventListener('click', loadReading);
@@ -101,16 +101,16 @@ function flipCoins() {
 }
 
 function loadReading() {
-    if (prefetech.length === 0) return;
-    document.getElementById("hexagram-result").textContent = JSON.stringify(prefetch);
+    if (!prefetch || prefetch.length === 0) return;
+    console.log(prefetch);
+    document.getElementById("hexagram-result").innerHTML = prefetch;
 }
 
 
-async function getReading(hexagramsArray) {
-    const basicHex = Hexagram.getHexagramsInfoFromHexArray(hexagramsArray);
-    //const basicTri = Trigram.getTrigramFromValues(hexagramLineValues);
-    const referenceTexts = await getReference(hexagramsArray)
-    return { hexagram: basicHex, yijing: referenceTexts }
+async function getReadingString(hexagramsArray) {
+    let result = await getReference(hexagramsArray)
+    console.log(result);
+    prefetch = result;
 }
 
 document.getElementById('buttonFlipper').addEventListener('click', flipCoins);
