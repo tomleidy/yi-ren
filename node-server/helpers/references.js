@@ -35,6 +35,14 @@ async function createReference(userId, { title, content }, publicReference = fal
     return check;
 }
 
+async function getReferences(userId, hexagrams) {
+    // use mongodb to search for references where kingwen is in hexagrams and populate titleId
+    let result = await Reference.find({ kingwen: { $in: hexagrams } }).populate("titleId");
+    if (result) {
+        return result;
+    }
+    return [];
+}
 
 function formatReferenceDocuments({ userId, titleId, title, content }, publicReference = false) {
     let result = content.map(column => {
@@ -52,4 +60,4 @@ function formatReferenceDocuments({ userId, titleId, title, content }, publicRef
     return result;
 }
 
-module.exports = { createReference, createTitle, formatReferenceDocuments, removeServerSideKeys };
+module.exports = { createReference, createTitle, formatReferenceDocuments, removeServerSideKeys, getReferences };
