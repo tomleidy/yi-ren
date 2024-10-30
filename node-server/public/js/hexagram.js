@@ -12,8 +12,9 @@ const binaryToHexagram = {
     "110011": 61, "001100": 62, "101010": 63, "010101": 64
 }
 
-//const hexagramToBinary = Object.fromEntries(Object.entries(binaryToHexagram).map(([key, value]) => [value, key]));
+const hexagramToBinary = Object.fromEntries(Object.entries(binaryToHexagram).map(([key, value]) => [value, key]));
 
+const getBinaryFromHexagramNumbers = hexagramNumber => hexagramNumber.map(hex => hexagramToBinary[hex]);
 
 
 const hexagramsBasicInfo = {
@@ -114,7 +115,7 @@ function getHexagramFromValues(values) {
     return resultArray;
 }
 
+const getHexagramBasicInfo = (hexagrams) => hexagrams.map(hexagram => hexagramsBasicInfo[hexagram]);
 
 
-
-export { getHexagramFromValues, getHexagramsInfoFromHexArray };
+export { getHexagramFromValues, getHexagramsInfoFromHexArray, getBinaryFromHexagramNumbers, getHexagramBasicInfo };
