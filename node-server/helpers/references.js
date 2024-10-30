@@ -39,7 +39,7 @@ async function getReferences(userId, hexagrams) {
     // use mongodb to search for references where kingwen is in hexagrams and populate titleId
     let result = await Reference.find({ kingwen: { $in: hexagrams } }).populate("titleId");
     if (result) {
-        return result;
+        return removeServerSideKeys(result);
     }
     return [];
 }
