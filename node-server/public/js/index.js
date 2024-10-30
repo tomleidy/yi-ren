@@ -1,5 +1,6 @@
 import * as Hexagram from './hexagram.js';
 import * as Trigram from './trigram.js';
+import { getReference } from './yijing.js';
 
 // watch for light / dark mode changes
 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -18,18 +19,16 @@ window.addEventListener("scroll", function () {
     lastScrollTop = st <= 0 ? 0 : st;
 }, false);
 
-let hexagramLineValues = []
+let hexagramLineValues = [];
+let hexagramKingWenNumbers = [];
+let prefetch = [];
+
 const addLine = value => {
     // check if hexagram length is 6, do nothing if so
-    if (hexagramLineValues.length === 6) {
-        // eventually, we want this to initiate the hexagram lookup
-        return;
-    }
+    if (hexagramLineValues.length === 6) { return; }
     hexagramLineValues.push(value);
 }
-function hexagramLookup() {
 
-}
 
 const lineClasses = {
     6: "hexagram-line-yin-moving",
@@ -63,10 +62,14 @@ function resetReading() {
     });
     hexagramLineValues = [];
     hexagramMoving = false;
+    prefetch = [];
+    document.getElementById("hexagram-result").textContent = "";
     document.getElementById("buttonFlipper").textContent = "Flip Coins";
     document.getElementById("buttonFlipper").addEventListener("click", flipCoins);
-    document.getElementById("buttonFlipper").removeEventListener("click", hexagramLookup);
+    document.getElementById("buttonFlipper").removeEventListener("click", loadReading);
 }
+
+
 
 
 function flipCoins() {
@@ -87,12 +90,27 @@ function flipCoins() {
     if (result === 6 || result === 9) { hexagramMoving = true; }
     reclassLines()
     document.getElementById("result").textContent = result;
-    console.log(hexagramLineValues);
     if (hexagramLineValues.length === 6) {
+        hexagramKingWenNumbers = Hexagram.getHexagramFromValues(hexagramLineValues);
+        prefetch = getReading(hexagramKingWenNumbers);
         document.getElementById("buttonFlipper").textContent = "Look up your hexagram";
         document.getElementById("buttonFlipper").removeEventListener('click', flipCoins);
-        document.getElementById("buttonFlipper").addEventListener('click', hexagramLookup);
+        document.getElementById("buttonFlipper").addEventListener('click', loadReading);
+        document.getElementById("hexagram-result").textContent = hexagramKingWenNumbers;
     }
+}
+
+function loadReading() {
+    if (prefetech.length === 0) return;
+    document.getElementById("hexagram-result").textContent = JSON.stringify(prefetch);
+}
+
+
+async function getReading(hexagramsArray) {
+    const basicHex = Hexagram.getHexagramsInfoFromHexArray(hexagramsArray);
+    //const basicTri = Trigram.getTrigramFromValues(hexagramLineValues);
+    const referenceTexts = await getReference(hexagramsArray)
+    return { hexagram: basicHex, yijing: referenceTexts }
 }
 
 document.getElementById('buttonFlipper').addEventListener('click', flipCoins);
