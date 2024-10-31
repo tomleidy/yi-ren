@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { User } = require("../models/user");
 const { createReference } = require("./references");
-const leggeData = require('../../legge.js');
+const leggeData = require('./legge.js');
 
 if (process.env.TEST_ENV === "true") {
     const username = process.env.TEST_USERNAME;
