@@ -34,7 +34,7 @@ function reformatReferences(references, hexagrams) {
         return 0;
     });
 
-    let results = [];
+    const results: string[] = [];
 
     sortedSources.forEach(source => {
         const { title, translator, year, columnOrder } = source.titleId;
@@ -98,7 +98,7 @@ function reformatReferences(references, hexagrams) {
 }
 
 
-async function getReference(hexagrams) {
+async function getReference(hexagrams: number[]) {
     const path = `/reference/${hexagrams.join("/")}`;
     try {
 
