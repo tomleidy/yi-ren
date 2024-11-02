@@ -53,7 +53,7 @@ const hexagramRouter = require("./routes/hexagram");
 const readingRouter = require("./routes/reading");
 const userRouter = require("./routes/users");
 const referenceRouter = require("./routes/reference");
-console.log("\n\n\n".repeat(15));
+//console.log("\n\n\n".repeat(15));
 
 
 app.use("/hexagram", hexagramRouter);
