@@ -10,10 +10,12 @@ interface CoinsProps {
 type DisplayReadingType = boolean;
 
 interface HexagramInfo {
-    kingwen: number;
-    pinyin: string;
-    hanzi: string;
-    unicode: string;
+    [key: number]: {
+        kingwen: number;
+        pinyin: string;
+        hanzi: string;
+        unicode: string;
+    }
 }
 
 type HexagramLines = number[];
@@ -33,6 +35,16 @@ interface YijingTextDisplayProps {
     reading: string[];
 }
 
+// hexagrams.ts
+
+interface BinaryToHexagram {
+    [key: string]: number;
+}
+interface ValueToBinary {
+    [key: number]: [string, string];
+}
+
+
 
 export type {
     CoinType,
@@ -44,5 +56,7 @@ export type {
     HexagramKingWenResult,
     HexagramKingWenResultProps,
     ReadingStateType,
-    YijingTextDisplayProps
+    YijingTextDisplayProps,
+    BinaryToHexagram,
+    ValueToBinary
 };

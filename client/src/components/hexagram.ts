@@ -1,4 +1,8 @@
-const binaryToHexagram = {
+import { HexagramInfo, BinaryToHexagram, ValueToBinary } from "./types";
+
+
+
+const binaryToHexagram: BinaryToHexagram = {
     "111111": 1, "000000": 2, "100010": 3, "010001": 4, "111010": 5, "010111": 6,
     "010000": 7, "000010": 8, "111011": 9, "110111": 10, "111000": 11, "000111": 12,
     "101111": 13, "111101": 14, "001000": 15, "000100": 16, "100110": 17, "011001": 18,
@@ -14,10 +18,10 @@ const binaryToHexagram = {
 
 const hexagramToBinary = Object.fromEntries(Object.entries(binaryToHexagram).map(([key, value]) => [value, key]));
 
-const getBinaryFromHexagramNumbers = hexagramNumber => hexagramNumber.map(hex => hexagramToBinary[hex]);
+const getBinaryFromHexagramNumbers = (hexagramNumber: number[]) => hexagramNumber.map(hex => hexagramToBinary[hex]);
 
 
-const hexagramsBasicInfo = {
+const hexagramsBasicInfo: HexagramInfo = {
     1: { "kingwen": 1, "pinyin": "Qián", "hanzi": "乾", "unicode": "䷀" },
     2: { "kingwen": 2, "pinyin": "Kūn", "hanzi": "坤", "unicode": "䷁" },
     3: { "kingwen": 3, "pinyin": "Zhūn", "hanzi": "屯", "unicode": "䷂" },
@@ -83,39 +87,34 @@ const hexagramsBasicInfo = {
     63: { "kingwen": 63, "pinyin": "Jì Jì", "hanzi": "既濟", "unicode": "䷾" },
     64: { "kingwen": 64, "pinyin": "Wèi Jì", "hanzi": "未濟", "unicode": "䷿" }
 }
-const getHexagramsInfoFromHexArray = hexagrams => hexagrams.map(hexagram => hexagramsBasicInfo[hexagram]);
-const getHexagramFromBinary = binary => binaryToHexagram[binary];
+const getHexagramsInfoFromHexArray = (hexagrams: number[]) => hexagrams.map(hexagram => hexagramsBasicInfo[hexagram]);
+const getHexagramFromBinary = (binary: string) => binaryToHexagram[binary];
 
-function generateBinaryFromValues(values) {
-    const valueToBinary = { 6: ["0", "1"], 7: "1", 8: "0", 9: ["1", "0"] }
+
+function generateBinaryFromValues(values: number[]) {
+    const valueToBinary: ValueToBinary = { 6: ["0", "1"], 7: ["1", "1"], 8: ["0", "0"], 9: ["1", "0"] }
     let binaryPrimary = "";
     let binarySecondary = "";
-    values.forEach(value => {
-        let valPrimary, valSecondary;
-        if (typeof (valueToBinary[value]) == "string") {
-            valPrimary = valueToBinary[value];
-            valSecondary = valueToBinary[value];
-        } else {
-            valPrimary = valueToBinary[value][0];
-            valSecondary = valueToBinary[value][1];
-        }
+    values.forEach((value: number) => {
+        const valPrimary = valueToBinary[value][0];
+        const valSecondary = valueToBinary[value][1];
         binaryPrimary += valPrimary;
         binarySecondary += valSecondary;
     });
     return [binaryPrimary, binarySecondary];
 }
 
-function getHexagramFromValues(values) {
-    let binaryArray = generateBinaryFromValues(values);
+function getHexagramFromValues(values: number[]) {
+    const binaryArray = generateBinaryFromValues(values);
     // filter duplicates, map value(s) to hexagram, and return
-    let resultArray = binaryArray
+    const resultArray = binaryArray
         .filter((value, index, array) => array.indexOf(value) === index)
         .map(getHexagramFromBinary);
     console.log(resultArray);
     return resultArray;
 }
 
-const getHexagramBasicInfo = (hexagrams) => hexagrams.map(hexagram => hexagramsBasicInfo[hexagram]);
+const getHexagramBasicInfo = (hexagrams: number[]) => hexagrams.map(hexagram => hexagramsBasicInfo[hexagram]);
 
 
 export { getHexagramFromValues, getHexagramsInfoFromHexArray, getBinaryFromHexagramNumbers, getHexagramBasicInfo };
