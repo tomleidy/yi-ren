@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getHexagramFromValues } from './hexagram';
+import { getHexagramFromValues } from '../constants/hexagram';
 import { getReference } from './yijing';
 import CoinRow from './CoinRow';
 import { coinBlended, coinHeads, coinTails } from '../assets/images';

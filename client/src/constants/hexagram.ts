@@ -1,4 +1,4 @@
-import { HexagramInfo, BinaryToHexagram, ValueToBinary } from "./types";
+import { HexagramInfo, BinaryToHexagram, ValueToBinary } from "../components/types";
 
 
 

@@ -1,4 +1,4 @@
-import { getBinaryFromHexagramNumbers, getHexagramBasicInfo } from './hexagram.js';
+import { getBinaryFromHexagramNumbers, getHexagramBasicInfo } from '../constants/hexagram.js';
 
 function reformatReferences(references, hexagrams) {
     const binaryStrings = getBinaryFromHexagramNumbers(hexagrams);
