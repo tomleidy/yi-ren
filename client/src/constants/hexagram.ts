@@ -1,4 +1,4 @@
-import { HexagramInfo, BinaryToHexagram, ValueToBinary } from "../components/types";
+import { HexagramEntriesBasicInfoObject, BinaryToHexagram, ValueToBinary } from "../components/types";
 
 
 
@@ -21,7 +21,7 @@ const hexagramToBinary = Object.fromEntries(Object.entries(binaryToHexagram).map
 const getBinaryFromHexagramNumbers = (hexagramNumber: number[]) => hexagramNumber.map(hex => hexagramToBinary[hex]);
 
 
-const hexagramsBasicInfo: HexagramInfo = {
+const hexagramsBasicInfo: HexagramEntriesBasicInfoObject = {
     1: { "kingwen": 1, "pinyin": "Qián", "hanzi": "乾", "unicode": "䷀" },
     2: { "kingwen": 2, "pinyin": "Kūn", "hanzi": "坤", "unicode": "䷁" },
     3: { "kingwen": 3, "pinyin": "Zhūn", "hanzi": "屯", "unicode": "䷂" },

@@ -1,9 +1,10 @@
 import { getBinaryFromHexagramNumbers, getHexagramBasicInfo } from '../constants/hexagram.js';
+import { HexagramLines, HexagramSingleEntryBasicInfo, YijingTitleObject, YijingEntryArray } from './types.js';
 
-function reformatReferences(references, hexagrams) {
+
+function getMovingLines(hexagrams: HexagramLines) {
     const binaryStrings = getBinaryFromHexagramNumbers(hexagrams);
-    const movingLineIndices = [];
-
+    const movingLineIndices: number[] = [];
     if (binaryStrings.length > 1) {
         for (let i = 0; i < binaryStrings[0].length; i++) {
             if (binaryStrings[0][i] !== binaryStrings[1][i]) {
@@ -11,36 +12,53 @@ function reformatReferences(references, hexagrams) {
             }
         }
     }
+    return movingLineIndices
+}
+
+interface YijingEntriesGroup {
+    titleId: YijingTitleObject;
+    refs: YijingEntryArray;
+}
+
+interface YijingGroupedEntriesObject {
+    [key: string]: YijingEntriesGroup;
+}
+
+function sortLeggeFirst(a: YijingEntriesGroup, b: YijingEntriesGroup, leggeLast: boolean = false) {
+    if (a.titleId.translator?.includes('Legge')) return leggeLast ? -1 : 1;
+    if (b.titleId.translator?.includes('Legge')) return leggeLast ? 1 : -1;
+
+    return 0;
+}
+
+
+//function stripFixedLinesFromLegge() { }
+
+function reformatReferences(yijingEntries: YijingEntryArray, hexagrams: HexagramLines) {
+    const movingLineIndices: number[] = getMovingLines(hexagrams);
     const hexagramInfo = getHexagramBasicInfo(hexagrams);
-    const sourceGroups = {};
-    references.forEach(ref => {
-        const sourceKey = JSON.stringify({
-            title: ref.titleId.title,
-            translator: ref.titleId.translator,
-            year: ref.titleId.year
-        });
-        if (!sourceGroups[sourceKey]) {
-            sourceGroups[sourceKey] = {
-                titleId: ref.titleId,
+    const yijingEntriesGroupedByTitle: YijingGroupedEntriesObject = {};
+    yijingEntries.forEach(ref => {
+        const titleObject: YijingTitleObject = ref.titleId;
+        const titleKey: string = titleObject.title;
+
+        if (!yijingEntriesGroupedByTitle[titleKey]) {
+            yijingEntriesGroupedByTitle[titleKey] = {
+                titleId: titleObject,
                 refs: []
             };
         }
-        sourceGroups[sourceKey].refs.push(ref);
+        yijingEntriesGroupedByTitle[titleKey].refs.push(ref);
     });
 
-    const sortedSources = Object.values(sourceGroups).sort((a, b) => {
-        if (a.titleId.translator.includes('Legge') && !b.titleId.translator.includes('Legge')) return 1;
-        if (!a.titleId.translator.includes('Legge') && b.titleId.translator.includes('Legge')) return -1;
-        return 0;
-    });
-
+    const sortedSources = Object.values(yijingEntriesGroupedByTitle).sort(sortLeggeFirst);
     const results: string[] = [];
 
     sortedSources.forEach(source => {
         const { title, translator, year, columnOrder } = source.titleId;
-        let sourceContent = [];
+        const sourceContent: string[] = [];
 
-        let headerInfo = [];
+        const headerInfo: string[] = [];
         if (title) headerInfo.push(title);
         if (translator) headerInfo.push(`Translated by ${translator}`);
         if (year) headerInfo.push(`(${year})`);
@@ -50,7 +68,7 @@ function reformatReferences(references, hexagrams) {
             const ref = source.refs.find(r => r.kingwen === hexNum);
             if (!ref) return;
 
-            const hexInfo = hexagramInfo.find(h => h.kingwen === hexNum);
+            const hexInfo: HexagramSingleEntryBasicInfo = hexagramInfo.find(h => h.kingwen === hexNum)!;
             const hexHeader = `<h1>Hexagram ${hexNum}: ${hexInfo.pinyin} ${hexInfo.hanzi} ${hexInfo.unicode}</h1>`;
             sourceContent.push(hexHeader);
 
@@ -58,7 +76,7 @@ function reformatReferences(references, hexagrams) {
                 if (!ref.columns[key]) return;
 
                 // Skip line-specific footnotes if they're not about moving lines
-                if (key === 'footnote') {
+                if (key.length > 500) {
                     const footnoteText = ref.columns[key];
                     // Split footnote into segments (assuming paragraphs are separated by periods followed by whitespace)
                     const segments = footnoteText.split(/\.(?=\s)/);
@@ -78,13 +96,13 @@ function reformatReferences(references, hexagrams) {
                 }
 
                 // Handle regular numbered lines
-                if (!isNaN(key)) {
+                if (!isNaN(Number(key))) {
                     const lineNum = parseInt(key);
                     if (index === 1 && !movingLineIndices.includes(lineNum)) return;
                     if (!movingLineIndices.includes(lineNum)) return;
                 }
 
-                let header = !isNaN(key)
+                const header: string = !isNaN(Number(key))
                     ? `Line ${key}`
                     : key.charAt(0).toUpperCase() + key.slice(1);
 

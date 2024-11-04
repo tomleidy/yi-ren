@@ -9,7 +9,7 @@ interface CoinsProps {
 
 type DisplayReadingType = boolean;
 
-interface HexagramInfo {
+interface HexagramEntriesBasicInfoObject {
     [key: number]: {
         kingwen: number;
         pinyin: string;
@@ -17,6 +17,14 @@ interface HexagramInfo {
         unicode: string;
     }
 }
+
+interface HexagramSingleEntryBasicInfo {
+    kingwen: number;
+    pinyin: string;
+    hanzi: string;
+    unicode: string;
+}
+
 
 type HexagramLines = number[];
 interface HexagramLinesProps {
@@ -45,18 +53,47 @@ interface ValueToBinary {
 }
 
 
+interface YijingTitleObject {
+    userId: string;
+    title: string;
+    author: string;
+    translator: (string | null);
+    kingwenField: string;
+    year: (number | null);
+    columnOrder: string[];
+}
+
+
+interface YijingEntryObject {
+    userId: (string | null);
+    titleId: YijingTitleObject,
+    kingwen: number;
+    deletedAt: (string | null);
+    deletedPermanent: boolean;
+    columns: {
+        [key: string]: string | null;
+    }
+    publicReference: boolean;
+}
+type YijingEntryArray = YijingEntryObject[];
+
+
 
 export type {
     CoinType,
     CoinsProps,
     DisplayReadingType,
-    HexagramInfo,
+    HexagramEntriesBasicInfoObject,
     HexagramLines,
     HexagramLinesProps,
     HexagramKingWenResult,
     HexagramKingWenResultProps,
+    HexagramSingleEntryBasicInfo,
     ReadingStateType,
     YijingTextDisplayProps,
+    YijingTitleObject,
+    YijingEntryObject,
+    YijingEntryArray,
     BinaryToHexagram,
     ValueToBinary
 };
