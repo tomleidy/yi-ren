@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const { User } = require('../models/user');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
@@ -34,12 +34,16 @@ async function userLogin(username, password) {
     }
 }
 
-async function userCreate(body) {
-    const { username, email, userPassword } = body;
+async function userCreate(body, admin = false) {
+    const { username, email, password: userPassword } = body;
     try {
         let password = await bcrypt.hash(userPassword, saltRounds);
         const user = new User({ username, email, password });
+        if (process.env.TEST_ENV === "true") {
+            if (admin) { user.admin = true }
+        }
         const result = await user.save();
+        console.log(`result: ${result}`);
         return { status: 201, data: result };
     }
     catch (err) {

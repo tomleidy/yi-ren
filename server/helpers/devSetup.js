@@ -2,11 +2,12 @@ require('dotenv').config();
 const { User } = require("../models/user");
 const { createReference } = require("./references");
 const leggeData = require('./legge.js');
+const { userCreate } = require('./users.js');
+
+const getTestUserObject = () => ({ username: process.env.TEST_USERNAME, password: process.env.TEST_PASSWORD, email: process.env.TEST_EMAIL });
 
 if (process.env.TEST_ENV === "true") {
-    const username = process.env.TEST_USERNAME;
-    const password = process.env.TEST_PASSWORD;
-    const email = process.env.TEST_EMAIL;
+
     createLeggeReference();
 
 } else {
@@ -15,6 +16,8 @@ if (process.env.TEST_ENV === "true") {
 }
 
 async function createTestAdmin() {
+    const { username, password, email } = getTestUserObject();
+    console.log(`createTestAdmin: ${username}, ${password}, ${email}`);
     try {
         let exists = await User.findOne({ username });
         if (exists) {
@@ -22,9 +25,9 @@ async function createTestAdmin() {
             return;
         }
         console.log("createTestAdmin: username doesn't exist, attempting to create");
-        let result = await new User({ username, password, email, admin: true });
-        await result.save();
-        if (result) {
+        let result = await userCreate({ username, password, email }, admin = true);
+        console.log("createTestAdmin result:", result);
+        if (result.status === 201) {
             console.log(`createTestAdmin success, ${username}, ${password}, ${email}`);
             return result;
         }
