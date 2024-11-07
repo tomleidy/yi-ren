@@ -15,6 +15,10 @@ export default defineConfig({
         target: "https://localhost:443",
         secure: false
       },
+      "/auth": {
+        target: "https://localhost:443",
+        secure: false
+      }
     }
   }
 })
