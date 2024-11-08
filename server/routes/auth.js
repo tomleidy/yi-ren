@@ -76,7 +76,12 @@ authRouter.get("/auth/check-session", (req, res) => {
     }
 });
 
-
+authRouter.get("/auth/logout", (req, res) => {
+    req.logout(function (err) {
+        if (err) { return next(err); }
+        res.status(200).json({ message: "Logout successful" });
+    });
+});
 
 
 
