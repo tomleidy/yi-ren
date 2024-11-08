@@ -62,6 +62,19 @@ authRouter.post('/auth/register', async (req, res, next) => {
 
 });
 
+authRouter.get("/auth/check-session", (req, res) => {
+    if (req.user) {
+        res.status(200).json({
+            user: {
+                username: req.user.username,
+                userid: req.user._id,
+                email: req.user.email
+            }
+        });
+    } else {
+        res.status(401).json({ message: "No active session" });
+    }
+});
 
 
 
