@@ -52,6 +52,11 @@ interface ValueToBinary {
     [key: number]: [string, string];
 }
 
+interface UserModalProps {
+    isModalOpen: boolean;
+    closeModal: () => void;
+}
+
 
 interface YijingTitleObject {
     userId: string;
@@ -95,5 +100,6 @@ export type {
     YijingEntryObject,
     YijingEntryArray,
     BinaryToHexagram,
-    ValueToBinary
+    ValueToBinary,
+    UserModalProps
 };

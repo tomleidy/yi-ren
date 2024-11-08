@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useUser } from '../UserContext';
+import { UserModalProps } from './types';
 
-interface UserModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
 
 interface FormData {
     username: string;
@@ -13,7 +11,9 @@ interface FormData {
     confirmPassword: string;
 }
 
-const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
+
+
+const UserModal: React.FC<UserModalProps> = ({ isModalOpen, closeModal }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState<FormData>({
         username: '',
@@ -22,17 +22,24 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
         confirmPassword: ''
     });
     const [error, setError] = useState<string>('');
-
+    const { setUserInfo } = useUser();
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
         setError('');
     };
 
+    // Want to be able to use the escape key to get out of any modal.
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => { if (e.key === "Escape") closeModal(); }
+        document.addEventListener("keydown", handleEscape);
+        return () => document.removeEventListener("keydown", handleEscape);
+    }, [closeModal]);
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
-        console.log("::: running handleSubmit ... ")
         if (!isLogin && formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
             return;
@@ -40,11 +47,10 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
 
         try {
             const endpoint = isLogin ? '/auth/login' : '/auth/register';
+
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json', },
                 body: JSON.stringify({
                     username: formData.username,
                     password: formData.password,
@@ -52,26 +58,26 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
                 }),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                const data = await response.json();
-                console.log("UserModal: ", data)
                 throw new Error(data.message || 'Authentication failed');
             }
-
-            onClose();
-            // set user context, redirect, etc.
+            localStorage.setItem('user', JSON.stringify(data.user));
+            setUserInfo(data.user);
+            closeModal();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
         }
     };
 
-    if (!isOpen) return null;
+    if (!isModalOpen) return null;
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-md p-6 relative">
                 <button
-                    onClick={onClose}
+                    onClick={closeModal}
                     className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 >
                     <X size={20} />
