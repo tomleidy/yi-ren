@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useUser } from '../UserContext';
-import { UserModalProps } from './types';
+import { useVisibility } from '../VisibilityContext';
 
 
 interface FormData {
@@ -13,7 +13,7 @@ interface FormData {
 
 
 
-const UserModal: React.FC<UserModalProps> = ({ isModalOpen, closeModal }) => {
+const AuthModal: React.FC = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState<FormData>({
         username: '',
@@ -23,6 +23,8 @@ const UserModal: React.FC<UserModalProps> = ({ isModalOpen, closeModal }) => {
     });
     const [error, setError] = useState<string>('');
     const { setUserInfo } = useUser();
+    const { visibility, toggle, show, hide } = useVisibility();
+    const isModalOpen = visibility['userModal'];
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -31,13 +33,14 @@ const UserModal: React.FC<UserModalProps> = ({ isModalOpen, closeModal }) => {
 
     // Want to be able to use the escape key to get out of any modal.
     useEffect(() => {
-        const handleEscape = (e: KeyboardEvent) => { if (e.key === "Escape") closeModal(); }
+        const handleEscape = (e: KeyboardEvent) => { if (e.key === "Escape") hide('userModal'); };
         document.addEventListener("keydown", handleEscape);
         return () => document.removeEventListener("keydown", handleEscape);
-    }, [closeModal]);
+    }, [() => hide('userModal')]);
 
 
-    const handleSubmit = async (e: React.FormEvent) => {
+
+    const handleLoginAndRegisterPOST = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         if (!isLogin && formData.password !== formData.confirmPassword) {
@@ -65,7 +68,7 @@ const UserModal: React.FC<UserModalProps> = ({ isModalOpen, closeModal }) => {
             }
             localStorage.setItem('user', JSON.stringify(data.user));
             setUserInfo(data.user);
-            closeModal();
+            hide('userModal');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
         }
@@ -77,7 +80,7 @@ const UserModal: React.FC<UserModalProps> = ({ isModalOpen, closeModal }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-md p-6 relative">
                 <button
-                    onClick={closeModal}
+                    onClick={() => hide('userModal')}
                     className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 >
                     <X size={20} />
@@ -87,7 +90,7 @@ const UserModal: React.FC<UserModalProps> = ({ isModalOpen, closeModal }) => {
                     {isLogin ? 'Login' : 'Register'}
                 </h2>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleLoginAndRegisterPOST} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Username
@@ -173,4 +176,4 @@ const UserModal: React.FC<UserModalProps> = ({ isModalOpen, closeModal }) => {
     );
 };
 
-export default UserModal;
+export default AuthModal;

@@ -1,28 +1,23 @@
 import YijingDivination from './components/YijingDivination';
-import UserModal from './components/UserModal';
-import { useState } from 'react';
+import AuthModal from './components/AuthModal';
 import Navbar from './components/Navbar';
 import { UserProvider, useUser } from './UserContext';
 import { LogoComponent } from './components/LogoComponent';
+import { VisibilityProvider } from './VisibilityContext';
 
 function App() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
     return (
         <UserProvider>
-            <header className="flex justify-between items-center p-4 bg-white dark:bg-gray-800">
-                <LogoComponent />
-                <Navbar isModalOpen={isModalOpen} toggleModal={() => setIsModalOpen(!isModalOpen)} />
-            </header>
-
-            <UserModal
-                isModalOpen={isModalOpen}
-                closeModal={() => setIsModalOpen(false)}
-            />
-
-            <div className="App">
-                <YijingDivination />
-            </div>
+            <VisibilityProvider>
+                <header className="flex justify-between items-center p-4 bg-white dark:bg-gray-800">
+                    <LogoComponent />
+                    <Navbar />
+                </header>
+                <AuthModal />
+                <div className="App">
+                    <YijingDivination />
+                </div>
+            </VisibilityProvider>
         </UserProvider >
     );
 }

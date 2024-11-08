@@ -2,24 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '../UserContext';
 import { UserCircleIcon, QuestionMarkCircleIcon } from '@heroicons/react/16/solid';
 import { ArrowRightStartOnRectangleIcon, ArrowRightEndOnRectangleIcon } from '@heroicons/react/16/solid';
-import { NavbarProps } from './types';
+import { useVisibility } from '../VisibilityContext';
 
-const UserLoginIcon: React.FC = () => (<ArrowRightEndOnRectangleIcon size={4} />)
-const UserLogoutIcon: React.FC = () => (<ArrowRightStartOnRectangleIcon size={4} />)
-const UserUnknownIcon: React.FC = () => (<QuestionMarkCircleIcon size={14} />)
-const UserKnownIcon: React.FC = () => (<UserCircleIcon size={14} />)
-
-const Navbar: React.FC<NavbarProps> = ({ isModalOpen, toggleModal }) => {
+const Navbar: React.FC = () => {
     const { userInfo, setUserInfo } = useUser();
-    const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-    const handleLogout = () => {
+    const { visibility, toggle, show, hide } = useVisibility();
+    const isNavbarOpen = visibility['navDropdown'];
+
+    const handleLogoutGET = async () => {
+        const response = await fetch('/auth/logout', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        if (response.ok) {
+            setUserInfo(null);
         localStorage.removeItem('user');
-        setUserInfo(null);
-    }
-    const toggleModalAndDropdown = () => {
-        toggleModal();
-        toggleDropdown();
-    }
+        }
+    };
+
     useEffect(() => {
         const checkLocalStorage = () => {
             if (!userInfo) {
@@ -48,7 +48,7 @@ const Navbar: React.FC<NavbarProps> = ({ isModalOpen, toggleModal }) => {
     const closeDropdown = () => setIsNavbarOpen(false)
     return (
         <div className="relative">
-            <button onClick={toggleDropdown}
+            <button onClick={() => toggle('navDropdown')}
                 className="px-4 py-1 w-20 h-20 text-sm font-medium text-white rounded-md  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
                 {userInfo ? <UserKnownIcon /> : <UserUnknownIcon />}
@@ -59,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ isModalOpen, toggleModal }) => {
                     <ul className="py-1">
                         {!userInfo ? (
                             <li className='py-1'>
-                                <button className="w-full text-left px-4 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={toggleModalAndDropdown}>
+                                <button className="w-full text-left px-4 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => { show('userModal'); hide('navDropdown'); }}>
                                     <UserLoginIcon />Login/Register
                                 </button>
                             </li>
@@ -75,7 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({ isModalOpen, toggleModal }) => {
                                         className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         onClick={() => {
                                             handleLogout();
-                                            setIsNavbarOpen(false);
+                                            hide('navDropdown');
                                         }}
                                     >
                                         <UserLogoutIcon />Logout
