@@ -2,7 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '../UserContext';
 import { UserCircleIcon, QuestionMarkCircleIcon } from '@heroicons/react/16/solid';
 import { ArrowRightStartOnRectangleIcon, ArrowRightEndOnRectangleIcon } from '@heroicons/react/16/solid';
+import { PencilSquareIcon } from '@heroicons/react/16/solid';
 import { useVisibility } from '../VisibilityContext';
+
+const UserLoginIcon: React.FC = () => (<ArrowRightEndOnRectangleIcon className="h-4 w-4" />)
+const UserLogoutIcon: React.FC = () => (<ArrowRightStartOnRectangleIcon className="h-4 w-4" />)
+const UserUnknownIcon: React.FC = () => (<QuestionMarkCircleIcon className="h-14 w-14" />)
+const UserKnownIcon: React.FC = () => (<UserCircleIcon className="h-14 w-14" />)
+const EditProfileIcon: React.FC = () => (<PencilSquareIcon className="h-4 w-4" />)
 
 const Navbar: React.FC = () => {
     const { userInfo, setUserInfo } = useUser();
@@ -59,22 +66,22 @@ const Navbar: React.FC = () => {
                     <ul className="py-1">
                         {!userInfo ? (
                             <li className='py-1'>
-                                <button className="w-full text-left px-4 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => { show('userModal'); hide('navDropdown'); }}>
+                                <button className="flex items-center gap-2 w-full text-left px-4 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => { show('userModal'); hide('navDropdown'); }}>
                                     <UserLoginIcon />Login/Register
                                 </button>
                             </li>
                         ) : (
                             <>
                                 <li>
-                                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => { }}>
-                                        Edit Profile
+                                    <button className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => { }}>
+                                        <EditProfileIcon />Edit Profile
                                     </button>
                                 </li>
                                 <li>
                                     <button
-                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         onClick={() => {
-                                            handleLogout();
+                                            handleLogoutGET();
                                             hide('navDropdown');
                                         }}
                                     >
