@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 interface UserInfo {
     username: string;
@@ -20,4 +20,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
             {children}
         </UserContext.Provider>
     );
+}
+
+
+export const useUser = () => {
+    const context = useContext(UserContext);
+    if (!context) {
+        throw new Error("useUser must be used within a UserProvider");
+    }
+    return context;
 }
