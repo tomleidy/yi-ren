@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
         });
         if (response.ok) {
             setUserInfo(null);
-        localStorage.removeItem('user');
+            localStorage.removeItem('user');
         }
     };
 
@@ -41,18 +41,21 @@ const Navbar: React.FC = () => {
                     const data = await response.json();
                     setUserInfo(data.user);
                     localStorage.setItem('user', JSON.stringify(data.user));
+                } else {
+                    localStorage.removeItem('user');
+                    setUserInfo(null);
                 }
             } catch (err) {
                 // Session expired or invalid
                 localStorage.removeItem('user');
+                setUserInfo(null);
             }
         };
 
-
+        checkSession();
         checkLocalStorage();
     }, []);
-    const toggleDropdown = () => setIsNavbarOpen(!isNavbarOpen);
-    const closeDropdown = () => setIsNavbarOpen(false)
+
     return (
         <div className="relative">
             <button onClick={() => toggle('navDropdown')}
