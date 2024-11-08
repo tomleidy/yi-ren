@@ -43,7 +43,6 @@ interface YijingTextDisplayProps {
     reading: string[];
 }
 
-// hexagrams.ts
 
 interface BinaryToHexagram {
     [key: string]: number;
@@ -57,6 +56,10 @@ interface UserModalProps {
     closeModal: () => void;
 }
 
+interface NavbarProps {
+    isModalOpen: boolean;
+    toggleModal: () => void;
+}
 
 interface YijingTitleObject {
     userId: string;
@@ -101,5 +104,6 @@ export type {
     YijingEntryArray,
     BinaryToHexagram,
     ValueToBinary,
-    UserModalProps
+    UserModalProps,
+    NavbarProps
 };
