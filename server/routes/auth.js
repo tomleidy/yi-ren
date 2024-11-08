@@ -41,7 +41,8 @@ passport.deserializeUser(function (user, done) {
 authRouter.post("/auth/login",
     passport.authenticate('local', { session: true }),
     (req, res) => {
-        res.status(200).json({ message: "Login successful" });
+        const user = { username: req.user.username, userId: req.user._id, email: req.user.email };
+        res.status(200).json({ message: "Login successful", user });
     },
     (err, req, res, next) => {
         res.status(401).json({ message: "Authentication failed" });
