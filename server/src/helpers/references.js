@@ -1,6 +1,6 @@
 const { Reference } = require("../models/reference");
 const { Title } = require("../models/title");
-
+const { transformReferences } = require("../helpers/transformReferences");
 const forbiddenKeys = new Set(["id", "_id", "public", "__v"])
 const removeServerSideKeysReviver = (k, v) => forbiddenKeys.has(k) ? undefined : v
 const removeServerSideKeys = (obj) => JSON.parse(JSON.stringify(obj, removeServerSideKeysReviver));
@@ -39,7 +39,8 @@ async function getReferences(userId, hexagrams) {
     // use mongodb to search for references where kingwen is in hexagrams and populate titleId
     let result = await Reference.find({ kingwen: { $in: hexagrams } }).populate("titleId");
     if (result) {
-        return removeServerSideKeys(result);
+        const stripped = removeServerSideKeys(result);
+        return transformReferences(stripped);
     }
     return [];
 }
@@ -60,4 +61,4 @@ function formatReferenceDocuments({ userId, titleId, title, content }, publicRef
     return result;
 }
 
-module.exports = { createReference, createTitle, formatReferenceDocuments, removeServerSideKeys, getReferences };
+module.exports = { createReference, createTitle, removeServerSideKeys, getReferences };
