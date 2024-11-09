@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { User } = require("../models/user");
-const { createReference } = require("./references");
+const { createReference } = require("./references.js");
 const leggeData = require('./legge.js');
 const { userCreate } = require('./users.js');
 

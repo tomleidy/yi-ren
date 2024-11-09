@@ -10,7 +10,7 @@ const session = require("express-session");
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 
-const authRouter = require("./routes/auth");
+const authRouter = require("./src/routes/auth");
 
 const app = express();
 const bodyParser = require("body-parser");
@@ -49,10 +49,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(passport.authenticate('session'));
-const hexagramRouter = require("./routes/hexagram");
-const readingRouter = require("./routes/reading");
-const userRouter = require("./routes/users");
-const referenceRouter = require("./routes/reference");
+const hexagramRouter = require("./src/routes/hexagram");
+const readingRouter = require("./src/routes/reading");
+const userRouter = require("./src/routes/users");
+const referenceRouter = require("./src/routes/reference");
 //console.log("\n\n\n".repeat(15));
 
 
