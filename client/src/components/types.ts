@@ -36,11 +36,10 @@ interface HexagramKingWenResultProps {
     hexagramKingWenResult: HexagramKingWenResult;
 };
 
-type ReadingStateType = string;
 
 interface YijingTextDisplayProps {
     displayReading: boolean;
-    reading: string[];
+    sourceArray: YijingSourceArray;
 }
 
 
@@ -56,26 +55,24 @@ interface YijingTitleObject {
     userId: string;
     title: string;
     author: string;
-    translator: (string | null);
-    kingwenField: string;
-    year: (number | null);
+    translator: string | null;
+    year: number | null;
     columnOrder: string[];
-}
-
-
-interface YijingEntryObject {
-    userId: (string | null);
-    titleId: YijingTitleObject,
-    kingwen: number;
-    deletedAt: (string | null);
+    deletedAt: string | null;
     deletedPermanent: boolean;
-    columns: {
-        [key: string]: string | null;
-    }
     publicReference: boolean;
 }
-type YijingEntryArray = YijingEntryObject[];
 
+interface YijingHexagram {
+    [key: string]: string | null;
+}
+
+interface YijingSourceObject {
+    title: YijingTitleObject;
+    [key: number]: YijingHexagram;
+}
+
+type YijingSourceArray = YijingSourceObject[];
 
 
 export type {
@@ -88,11 +85,10 @@ export type {
     HexagramKingWenResult,
     HexagramKingWenResultProps,
     HexagramSingleEntryBasicInfo,
-    ReadingStateType,
     YijingTextDisplayProps,
     YijingTitleObject,
-    YijingEntryObject,
-    YijingEntryArray,
+    YijingSourceObject,
+    YijingSourceArray,
     BinaryToHexagram,
     ValueToBinary
 };

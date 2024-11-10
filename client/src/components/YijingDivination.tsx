@@ -3,15 +3,13 @@ import { getHexagramFromValues } from '../constants/hexagram';
 import { getReference } from './yijing';
 import CoinRow from './CoinRow';
 import { coinBlended, coinHeads, coinTails } from '../assets/images';
-import { CoinType, DisplayReadingType, HexagramLines, HexagramLinesProps, HexagramKingWenResult, HexagramKingWenResultProps, ReadingStateType, YijingTextDisplayProps } from './types';
+import { CoinType, DisplayReadingType, HexagramLines, HexagramLinesProps, HexagramKingWenResult, HexagramKingWenResultProps, YijingTextDisplayProps, YijingSourceObject } from './types';
 
 
-const YijingTextDisplay = ({ displayReading, reading }: YijingTextDisplayProps) => {
+const YijingTextDisplay = ({ displayReading, sourceArray }: YijingTextDisplayProps) => {
     return (
         <div>
-            {displayReading && reading.map((text, index) => (
-                <div key={index} dangerouslySetInnerHTML={{ __html: text }} />
-            ))}
+            {displayReading && JSON.stringify(sourceArray)}
         </div>
     )
 }
@@ -50,7 +48,7 @@ const YijingDivination: React.FC = () => {
     const [coins, setCoins] = useState<CoinType[]>([coinBlended, coinBlended, coinBlended]
     );
     const [hexagramKingWenResult, setHexagramKingWenResult] = useState<HexagramKingWenResult>('');
-    const [reading, setReading] = useState<ReadingStateType[]>([]);
+    const [reading, setReading] = useState<YijingSourceObject[]>([]);
     const [displayReading, setDisplayReading] = useState<DisplayReadingType>(false);
     const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
 
@@ -105,7 +103,7 @@ const YijingDivination: React.FC = () => {
                 <button onClick={resetReading}>Reset</button>
             </div>
 
-            <YijingTextDisplay displayReading={displayReading} reading={reading} />
+            <YijingTextDisplay displayReading={displayReading} sourceArray={reading} />
         </div>
     );
 };
