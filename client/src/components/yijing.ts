@@ -15,16 +15,11 @@ function getMovingLines(hexagrams: HexagramLines) {
     return movingLineIndices
 }
 
-async function getReference(hexagrams: number[]) {
+async function queryYijingTextDbForHexagrams(hexagrams: number[]) {
     const path = `/reference/${hexagrams.join("/")}`;
     try {
-
         const response = await fetch(path);
-        console.log('response', response)
-
         const dataJSON: YijingSourceArray = await response.json();
-        console.log('dataJSON', dataJSON);
-        console.log(typeof dataJSON);
         return dataJSON;
     }
     catch (error) {
@@ -33,4 +28,4 @@ async function getReference(hexagrams: number[]) {
 }
 
 
-export { getReference };
+export { queryYijingTextDbForHexagrams };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getHexagramFromValues } from '../constants/hexagram';
-import { getReference } from './yijing';
+import { queryYijingTextDbForHexagrams } from './yijing';
 import CoinRow from './CoinRow';
 import { coinBlended, coinHeads, coinTails } from '../assets/images';
 import { CoinType, DisplayReadingType, HexagramLines, HexagramLinesProps, HexagramKingWenResult, HexagramKingWenResultProps, YijingTextDisplayProps, YijingSourceObject } from './types';
@@ -68,7 +68,7 @@ const YijingDivination: React.FC = () => {
         if (newHexagram.length === 6) {
             const hexagramNumbers = getHexagramFromValues(newHexagram);
             setHexagramKingWenResult(hexagramNumbers.join(' -> '));
-            const readingResult = await getReference(hexagramNumbers);
+            const readingResult = await queryYijingTextDbForHexagrams(hexagramNumbers);
             setReading(readingResult || []);
         }
 
