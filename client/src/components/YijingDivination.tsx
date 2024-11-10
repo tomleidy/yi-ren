@@ -48,7 +48,7 @@ const YijingDivination: React.FC = () => {
     const [coins, setCoins] = useState<CoinType[]>([coinBlended, coinBlended, coinBlended]
     );
     const [hexagramKingWenResult, setHexagramKingWenResult] = useState<HexagramKingWenResult>('');
-    const [reading, setReading] = useState<YijingSourceObject[]>([]);
+    const [yijingText, setYijingText] = useState<YijingSourceObject[]>([]);
     const [displayReading, setDisplayReading] = useState<DisplayReadingType>(false);
     const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
 
@@ -69,7 +69,7 @@ const YijingDivination: React.FC = () => {
             const hexagramNumbers = getHexagramFromValues(newHexagram);
             setHexagramKingWenResult(hexagramNumbers.join(' -> '));
             const readingResult = await queryYijingTextDbForHexagrams(hexagramNumbers);
-            setReading(readingResult || []);
+            setYijingText(readingResult || []);
         }
 
     };
@@ -78,7 +78,7 @@ const YijingDivination: React.FC = () => {
         setHexagramLines([]);
         setCoins(coins.map(() => coinBlended));
         setHexagramKingWenResult('');
-        setReading([]);
+        setYijingText([]);
         setDisplayReading(false);
     };
 
@@ -103,7 +103,7 @@ const YijingDivination: React.FC = () => {
                 <button onClick={resetReading}>Reset</button>
             </div>
 
-            <YijingTextDisplay displayReading={displayReading} sourceArray={reading} />
+            <YijingTextDisplay displayReading={displayReading} sourceArray={yijingText} />
         </div>
     );
 };
