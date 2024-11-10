@@ -16,7 +16,7 @@ const YijingTextDisplay = ({ displayReading, sourceArray }: YijingTextDisplayPro
 
 const DisplayHexagramNumber = ({ hexagramKingWenResult }: HexagramKingWenResultProps) => {
     return (
-        <div>
+        <div className='h-6 p-6'>
             <span>{hexagramKingWenResult}</span>
         </div>
     )
