@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { useUser } from '../UserContext';
-import { useVisibility } from '../VisibilityContext';
+import { useUser } from '../context/UserContext';
+import { useVisibility } from '../context/VisibilityContext';
 
 
 interface FormData {

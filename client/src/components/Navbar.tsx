@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '../UserContext';
+import { useUser } from '../context/UserContext';
 import { UserCircleIcon, QuestionMarkCircleIcon } from '@heroicons/react/16/solid';
 import { ArrowRightStartOnRectangleIcon, ArrowRightEndOnRectangleIcon } from '@heroicons/react/16/solid';
 import { PencilSquareIcon } from '@heroicons/react/16/solid';
-import { useVisibility } from '../VisibilityContext';
+import { useVisibility } from '../context/VisibilityContext';
 
 const UserLoginIcon: React.FC = () => (<ArrowRightEndOnRectangleIcon className="h-4 w-4" />)
 const UserLogoutIcon: React.FC = () => (<ArrowRightStartOnRectangleIcon className="h-4 w-4" />)

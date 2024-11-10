@@ -1,9 +1,9 @@
 import YijingDivination from './components/YijingDivination';
 import AuthModal from './components/AuthModal';
 import Navbar from './components/Navbar';
-import { UserProvider, useUser } from './UserContext';
+import { UserProvider, useUser } from './context/UserContext';
 import { LogoComponent } from './components/LogoComponent';
-import { VisibilityProvider } from './VisibilityContext';
+import { VisibilityProvider } from './context/VisibilityContext';
 
 function App() {
     return (
