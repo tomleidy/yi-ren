@@ -3,7 +3,7 @@ import { getHexagramFromValues } from '../constants/hexagram';
 import { queryYijingTextDbForHexagrams } from '../services/yijingApi';
 import CoinRow from './CoinRow';
 import { coinBlended, coinHeads, coinTails } from '../assets/images';
-import { CoinType, DisplayReadingType, HexagramLines, HexagramLinesProps, HexagramKingWenResult, HexagramKingWenResultProps, YijingTextDisplayProps, YijingSourceObject } from './types';
+import { CoinType, DisplayReadingType, HexagramLines, HexagramLinesProps, YijingTextDisplayProps, YijingSourceObject } from './types';
 import { useActiveReading } from '../context/ActiveReadingContext';
 
 const YijingTextDisplay = ({ displayReading, sourceArray }: YijingTextDisplayProps) => {
