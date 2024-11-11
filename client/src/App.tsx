@@ -1,4 +1,4 @@
-import YijingDivination from './components/YijingDivination';
+import YijingDivination from './components/divination/YijingDivination';
 import AuthModal from './components/AuthModal';
 import Navbar from './components/Navbar';
 import { UserProvider, useUser } from './context/UserContext';
