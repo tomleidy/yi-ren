@@ -1,15 +1,71 @@
 import React, { useState, useEffect } from 'react';
 import { getHexagramFromValues } from '../constants/hexagram';
-import { queryYijingTextDbForHexagrams } from '../services/yijingApi';
 import CoinRow from './CoinRow';
 import { coinBlended, coinHeads, coinTails } from '../assets/images';
 import { CoinType, DisplayReadingType, HexagramLines, HexagramLinesProps, YijingTextDisplayProps, YijingSourceObject } from './types';
 import { useActiveReading } from '../context/ActiveReadingContext';
+import { YijingTextDisplaySingleProps, YijingTitleDisplayProps } from './types';
 
-const YijingTextDisplay = ({ displayReading, sourceArray }: YijingTextDisplayProps) => {
+
+const YijingTextDisplay = ({ displayReading }: YijingTextDisplayProps) => {
+    const { yijingSourceArray } = useActiveReading();
+    const { activeReading } = useActiveReading();
+
     return (
         <div>
-            {displayReading && JSON.stringify(sourceArray)}
+            {displayReading && activeReading &&
+                yijingSourceArray.map((entry: YijingSourceObject, index: number) => (
+                    <div key={`source-${index}`}>
+                        <YijingTitleDisplay yijingTitleObject={entry.title} />
+                        {activeReading.map(hexNumber => (
+                            <YijingTextDisplaySingle
+                                key={`${index}-${hexNumber}`}
+                                entry={entry}
+                                hexagramNumber={hexNumber}
+                            />
+                        ))}
+                    </div>
+                ))
+            }
+        </div>
+    )
+}
+
+const YijingTextDisplaySingle = ({ entry, hexagramNumber }: YijingTextDisplaySingleProps) => {
+    const { columnOrder } = entry.title;
+    const hexagramData = entry[hexagramNumber];
+    const { movingLines } = useActiveReading();
+    if (!hexagramData) return null;
+
+    const cap = (text: string) => text[0].toUpperCase() + text.slice(1,)
+    return (
+        <div>
+            <h3>Hexagram {hexagramNumber}</h3>
+            {columnOrder.map((columnName, index) => (
+                hexagramData[columnName] && movingLines.indexOf(Number(columnName)) === -1 &&
+                <div key={`${hexagramNumber}-${columnName}`}>
+                    <p className='text-left'><strong>{cap(columnName)}:</strong></p>
+                    <p className='text-left'> {hexagramData[columnName]}</p>
+                    <br />
+                </div>
+            ))}
+        </div>
+    )
+}
+const YijingTitleDisplay = ({ yijingTitleObject }: YijingTitleDisplayProps) => {
+    const [showBibliographicInfo, setShowBibliographicInfo] = useState(false);
+    return (
+        <div className='text-left'>
+            <button onClick={() => setShowBibliographicInfo(!showBibliographicInfo)}>
+                <h1 className='text-left underline'>{yijingTitleObject.translator || yijingTitleObject.author}</h1>
+
+                {showBibliographicInfo &&
+                    <div className='text-left'>
+                        <p>{yijingTitleObject.title}</p>
+                        <p>{yijingTitleObject.year}</p>
+                    </div>
+                }
+            </button>
         </div>
     )
 }
@@ -22,6 +78,7 @@ const DisplayHexagramNumber = () => {
         </div>
     )
 }
+
 
 const DisplayHexagramLines = ({ hexagramLines }: HexagramLinesProps) => {
     const getLineClass = (value: number) => {
@@ -47,7 +104,8 @@ const DisplayHexagramLines = ({ hexagramLines }: HexagramLinesProps) => {
 const YijingDivination: React.FC = () => {
     const [hexagramLines, setHexagramLines] = useState<HexagramLines>([]);
     const [coins, setCoins] = useState<CoinType[]>([coinBlended, coinBlended, coinBlended]);
-    const [yijingText, setYijingText] = useState<YijingSourceObject[]>([]);
+    //const [yijingText, setYijingText] = useState<YijingSourceObject[]>([]);
+
     const [displayReading, setDisplayReading] = useState<DisplayReadingType>(false);
     const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
     const { setActiveReading } = useActiveReading();
@@ -68,8 +126,7 @@ const YijingDivination: React.FC = () => {
         if (newHexagram.length === 6) {
             const hexagramNumbers = getHexagramFromValues(newHexagram);
             setActiveReading(hexagramNumbers);
-            const readingResult = await queryYijingTextDbForHexagrams(hexagramNumbers);
-            setYijingText(readingResult || []);
+
         }
 
     };
@@ -77,7 +134,6 @@ const YijingDivination: React.FC = () => {
     const resetReading = () => {
         setHexagramLines([]);
         setCoins(coins.map(() => coinBlended));
-        setYijingText([]);
         setActiveReading(null);
         setDisplayReading(false);
     };
@@ -103,7 +159,7 @@ const YijingDivination: React.FC = () => {
                 <button onClick={resetReading}>Reset</button>
             </div>
 
-            <YijingTextDisplay displayReading={displayReading} sourceArray={yijingText} />
+            <YijingTextDisplay displayReading={displayReading} />
         </div>
     );
 };

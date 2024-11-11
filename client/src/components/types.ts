@@ -39,7 +39,6 @@ interface HexagramKingWenResultProps {
 
 interface YijingTextDisplayProps {
     displayReading: boolean;
-    sourceArray: YijingSourceArray;
 }
 
 
@@ -74,6 +73,14 @@ interface YijingSourceObject {
 
 type YijingSourceArray = YijingSourceObject[];
 
+interface YijingTextDisplaySingleProps {
+    entry: YijingSourceObject;
+    hexagramNumber: number;
+}
+
+interface YijingTitleDisplayProps {
+    yijingTitleObject: YijingTitleObject;
+}
 
 export type {
     CoinType,
@@ -90,5 +97,7 @@ export type {
     YijingSourceObject,
     YijingSourceArray,
     BinaryToHexagram,
-    ValueToBinary
+    ValueToBinary,
+    YijingTextDisplaySingleProps,
+    YijingTitleDisplayProps
 };

@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { getMovingLines } from '../utils/hexagrams';
-import { HexagramLines } from '../components/types';
+import { HexagramLines, YijingSourceArray } from '../components/types';
+import { queryYijingTextDbForHexagrams } from '../services/yijingApi';
 
 interface ActiveReadingContextType {
     activeReading: HexagramLines | null;
     movingLines: number[];
+    yijingSourceArray: YijingSourceArray;
     setActiveReading: (activeReading: HexagramLines | null) => void;
     clearReading: () => void;
 }
@@ -18,12 +20,15 @@ interface ActiveReadingProviderProps {
 export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ children }) => {
     const [activeReading, setActiveReadingState] = useState<HexagramLines | null>(null);
     const [movingLines, setMovingLines] = useState<number[]>([]);
+    const [yijingSourceArray, setYijingSourceArray] = useState<YijingSourceArray>([]);
 
-    const setActiveReading = (newReading: HexagramLines | null) => {
+    const setActiveReading = async (newReading: HexagramLines | null) => {
         setActiveReadingState(newReading);
         if (newReading) {
             const lines = getMovingLines(newReading);
             setMovingLines(lines);
+            const readingResult = await queryYijingTextDbForHexagrams(newReading);
+            setYijingSourceArray(readingResult || []);
         } else {
             setMovingLines([]);
         }
@@ -32,12 +37,14 @@ export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ ch
     const clearReading = () => {
         setActiveReadingState(null);
         setMovingLines([]);
+        setYijingSourceArray([]);
     };
 
     return (
         <ActiveReadingContext.Provider value={{
             activeReading,
             movingLines,
+            yijingSourceArray,
             setActiveReading,
             clearReading
         }}>
