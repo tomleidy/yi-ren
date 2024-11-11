@@ -1,12 +1,27 @@
+interface TrigramData {
+    fuxi: string;
+    pinyin: string;
+    hanzi: string;
+    unicode: string;
+    english: string;
+}
 
-const binaryToTrigram = {
+interface TrigramInfo {
+    [key: number]: TrigramData;
+}
+
+interface BinaryTrigramMap {
+    [key: string]: number;
+}
+
+const binaryToTrigram: BinaryTrigramMap = {
     "111": 1, "011": 2, "101": 3, "001": 4,
     "110": 5, "010": 6, "100": 7, "000": 8
 };
 
 const trigramToBinary = Object.fromEntries(Object.entries(binaryToTrigram).map(([key, value]) => [value, key]));
 
-const trigramsBasicInfo = {
+const trigramsBasicInfo: TrigramInfo = {
     1: { "fuxi": "1", "pinyin": "Qián", "hanzi": "乾", "unicode": "☰", "english": "Heaven" },
     2: { "fuxi": "7", "pinyin": "Duì", "hanzi": "兌", "unicode": "☱", "english": "Lake" },
     3: { "fuxi": "6", "pinyin": "Lí", "hanzi": "離", "unicode": "☲", "english": "Fire" },

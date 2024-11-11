@@ -5,6 +5,7 @@ import { coinBlended, coinHeads, coinTails } from '../assets/images';
 import { CoinType, DisplayReadingType, HexagramLines, HexagramLinesProps, YijingTextDisplayProps, YijingSourceObject } from './types';
 import { useActiveReading } from '../context/ActiveReadingContext';
 import { YijingTextDisplaySingleProps, YijingTitleDisplayProps } from './types';
+import BaguaDisplay from './BaguaDisplay';
 
 
 const YijingTextDisplay = ({ displayReading }: YijingTextDisplayProps) => {
@@ -36,16 +37,24 @@ const YijingTextDisplaySingle = ({ entry, hexagramNumber }: YijingTextDisplaySin
     const hexagramData = entry[hexagramNumber];
     const { movingLines } = useActiveReading();
     if (!hexagramData) return null;
+    const [showHexagram, setShowHexagram] = useState(true);
+
 
     const cap = (text: string) => text[0].toUpperCase() + text.slice(1,)
     return (
         <div>
-            <h3>Hexagram {hexagramNumber}</h3>
-            {columnOrder.map((columnName, index) => (
+            <button
+                className="w-full hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded transition-colors"
+                onClick={() => setShowHexagram(!showHexagram)}>
+                <h3 className='underline'>Hexagram {hexagramNumber}</h3>
+            </button>
+            <BaguaDisplay hexagramNumber={hexagramNumber} />
+            {showHexagram && columnOrder.map((columnName, index) => (
                 hexagramData[columnName] && movingLines.indexOf(Number(columnName)) === -1 &&
                 <div key={`${hexagramNumber}-${columnName}`}>
-                    <p className='text-left'><strong>{cap(columnName)}:</strong></p>
-                    <p className='text-left'> {hexagramData[columnName]}</p>
+                    <p className='text-left'>
+                        <span className='font-bold'>{cap(columnName)}: </span>
+                        {hexagramData[columnName]}</p>
                     <br />
                 </div>
             ))}
@@ -55,16 +64,21 @@ const YijingTextDisplaySingle = ({ entry, hexagramNumber }: YijingTextDisplaySin
 const YijingTitleDisplay = ({ yijingTitleObject }: YijingTitleDisplayProps) => {
     const [showBibliographicInfo, setShowBibliographicInfo] = useState(false);
     return (
-        <div className='text-left'>
-            <button onClick={() => setShowBibliographicInfo(!showBibliographicInfo)}>
-                <h1 className='text-left underline'>{yijingTitleObject.translator || yijingTitleObject.author}</h1>
+        <div className="text-left my-6 border-b border-gray-200 dark:border-gray-700 pb-4">
+            <button
+                className="w-full hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition-colors"
+                onClick={() => setShowBibliographicInfo(!showBibliographicInfo)}
+            >
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+                    {yijingTitleObject.translator || yijingTitleObject.author}
+                </h1>
 
-                {showBibliographicInfo &&
-                    <div className='text-left'>
-                        <p>{yijingTitleObject.title}</p>
-                        <p>{yijingTitleObject.year}</p>
+                {showBibliographicInfo && (
+                    <div className="mt-3 text-gray-600 dark:text-gray-400 space-y-1">
+                        <p className="font-medium">{yijingTitleObject.title}</p>
+                        <p className="text-sm">{yijingTitleObject.year}</p>
                     </div>
-                }
+                )}
             </button>
         </div>
     )
