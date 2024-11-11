@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getHexagramFromValues } from '../constants/hexagram';
-import { queryYijingTextDbForHexagrams } from './yijing';
+import { queryYijingTextDbForHexagrams } from '../services/yijingApi';
 import CoinRow from './CoinRow';
 import { coinBlended, coinHeads, coinTails } from '../assets/images';
 import { CoinType, DisplayReadingType, HexagramLines, HexagramLinesProps, HexagramKingWenResult, HexagramKingWenResultProps, YijingTextDisplayProps, YijingSourceObject } from './types';
-
+import { useActiveReading } from '../context/ActiveReadingContext';
 
 const YijingTextDisplay = ({ displayReading, sourceArray }: YijingTextDisplayProps) => {
     return (
@@ -14,10 +14,11 @@ const YijingTextDisplay = ({ displayReading, sourceArray }: YijingTextDisplayPro
     )
 }
 
-const DisplayHexagramNumber = ({ hexagramKingWenResult }: HexagramKingWenResultProps) => {
+const DisplayHexagramNumber = () => {
+    const { activeReading } = useActiveReading();
     return (
         <div className='h-6 p-6'>
-            <span>{hexagramKingWenResult}</span>
+            <span>{activeReading && activeReading.join(" -> ")}</span>
         </div>
     )
 }
@@ -45,12 +46,11 @@ const DisplayHexagramLines = ({ hexagramLines }: HexagramLinesProps) => {
 
 const YijingDivination: React.FC = () => {
     const [hexagramLines, setHexagramLines] = useState<HexagramLines>([]);
-    const [coins, setCoins] = useState<CoinType[]>([coinBlended, coinBlended, coinBlended]
-    );
-    const [hexagramKingWenResult, setHexagramKingWenResult] = useState<HexagramKingWenResult>('');
+    const [coins, setCoins] = useState<CoinType[]>([coinBlended, coinBlended, coinBlended]);
     const [yijingText, setYijingText] = useState<YijingSourceObject[]>([]);
     const [displayReading, setDisplayReading] = useState<DisplayReadingType>(false);
     const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
+    const { setActiveReading } = useActiveReading();
 
     const flipCoins = async () => {
         if (hexagramLines.length >= 6) return;
@@ -67,7 +67,7 @@ const YijingDivination: React.FC = () => {
         // Check if hexagram is complete
         if (newHexagram.length === 6) {
             const hexagramNumbers = getHexagramFromValues(newHexagram);
-            setHexagramKingWenResult(hexagramNumbers.join(' -> '));
+            setActiveReading(hexagramNumbers);
             const readingResult = await queryYijingTextDbForHexagrams(hexagramNumbers);
             setYijingText(readingResult || []);
         }
@@ -77,8 +77,8 @@ const YijingDivination: React.FC = () => {
     const resetReading = () => {
         setHexagramLines([]);
         setCoins(coins.map(() => coinBlended));
-        setHexagramKingWenResult('');
         setYijingText([]);
+        setActiveReading(null);
         setDisplayReading(false);
     };
 
@@ -92,7 +92,7 @@ const YijingDivination: React.FC = () => {
     return (
         <div className="main-content">
             <DisplayHexagramLines hexagramLines={hexagramLines} />
-            <DisplayHexagramNumber hexagramKingWenResult={hexagramKingWenResult} />
+            <DisplayHexagramNumber />
             <CoinRow coins={coins} />
 
 
