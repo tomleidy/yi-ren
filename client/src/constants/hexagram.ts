@@ -110,7 +110,6 @@ function getHexagramFromValues(values: number[]) {
     const resultArray = binaryArray
         .filter((value, index, array) => array.indexOf(value) === index)
         .map(getHexagramFromBinary);
-    console.log(resultArray);
     return resultArray;
 }
 
