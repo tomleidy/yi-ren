@@ -4,15 +4,15 @@ import { useActiveReading } from '../../context/ActiveReadingContext';
 import YijingTextDisplaySingle from './YijingTextDisplaySingle';
 import YijingTitleDisplay from './YijingTitleDisplay';
 
-
 const YijingTextDisplay = ({ displayReading }: YijingTextDisplayProps) => {
     const { yijingSourceArray } = useActiveReading();
     const { activeReading } = useActiveReading();
+
     return (
-        <div>
+        <div className="max-w-screen-lg mx-auto">
             {displayReading && activeReading &&
                 yijingSourceArray.map((entry: YijingSourceObject, index: number) => (
-                    <div key={`source-${index}`}>
+                    <div key={`source-${index}`} className="mb-6 sm:mb-8">
                         <YijingTitleDisplay yijingTitleObject={entry.title} />
                         {activeReading.map(hexNumber => (
                             <YijingTextDisplaySingle
@@ -25,7 +25,7 @@ const YijingTextDisplay = ({ displayReading }: YijingTextDisplayProps) => {
                 ))
             }
         </div>
-    )
-}
+    );
+};
 
 export default YijingTextDisplay;

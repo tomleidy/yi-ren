@@ -11,10 +11,10 @@ import YijingTextDisplay from '../yijingText/YijingTextDisplay';
 const YijingDivination: React.FC = () => {
     const [hexagramLines, setHexagramLines] = useState<HexagramLines>([]);
     const [coins, setCoins] = useState<CoinType[]>([coinBlended, coinBlended, coinBlended]);
-
     const [displayReading, setDisplayReading] = useState<DisplayReadingType>(false);
-    const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
     const { setActiveReading } = useActiveReading();
+
+    const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
 
     const flipCoins = async () => {
         if (hexagramLines.length >= 6) return;
@@ -24,17 +24,13 @@ const YijingDivination: React.FC = () => {
         const headsCount = coins.filter(c => c === coinHeads).length;
         const result = (headsCount * 3) + ((3 - headsCount) * 2);
 
-        // Add new line
         const newHexagram = [...hexagramLines, result];
         setHexagramLines(newHexagram);
 
-        // Check if hexagram is complete
         if (newHexagram.length === 6) {
             const hexagramNumbers = getHexagramFromValues(newHexagram);
             setActiveReading(hexagramNumbers);
-
         }
-
     };
 
     const resetReading = () => {
@@ -44,7 +40,6 @@ const YijingDivination: React.FC = () => {
         setDisplayReading(false);
     };
 
-    // Detect dark mode
     useEffect(() => {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.body.classList.add('dark-mode');
@@ -52,20 +47,29 @@ const YijingDivination: React.FC = () => {
     }, []);
 
     return (
-        <div className="main-content">
-            <HexagramLinesDisplay hexagramLines={hexagramLines} />
-            <HexagramNumberDisplay />
-            <CoinRow coins={coins} />
+        <div className="px-2 sm:px-4 py-4 sm:py-6 max-w-screen-lg mx-auto">
+            <div className="space-y-4 sm:space-y-6">
+                <HexagramLinesDisplay hexagramLines={hexagramLines} />
+                <HexagramNumberDisplay />
+                <CoinRow coins={coins} />
 
+                <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 pt-2 sm:pt-4">
+                    <button
+                        onClick={hexagramLines.length >= 6 ? showReading : flipCoins}
+                        className="px-4 py-2 sm:px-6 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-sm sm:text-base min-h-[44px]"
+                    >
+                        {hexagramLines.length === 6 ? 'Show Yijing Text' : 'Flip Coins'}
+                    </button>
+                    <button
+                        onClick={resetReading}
+                        className="px-4 py-2 sm:px-6 sm:py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm sm:text-base min-h-[44px]"
+                    >
+                        Reset
+                    </button>
+                </div>
 
-            <div>
-                <button onClick={hexagramLines.length >= 6 ? showReading : flipCoins}>
-                    {hexagramLines.length === 6 ? 'Show Yijing Text' : 'Flip Coins'}
-                </button>
-                <button onClick={resetReading}>Reset</button>
+                <YijingTextDisplay displayReading={displayReading} />
             </div>
-
-            <YijingTextDisplay displayReading={displayReading} />
         </div>
     );
 };

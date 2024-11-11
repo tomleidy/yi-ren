@@ -11,7 +11,7 @@ function App() {
         <UserProvider>
             <ActiveReadingProvider>
                 <VisibilityProvider>
-                    <header className="flex justify-between items-center p-4 bg-white dark:bg-gray-800">
+                    <header className="flex justify-between items-center p-2 sm:p-4">
                         <LogoComponent />
                         <Navbar />
                     </header>
