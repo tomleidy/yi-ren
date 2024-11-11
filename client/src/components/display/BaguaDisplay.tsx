@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import trigrams from '../constants/trigram';
-import { getBinaryFromHexagramNumbers } from '../constants/hexagram';
+import trigrams from '../../constants/trigram';
+import { getBinaryFromHexagramNumbers } from '../../constants/hexagram';
 
 interface BaguaDisplayProps {
     hexagramNumber: number;
