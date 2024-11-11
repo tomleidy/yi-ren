@@ -1,4 +1,4 @@
-import { CoinsProps } from "./types";
+import { CoinsProps } from "../types";
 
 const CoinRow = ({ coins }: CoinsProps) => (
     <div className="coin-row">
