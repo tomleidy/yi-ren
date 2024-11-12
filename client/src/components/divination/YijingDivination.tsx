@@ -8,6 +8,7 @@ import HexagramLinesDisplay from '../display/HexagramLinesDisplay';
 import AlternateHexagramDisplay from '../display/AlternateHexagramDisplay';
 import HexagramNumberDisplay from '../display/HexagramNumberDisplay';
 import YijingTextDisplay from '../yijingText/YijingTextDisplay';
+import TopicComponent from '../display/TopicComponent';
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 import { useVisibility } from '../../context/VisibilityContext';
 
@@ -52,7 +53,7 @@ const YijingDivination: React.FC = () => {
                     ) : (
                         <HexagramLinesDisplay hexagramLines={hexagramLines} />
                     )}
-
+                    <TopicComponent />
                     {hexagramLines.length > 0 && (
                         <button
                             onClick={() => toggle('alternateHexagramDisplay')}

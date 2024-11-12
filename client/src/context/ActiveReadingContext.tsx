@@ -8,6 +8,8 @@ interface ActiveReadingContextType {
     hexagramLines: number[];
     movingLines: number[];
     yijingSourceArray: YijingSourceArray;
+    topic: string;
+    setTopic: (topic: string) => void;
     setActiveReading: (activeReading: HexagramLines | null) => void;
     setHexagramLines: (lines: number[]) => void;
     clearReading: () => void;
@@ -24,6 +26,7 @@ export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ ch
     const [hexagramLines, setHexagramLines] = useState<number[]>([]);
     const [movingLines, setMovingLines] = useState<number[]>([]);
     const [yijingSourceArray, setYijingSourceArray] = useState<YijingSourceArray>([]);
+    const [topic, setTopic] = useState('');
 
     const setActiveReading = async (newReading: HexagramLines | null) => {
         setActiveReadingState(newReading);
@@ -50,6 +53,8 @@ export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ ch
             hexagramLines,
             movingLines,
             yijingSourceArray,
+            topic,
+            setTopic,
             setActiveReading,
             setHexagramLines,
             clearReading
