@@ -6,15 +6,12 @@ const AlternateHexagramDisplay = () => {
     const getLineStyle = (value: number, isSecondHexagram: boolean) => {
         if (!value) return "";
 
-        // For first hexagram: 6,8=broken, 7,9=solid
-        const isFirstSolid = value === 7 || value === 9;
-        // For second hexagram: 6,7=solid, 8,9=broken
-        const isSecondSolid = value === 6 || value === 7;
-
-        const isSolid = isSecondHexagram ? isSecondSolid : isFirstSolid;
+        const isSolid = isSecondHexagram
+            ? (value === 6 || value === 7)
+            : (value === 7 || value === 9);
 
         return isSolid ? (
-            "bg-black dark:bg-white"
+            "bg-black dark:bg-[#f5f5dc]"
         ) : (
             "flex justify-between"
         );
@@ -25,17 +22,17 @@ const AlternateHexagramDisplay = () => {
             {[5, 4, 3, 2, 1, 0].map((lineIndex) => {
                 const value = hexagramLines[lineIndex];
                 const lineStyle = getLineStyle(value, isSecondHexagram);
-                const isBroken = !lineStyle.includes("bg-black");
+                const isBroken = !lineStyle.includes("bg-");
 
                 return (
                     <div
                         key={lineIndex}
-                        className={`w-[80px] sm:w-[100px] h-[6px] sm:h-[8px] ${lineStyle}`}
+                        className={`w-[80px] sm:w-[100px] h-[6px] sm:h-[8px] ${lineStyle} relative`}
                     >
                         {isBroken && (
                             <>
-                                <div className="w-[35%] h-full bg-black dark:bg-white"></div>
-                                <div className="w-[35%] h-full bg-black dark:bg-white"></div>
+                                <div className="w-[35%] h-full bg-black dark:bg-[#f5f5dc]"></div>
+                                <div className="w-[35%] h-full bg-black dark:bg-[#f5f5dc]"></div>
                             </>
                         )}
                     </div>
@@ -51,7 +48,7 @@ const AlternateHexagramDisplay = () => {
             {renderHexagram(false)}
             {movingLines.length > 0 && (
                 <>
-                    <div className="text-2xl">→</div>
+                    <div className="text-2xl text-black dark:text-[#f5f5dc]">→</div>
                     {renderHexagram(true)}
                 </>
             )}
