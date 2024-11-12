@@ -1,4 +1,4 @@
-import { CoinsProps } from "../types";
+import { CoinsProps } from "../../types/index";
 
 const CoinRow = ({ coins }: CoinsProps) => (
     <div className="flex flex-wrap justify-center gap-3 sm:gap-4">

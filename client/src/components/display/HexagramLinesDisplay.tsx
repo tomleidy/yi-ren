@@ -1,4 +1,4 @@
-import { HexagramLinesProps } from "../types";
+import { HexagramLinesProps } from "../../types/index";
 
 const HexagramLinesDisplay = ({ hexagramLines }: HexagramLinesProps) => {
     const getLineStyle = (value: number) => {

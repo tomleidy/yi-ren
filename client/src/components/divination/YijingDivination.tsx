@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { getHexagramFromValues } from '../../constants/hexagram';
 import CoinRow from '../display/CoinRow';
 import { coinBlended, coinHeads, coinTails } from '../../assets/images';
-import { CoinType, DisplayReadingType } from '../types';
+import { CoinType, DisplayReadingType } from '../../types/index';
 import { useActiveReading } from '../../context/ActiveReadingContext';
 import HexagramLinesDisplay from '../display/HexagramLinesDisplay';
 import AlternateHexagramDisplay from '../display/AlternateHexagramDisplay';

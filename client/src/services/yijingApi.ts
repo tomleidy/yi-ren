@@ -1,4 +1,4 @@
-import { YijingSourceArray } from './types.js';
+import { YijingSourceArray } from '../types/index';
 
 
 
