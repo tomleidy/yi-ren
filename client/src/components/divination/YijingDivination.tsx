@@ -2,17 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { getHexagramFromValues } from '../../constants/hexagram';
 import CoinRow from '../display/CoinRow';
 import { coinBlended, coinHeads, coinTails } from '../../assets/images';
-import { CoinType, DisplayReadingType, HexagramLines } from '../types';
+import { CoinType, DisplayReadingType } from '../types';
 import { useActiveReading } from '../../context/ActiveReadingContext';
 import HexagramLinesDisplay from '../display/HexagramLinesDisplay';
+import AlternateHexagramDisplay from '../display/AlternateHexagramDisplay';
 import HexagramNumberDisplay from '../display/HexagramNumberDisplay';
 import YijingTextDisplay from '../yijingText/YijingTextDisplay';
+import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
+import { useVisibility } from '../../context/VisibilityContext';
 
 const YijingDivination: React.FC = () => {
-    const [hexagramLines, setHexagramLines] = useState<HexagramLines>([]);
     const [coins, setCoins] = useState<CoinType[]>([coinBlended, coinBlended, coinBlended]);
     const [displayReading, setDisplayReading] = useState<DisplayReadingType>(false);
-    const { setActiveReading } = useActiveReading();
+    const { hexagramLines, setHexagramLines, setActiveReading, clearReading } = useActiveReading();
+    const { visibility, toggle } = useVisibility();
+    const useAlternateDisplay = visibility['alternateHexagramDisplay'];
 
     const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
 
@@ -21,7 +25,7 @@ const YijingDivination: React.FC = () => {
         const newCoins: string[] = coins.map(() => Math.random() < 0.5 ? coinHeads : coinTails);
         setCoins(newCoins);
 
-        const headsCount = coins.filter(c => c === coinHeads).length;
+        const headsCount = newCoins.filter(c => c === coinHeads).length;
         const result = (headsCount * 3) + ((3 - headsCount) * 2);
 
         const newHexagram = [...hexagramLines, result];
@@ -34,22 +38,32 @@ const YijingDivination: React.FC = () => {
     };
 
     const resetReading = () => {
-        setHexagramLines([]);
         setCoins(coins.map(() => coinBlended));
-        setActiveReading(null);
+        clearReading();
         setDisplayReading(false);
     };
-
-    useEffect(() => {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.body.classList.add('dark-mode');
-        }
-    }, []);
 
     return (
         <div className="px-2 sm:px-4 py-4 sm:py-6 max-w-screen-lg mx-auto">
             <div className="space-y-4 sm:space-y-6">
-                <HexagramLinesDisplay hexagramLines={hexagramLines} />
+                <div className="relative">
+                    {useAlternateDisplay ? (
+                        <AlternateHexagramDisplay />
+                    ) : (
+                        <HexagramLinesDisplay hexagramLines={hexagramLines} />
+                    )}
+
+                    {hexagramLines.length > 0 && (
+                        <button
+                            onClick={() => toggle('alternateHexagramDisplay')}
+                            className="absolute top-0 right-0 p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                            title="Toggle display mode"
+                        >
+                            <ArrowsRightLeftIcon className="h-5 w-5" />
+                        </button>
+                    )}
+                </div>
+
                 <HexagramNumberDisplay />
                 <CoinRow coins={coins} />
 

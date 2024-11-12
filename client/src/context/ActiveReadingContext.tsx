@@ -5,9 +5,11 @@ import { queryYijingTextDbForHexagrams } from '../services/yijingApi';
 
 interface ActiveReadingContextType {
     activeReading: HexagramLines | null;
+    hexagramLines: number[];
     movingLines: number[];
     yijingSourceArray: YijingSourceArray;
     setActiveReading: (activeReading: HexagramLines | null) => void;
+    setHexagramLines: (lines: number[]) => void;
     clearReading: () => void;
 }
 
@@ -19,6 +21,7 @@ interface ActiveReadingProviderProps {
 
 export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ children }) => {
     const [activeReading, setActiveReadingState] = useState<HexagramLines | null>(null);
+    const [hexagramLines, setHexagramLines] = useState<number[]>([]);
     const [movingLines, setMovingLines] = useState<number[]>([]);
     const [yijingSourceArray, setYijingSourceArray] = useState<YijingSourceArray>([]);
 
@@ -36,6 +39,7 @@ export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ ch
 
     const clearReading = () => {
         setActiveReadingState(null);
+        setHexagramLines([]);
         setMovingLines([]);
         setYijingSourceArray([]);
     };
@@ -43,9 +47,11 @@ export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ ch
     return (
         <ActiveReadingContext.Provider value={{
             activeReading,
+            hexagramLines,
             movingLines,
             yijingSourceArray,
             setActiveReading,
+            setHexagramLines,
             clearReading
         }}>
             {children}
@@ -56,7 +62,7 @@ export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ ch
 export const useActiveReading = () => {
     const context = useContext(ActiveReadingContext);
     if (context === undefined) {
-        throw new Error('useHexagram must be used within an ActiveReadingProvider');
+        throw new Error('useActiveReading must be used within an ActiveReadingProvider');
     }
     return context;
 };
