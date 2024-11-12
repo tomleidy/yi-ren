@@ -5,7 +5,6 @@ import { coinBlended, coinHeads, coinTails } from '../../assets/images';
 import { CoinType, DisplayReadingType } from '../../types/index';
 import { useActiveReading } from '../../context/ActiveReadingContext';
 import HexagramLinesDisplay from '../display/HexagramLinesDisplay';
-import AlternateHexagramDisplay from '../display/AlternateHexagramDisplay';
 import HexagramNumberDisplay from '../display/HexagramNumberDisplay';
 import YijingTextDisplay from '../yijingText/YijingTextDisplay';
 import TopicComponent from '../display/TopicComponent';
@@ -17,9 +16,11 @@ const YijingDivination: React.FC = () => {
     const [displayReading, setDisplayReading] = useState<DisplayReadingType>(false);
     const { hexagramLines, setHexagramLines, setActiveReading, clearReading } = useActiveReading();
     const { visibility, toggle } = useVisibility();
-    const useAlternateDisplay = visibility['alternateHexagramDisplay'];
+    const showTwoHexagrams = visibility['twoHexagramDisplay'];
 
     const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
+
+    const hasMovingLines = (lines: number[]) => lines.some(line => line === 6 || line === 9);
 
     const flipCoins = async () => {
         if (hexagramLines.length >= 6) return;
@@ -48,21 +49,30 @@ const YijingDivination: React.FC = () => {
         <div className="px-2 sm:px-4 py-4 sm:py-6 max-w-screen-lg mx-auto">
             <div className="space-y-4 sm:space-y-6">
                 <div className="relative">
-                    {useAlternateDisplay ? (
-                        <AlternateHexagramDisplay />
-                    ) : (
-                        <HexagramLinesDisplay hexagramLines={hexagramLines} />
-                    )}
+                    <div className="flex justify-center items-center gap-8 sm:gap-12">
+                        <HexagramLinesDisplay
+                            hexagramLines={hexagramLines}
+                            showTwoHexagrams={showTwoHexagrams}
+                        />
+                        {showTwoHexagrams && hasMovingLines(hexagramLines) && (
+                            <>
+                                <div className="text-2xl text-black dark:text-[#f5f5dc]">→</div>
+                                <HexagramLinesDisplay
+                                    hexagramLines={hexagramLines}
+                                    isSecondHexagram={true}
+                                    showTwoHexagrams={true}
+                                />
+                            </>
+                        )}
+                    </div>
                     <TopicComponent />
-                    {hexagramLines.length > 0 && (
-                        <button
-                            onClick={() => toggle('alternateHexagramDisplay')}
-                            className="absolute top-0 right-0 p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                            title="Toggle display mode"
-                        >
-                            <ArrowsRightLeftIcon className="h-5 w-5" />
-                        </button>
-                    )}
+                    <button
+                        onClick={() => toggle('twoHexagramDisplay')}
+                        className="absolute top-0 right-0 p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                        title="Toggle display mode"
+                    >
+                        <ArrowsRightLeftIcon className="h-5 w-5" />
+                    </button>
                 </div>
 
                 <HexagramNumberDisplay />
