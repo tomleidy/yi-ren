@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getHexagramFromValues } from '../../constants/hexagram';
 import CoinRow from '../display/CoinRow';
 import { coinBlended, coinHeads, coinTails } from '../../assets/images';
