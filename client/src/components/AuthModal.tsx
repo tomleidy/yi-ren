@@ -9,6 +9,18 @@ interface FormData {
     password: string;
     confirmPassword: string;
 }
+interface UserResponse {
+    username: string;
+    userId: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    dateOfBirth?: string | null;
+    profilePicture?: string | null;
+    address?: string;
+    phoneNumber?: string | null;
+}
+
 
 const AuthModal: React.FC = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -59,8 +71,10 @@ const AuthModal: React.FC = () => {
             if (!response.ok) {
                 throw new Error(data.message || 'Authentication failed');
             }
-            localStorage.setItem('user', JSON.stringify(data.user));
+            const user: UserResponse = data.user;
+            localStorage.setItem('user', JSON.stringify(user));
             setUserInfo(data.user);
+
             // Reset form data
             setFormData({
                 username: '',

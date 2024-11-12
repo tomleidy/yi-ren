@@ -56,8 +56,15 @@ const Navbar: React.FC = () => {
         checkLocalStorage();
     }, []);
 
+    const handleLogoutClick = () => {
+        console.log('Logout button clicked');  // First see if this fires
+        handleLogoutGET();
+        hide('navDropdown');
+    };
+
+
     return (
-        <div className="relative">
+        <div className="relative z-50">
             <button onClick={() => toggle('navDropdown')}
                 className="px-4 py-1 w-20 h-20 text-sm font-medium text-white rounded-md  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
@@ -65,7 +72,7 @@ const Navbar: React.FC = () => {
             </button>
 
             {isNavbarOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg">
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-50">
                     <ul className="py-1">
                         {!userInfo ? (
                             <li className='py-1'>
@@ -76,17 +83,14 @@ const Navbar: React.FC = () => {
                         ) : (
                             <>
                                 <li>
-                                    <button className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => { }}>
+                                    <button className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => { show('profileModal'); hide('navDropdown'); }}>
                                         <EditProfileIcon />Edit Profile
                                     </button>
                                 </li>
                                 <li>
                                     <button
                                         className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                        onClick={() => {
-                                            handleLogoutGET();
-                                            hide('navDropdown');
-                                        }}
+                                        onClick={handleLogoutClick}
                                     >
                                         <UserLogoutIcon />Logout
                                     </button>

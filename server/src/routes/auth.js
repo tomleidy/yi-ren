@@ -41,13 +41,24 @@ passport.deserializeUser(function (user, done) {
 authRouter.post("/auth/login",
     passport.authenticate('local', { session: true }),
     (req, res) => {
-        const user = { username: req.user.username, userId: req.user._id, email: req.user.email };
+        const user = {
+            username: req.user.username,
+            userId: req.user._id,
+            email: req.user.email,
+            firstName: req.user.firstName,
+            lastName: req.user.lastName,
+            dateOfBirth: req.user.dateOfBirth,
+            profilePicture: req.user.profilePicture,
+            address: req.user.address,
+            phoneNumber: req.user.phoneNumber
+        };
         res.status(200).json({ message: "Login successful", user });
     },
     (err, req, res, next) => {
         res.status(401).json({ message: "Authentication failed" });
     }
 );
+
 authRouter.post('/auth/register', async (req, res, next) => {
     if (req.body.username === "" || req.body.password === "") {
         return res.status(406).json({ message: "406 Not Acceptable: Missing Fields" })
@@ -64,17 +75,31 @@ authRouter.post('/auth/register', async (req, res, next) => {
 
 authRouter.get("/auth/check-session", (req, res) => {
     if (req.user) {
-        res.status(200).json({
-            user: {
-                username: req.user.username,
-                userid: req.user._id,
-                email: req.user.email
-            }
-        });
+        // Get the full user object since we're using passport session
+        User.findById(req.user._id)
+            .then(user => {
+                res.status(200).json({
+                    user: {
+                        username: user.username,
+                        userId: user._id,
+                        email: user.email,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        dateOfBirth: user.dateOfBirth,
+                        profilePicture: user.profilePicture,
+                        address: user.address,
+                        phoneNumber: user.phoneNumber
+                    }
+                });
+            })
+            .catch(err => {
+                res.status(500).json({ message: "Error fetching user data" });
+            });
     } else {
         res.status(401).json({ message: "No active session" });
     }
 });
+
 
 authRouter.get("/auth/logout", (req, res) => {
     req.logout(function (err) {

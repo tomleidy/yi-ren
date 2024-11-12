@@ -4,6 +4,13 @@ export interface UserInfo {
     username: string;
     email?: string;
     userId: string;
+    firstName?: string;
+    lastName?: string;
+    dateOfBirth?: string | null;
+    profilePicture?: string | null;
+    address?: string;
+    phoneNumber?: string | null;
+
 }
 
 export interface UserContextType {

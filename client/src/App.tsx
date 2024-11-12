@@ -5,6 +5,7 @@ import { UserProvider, useUser } from './context/UserContext';
 import { LogoComponent } from './components/LogoComponent';
 import { VisibilityProvider } from './context/VisibilityContext';
 import { ActiveReadingProvider } from './context/ActiveReadingContext';
+import UserProfileModal from './components/UserProfileModal';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                         <Navbar />
                     </header>
                     <AuthModal />
+                    <UserProfileModal />
                     <div className="App">
                         <YijingDivination />
                     </div>
