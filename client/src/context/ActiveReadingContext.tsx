@@ -1,19 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { getMovingLines } from '../utils/hexagrams';
-import { HexagramLines, YijingSourceArray } from '../components/types';
+import { HexagramLines, YijingSourceArray, ActiveReadingContextType } from '../types/index';
 import { queryYijingTextDbForHexagrams } from '../services/yijingApi';
 
-interface ActiveReadingContextType {
-    activeReading: HexagramLines | null;
-    hexagramLines: number[];
-    movingLines: number[];
-    yijingSourceArray: YijingSourceArray;
-    topic: string;
-    setTopic: (topic: string) => void;
-    setActiveReading: (activeReading: HexagramLines | null) => void;
-    setHexagramLines: (lines: number[]) => void;
-    clearReading: () => void;
-}
 
 const ActiveReadingContext = createContext<ActiveReadingContextType | undefined>(undefined);
 

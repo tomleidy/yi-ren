@@ -1,4 +1,4 @@
-import { HexagramEntriesBasicInfoObject, BinaryToHexagram, ValueToBinary } from "../components/types";
+import { HexagramEntriesBasicInfoObject, BinaryToHexagram, ValueToBinary } from "../types/index";
 
 
 

@@ -1,15 +1,5 @@
 import { createContext, useContext, useState } from "react";
-
-interface UserInfo {
-    username: string;
-    email?: string;
-    userId: string;
-}
-
-interface UserContextType {
-    userInfo: UserInfo | null;
-    setUserInfo: (userInfo: UserInfo | null) => void;
-}
+import { UserInfo, UserContextType } from "../types/context";
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 

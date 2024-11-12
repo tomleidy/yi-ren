@@ -1,15 +1,5 @@
 import { createContext, useContext, useState } from "react";
-
-interface VisibilityState {
-    [key: string]: boolean;
-}
-
-interface VisibilityContextType {
-    visibility: VisibilityState;
-    toggle: (key: string) => void;
-    show: (key: string) => void;
-    hide: (key: string) => void;
-}
+import { VisibilityContextType, VisibilityState } from "../types/context";
 
 const VisibilityContext = createContext<VisibilityContextType>({
     visibility: {},

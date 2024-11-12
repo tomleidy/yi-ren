@@ -1,5 +1,5 @@
 import { getBinaryFromHexagramNumbers } from '../constants/hexagram.js';
-import { HexagramLines } from "../components/types.js";
+import { HexagramLines } from "../types/index.js";
 
 function getMovingLines(hexagrams: HexagramLines) {
     const binaryStrings = getBinaryFromHexagramNumbers(hexagrams);
