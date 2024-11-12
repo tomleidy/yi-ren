@@ -27,14 +27,16 @@ const YijingTextDisplaySingle = ({ entry, hexagramNumber }: YijingTextDisplaySin
                 </div>
             </div>
 
-            {showHexagram && columnOrder.map((columnName) => (
-                hexagramData[columnName] && movingLines.indexOf(Number(columnName)) === -1 &&
-                <div key={`${hexagramNumber}-${columnName}`} className="mt-3 sm:mt-4">
+            {showHexagram && columnOrder.map((columnName) => {
+                if (!hexagramData[columnName]) { return; }
+                if (!isNaN(Number(columnName)) && movingLines.indexOf(Number(columnName)) === -1) { return; }
+                return (<div key={`${hexagramNumber}-${columnName}`} className="mt-3 sm:mt-4">
                     <p className="text-left text-sm sm:text-base">
                         <span className="font-bold">{cap(columnName)}: </span>
                         {hexagramData[columnName]}</p>
                 </div>
-            ))}
+                )
+            })}
         </div>
     );
 };
