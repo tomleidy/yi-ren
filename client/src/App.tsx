@@ -6,6 +6,7 @@ import { LogoComponent } from './components/LogoComponent';
 import { VisibilityProvider } from './context/VisibilityContext';
 import { ActiveReadingProvider } from './context/ActiveReadingContext';
 import UserProfileModal from './components/UserProfileModal';
+import YijingUploader from './components/upload/YijingUploader';
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                     </header>
                     <AuthModal />
                     <UserProfileModal />
+                    <YijingUploader />
                     <div className="App">
                         <YijingDivination />
                     </div>

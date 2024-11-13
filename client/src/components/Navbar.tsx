@@ -4,6 +4,7 @@ import { UserCircleIcon, QuestionMarkCircleIcon } from '@heroicons/react/16/soli
 import { ArrowRightStartOnRectangleIcon, ArrowRightEndOnRectangleIcon } from '@heroicons/react/16/solid';
 import { PencilSquareIcon } from '@heroicons/react/16/solid';
 import { useVisibility } from '../context/VisibilityContext';
+import { BookOpenIcon } from '@heroicons/react/24/outline';
 
 const UserLoginIcon: React.FC = () => (<ArrowRightEndOnRectangleIcon className="h-4 w-4" />)
 const UserLogoutIcon: React.FC = () => (<ArrowRightStartOnRectangleIcon className="h-4 w-4" />)
@@ -85,6 +86,15 @@ const Navbar: React.FC = () => {
                                 <li>
                                     <button className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => { show('profileModal'); hide('navDropdown'); }}>
                                         <EditProfileIcon />Edit Profile
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={() => { show('uploadModal'); hide('navDropdown'); }}
+                                    >
+                                        <BookOpenIcon className="h-4 w-4" />
+                                        Upload Text
                                     </button>
                                 </li>
                                 <li>
