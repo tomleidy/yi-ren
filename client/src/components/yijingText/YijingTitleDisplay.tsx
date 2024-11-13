@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { YijingTitleDisplayProps } from '../types';
+import { YijingTitleDisplayProps } from '../../types/index';
 
 const YijingTitleDisplay = ({ yijingTitleObject }: YijingTitleDisplayProps) => {
     const [showBibliographicInfo, setShowBibliographicInfo] = useState(false);

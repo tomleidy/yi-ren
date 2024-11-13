@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useActiveReading } from '../../context/ActiveReadingContext';
 import BaguaDisplay from '../display/BaguaDisplay';
-import { YijingTextDisplaySingleProps } from '../types';
+import { YijingTextDisplaySingleProps } from '../../types/index';
 import HexagramBasicInfoDisplay from "../display/HexagramBasicInfoDisplay";
 
 const YijingTextDisplaySingle = ({ entry, hexagramNumber }: YijingTextDisplaySingleProps) => {
