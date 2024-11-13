@@ -4,7 +4,7 @@ import BaguaDisplay from '../display/BaguaDisplay';
 import { YijingTextDisplaySingleProps } from '../../types/index';
 import HexagramBasicInfoDisplay from "../display/HexagramBasicInfoDisplay";
 
-const YijingTextDisplaySingle = ({ entry, hexagramNumber }: YijingTextDisplaySingleProps) => {
+const YijingTextDisplaySingle = ({ entry, hexagramNumber, sourceIndex }: YijingTextDisplaySingleProps) => {
     const { columnOrder } = entry.title;
     const hexagramData = entry[hexagramNumber];
     const { movingLines } = useActiveReading();
@@ -22,9 +22,16 @@ const YijingTextDisplaySingle = ({ entry, hexagramNumber }: YijingTextDisplaySin
                     <h3 className="underline text-sm sm:text-base">Hexagram {hexagramNumber}</h3>
                 </button>
                 <div className="flex items-start space-x-2 sm:space-x-4 mt-2 sm:mt-0">
-                    <HexagramBasicInfoDisplay hexagramNumber={hexagramNumber} />
-                    <BaguaDisplay hexagramNumber={hexagramNumber} />
+                    <HexagramBasicInfoDisplay
+                        hexagramNumber={hexagramNumber}
+                        sourceIndex={sourceIndex}
+                    />
+                    <BaguaDisplay
+                        hexagramNumber={hexagramNumber}
+                        sourceIndex={sourceIndex}
+                    />
                 </div>
+
             </div>
 
             {showHexagram && columnOrder.map((columnName) => {

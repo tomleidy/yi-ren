@@ -5,9 +5,13 @@ import { useVisibility } from '../../context/VisibilityContext';
 
 interface BaguaDisplayProps {
     hexagramNumber: number;
+    sourceIndex?: number;
 }
 
-const BaguaDisplay: React.FC<BaguaDisplayProps> = ({ hexagramNumber }) => {
+const BaguaDisplay: React.FC<BaguaDisplayProps> = ({
+    hexagramNumber,
+    sourceIndex = 0  // Default to 0 for backward compatibility
+}) => {
     const { visibility, show, hide } = useVisibility();
     const hexagramBinary = getBinaryFromHexagramNumbers([hexagramNumber])[0];
     const upperTrigram = hexagramBinary.slice(3, 6);
@@ -16,8 +20,9 @@ const BaguaDisplay: React.FC<BaguaDisplayProps> = ({ hexagramNumber }) => {
     const upperInfo = trigrams.trigramsBasicInfo[trigrams.binaryToTrigram[upperTrigram]];
     const lowerInfo = trigrams.trigramsBasicInfo[trigrams.binaryToTrigram[lowerTrigram]];
 
-    const baguaKey = `bagua-info-${hexagramNumber}`;
-    const hexagramKey = `hexagram-info-${hexagramNumber}`;
+    // Make keys unique per source and hexagram
+    const baguaKey = `bagua-info-${sourceIndex}-${hexagramNumber}`;
+    const hexagramKey = `hexagram-info-${sourceIndex}-${hexagramNumber}`;
 
     const handleClick = () => {
         if (visibility[baguaKey]) {

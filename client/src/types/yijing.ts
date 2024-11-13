@@ -29,6 +29,7 @@ export interface YijingTextDisplayProps {
 export interface YijingTextDisplaySingleProps {
     entry: YijingSourceObject;
     hexagramNumber: number;
+    sourceIndex: number;
 }
 
 export interface YijingTitleDisplayProps {

@@ -75,6 +75,7 @@ const YijingTextDisplay = ({ displayReading }: YijingTextDisplayProps) => {
                                     key={`${index}-${hexNumber}`}
                                     entry={entry}
                                     hexagramNumber={hexNumber}
+                                    sourceIndex={index}
                                 />
                             ))}
                         </div>

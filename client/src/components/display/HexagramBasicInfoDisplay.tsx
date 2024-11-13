@@ -4,13 +4,19 @@ import { useVisibility } from '../../context/VisibilityContext';
 
 interface HexagramBasicInfoDisplayProps {
     hexagramNumber: number;
+    sourceIndex?: number;
 }
 
-const HexagramBasicInfoDisplay: React.FC<HexagramBasicInfoDisplayProps> = ({ hexagramNumber }) => {
+const HexagramBasicInfoDisplay: React.FC<HexagramBasicInfoDisplayProps> = ({
+    hexagramNumber,
+    sourceIndex = 0  // Default to 0 for backward compatibility
+}) => {
     const { visibility, show, hide } = useVisibility();
     const hexagramInfo = getHexagramBasicInfo([hexagramNumber])[0];
-    const hexagramKey = `hexagram-info-${hexagramNumber}`;
-    const baguaKey = `bagua-info-${hexagramNumber}`;
+
+    // Make keys unique per source and hexagram
+    const hexagramKey = `hexagram-info-${sourceIndex}-${hexagramNumber}`;
+    const baguaKey = `bagua-info-${sourceIndex}-${hexagramNumber}`;
 
     const handleClick = () => {
         if (visibility[hexagramKey]) {
