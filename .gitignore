@@ -13,3 +13,4 @@ sessions/
 *.pem
 .eslintrc
 TODO.md
+sources/
