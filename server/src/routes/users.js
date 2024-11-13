@@ -1,44 +1,18 @@
 const express = require('express');
 const { User } = require('../models/user');
-const passport = require('passport');
-
+const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
+const { HTTP_STATUS, ALLOWED_USER_UPDATE_FIELDS } = require("../constants");
 const router = express.Router();
-const { verifyUser, verifyAdmin } = require("../middleware/authMiddleware");
 
-router.get('/', verifyUser, verifyAdmin, async (req, res, next) => {
-    // return list of users for admin only
-});
-
-router.get('/:username/profile', async (req, res, next) => {
-    // if logged in user = username, return full profile information
-    // else return basic profile information for username
-})
-
-router.get("/:username/adminView", async (req, res, next) => {
-    // if logged in user is an admin, return full profile information
-    // else 404 (I know, 403 is better, but we're adding security through obscurity)
-})
-
-router.put('/profile', async (req, res) => {
-    if (!req.session.passport) {
-        return res.status(403).json({ message: "Not authorized" });
-    }
-
+// Route handlers
+const updateProfile = async (req, res) => {
     const { _id: userId } = req.session.passport.user;
 
     try {
         const updateFields = {};
-        const allowedFields = [
-            'firstName',
-            'lastName',
-            'email',
-            'phoneNumber',
-            'address',
-            'dateOfBirth'
-        ];
 
-        // Only include fields that are present and allowed
-        allowedFields.forEach(field => {
+        // Only include allowed fields that are present
+        ALLOWED_USER_UPDATE_FIELDS.forEach(field => {
             if (req.body[field] !== undefined) {
                 updateFields[field] = req.body[field];
             }
@@ -53,12 +27,13 @@ router.put('/profile', async (req, res) => {
             }
         );
 
-
         if (!updatedUser) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: "User not found"
+            });
         }
 
-        res.status(200).json({
+        res.status(HTTP_STATUS.OK).json({
             message: "Profile updated successfully",
             user: {
                 username: updatedUser.username,
@@ -74,10 +49,50 @@ router.put('/profile', async (req, res) => {
 
     } catch (err) {
         console.error('Profile update error:', err);
-        res.status(500).json({ message: "Error updating profile" });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            message: "Error updating profile"
+        });
     }
-});
+};
 
+const getPublicProfile = async (req, res) => {
+    try {
+        const user = await User.findOne(
+            { username: req.params.username },
+            'username firstName lastName profilePicture'
+        );
 
+        if (!user) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: "User not found"
+            });
+        }
+
+        res.status(HTTP_STATUS.OK).json({ user });
+    } catch (err) {
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            message: "Error fetching profile"
+        });
+    }
+};
+
+const getAdminUserList = async (req, res) => {
+    try {
+        const users = await User.find(
+            {},
+            'username email firstName lastName dateOfBirth isActive lastLogin'
+        );
+        res.status(HTTP_STATUS.OK).json({ users });
+    } catch (err) {
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            message: "Error fetching user list"
+        });
+    }
+};
+
+// Routes
+router.put('/profile', isAuthenticated, updateProfile);
+router.get('/:username/profile', getPublicProfile);
+router.get('/', isAuthenticated, isAdmin, getAdminUserList);
 
 module.exports = router;

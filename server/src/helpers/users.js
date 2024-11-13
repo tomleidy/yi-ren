@@ -1,96 +1,132 @@
 const { User } = require('../models/user');
 const bcrypt = require('bcrypt');
-const saltRounds = 12;
+const { SALT_ROUNDS, HTTP_STATUS, ALLOWED_USER_UPDATE_FIELDS } = require('../constants');
 
-const userCanUpdate = new Set(["firstName", "lastName", "dateOfBirth", "profilePicture", "address", "phoneNumber"])
-
-function getUserUpdateObject(body) {
-    let updatedUser = {};
-    for (let key in body) {
-        if (userCanUpdate.has(key)) {
-            updatedUser[key] = body[key];
-        }
+class UserHelper {
+    static async hashPassword(password) {
+        return bcrypt.hash(password, SALT_ROUNDS);
     }
-    return updatedUser;
-}
 
-const getUserAndPassword = async (username) => await User.findOne({ username }, { username: 1, password: 1 });
-
-const getUserForUpdate = async (username) => await User.findOne({ username }, { username: 1, email: 1, firstName: 1, lastName: 1, dateOfBirth: 1, profilePicture: 1, address: 1, phoneNumber: 1, password: 1 });
-
-
-async function userLogin(username, password) {
-    let incorrectUsernameOrPasswordObject = { status: 403, data: "Incorrect username / password" }
-    try {
-        const user = await getUserAndPassword(username);
-        if (!user) { return incorrectUsernameOrPasswordObject }
-        const passwordMatches = await bcrypt.compare(password, user.password);
-        if (passwordMatches) { return { status: 200, data: "Successfully logged in!" } }
-        return incorrectUsernameOrPasswordObject;
+    static async comparePasswords(plaintext, hashed) {
+        return bcrypt.compare(plaintext, hashed);
     }
-    catch (err) {
-        console.log(err);
-        return { status: 500, data: "Internal server error" };
-    }
-}
 
-async function userCreate(body, admin = false) {
-    const { username, email, password: userPassword } = body;
-    try {
-        let password = await bcrypt.hash(userPassword, saltRounds);
-        const user = new User({ username, email, password });
-        if (process.env.TEST_ENV === "true") {
-            if (admin) { user.admin = true }
-        }
-        const result = await user.save();
-        console.log(`result: ${result}`);
-        return { status: 201, data: result };
-    }
-    catch (err) {
-        if (err.code === 11000) {
-            if ("email" in err.keyPattern) {
-                return { status: 409, data: ["email address " + email + " already in use"] }
+    static async createUser(userData, isAdmin = false) {
+        const { username, email, password } = userData;
+
+        try {
+            const hashedPassword = await this.hashPassword(password);
+            const user = new User({
+                username,
+                email,
+                password: hashedPassword,
+                admin: process.env.TEST_ENV === "true" && isAdmin
+            });
+
+            const savedUser = await user.save();
+            return {
+                status: HTTP_STATUS.CREATED,
+                data: savedUser
+            };
+        } catch (err) {
+            if (err.code === 11000) {
+                const field = Object.keys(err.keyPattern)[0];
+                return {
+                    status: HTTP_STATUS.CONFLICT,
+                    data: [`${field} already in use`]
+                };
             }
-            if ("username" in err.keyPattern) {
-                return { status: 409, data: ["username " + username + " already in use"] }
-            }
+            return {
+                status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+                data: err
+            };
         }
-        return { status: 500, data: err };
+    }
+
+    static async updateUserPassword(username, oldPassword, newPassword) {
+        try {
+            const user = await User.findOne({ username });
+            if (!user) {
+                return {
+                    status: HTTP_STATUS.NOT_FOUND,
+                    data: "User not found"
+                };
+            }
+
+            const passwordMatches = await this.comparePasswords(oldPassword, user.password);
+            if (!passwordMatches) {
+                return {
+                    status: HTTP_STATUS.FORBIDDEN,
+                    data: "Incorrect password"
+                };
+            }
+
+            const hashedPassword = await this.hashPassword(newPassword);
+            const updatedUser = await User.findOneAndUpdate(
+                { username },
+                { password: hashedPassword },
+                { new: true }
+            );
+
+            return {
+                status: HTTP_STATUS.OK,
+                data: updatedUser
+            };
+        } catch (err) {
+            return {
+                status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+                data: "Internal server error"
+            };
+        }
+    }
+
+    static async updateUserProfile(username, password, updates) {
+        try {
+            const user = await User.findOne({ username });
+            if (!user) {
+                return {
+                    status: HTTP_STATUS.NOT_FOUND,
+                    data: "User not found"
+                };
+            }
+
+            const passwordMatches = await this.comparePasswords(password, user.password);
+            if (!passwordMatches) {
+                return {
+                    status: HTTP_STATUS.FORBIDDEN,
+                    data: "Incorrect password"
+                };
+            }
+
+            // Filter updates to only allowed fields
+            const filteredUpdates = Object.keys(updates)
+                .filter(key => ALLOWED_USER_UPDATE_FIELDS.has(key))
+                .reduce((obj, key) => {
+                    obj[key] = updates[key];
+                    return obj;
+                }, {});
+
+            const updatedUser = await User.findOneAndUpdate(
+                { username },
+                filteredUpdates,
+                { new: true }
+            );
+
+            return {
+                status: HTTP_STATUS.OK,
+                data: updatedUser
+            };
+        } catch (err) {
+            return {
+                status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+                data: "Internal server error"
+            };
+        }
     }
 }
 
-async function userUpdatePassword(body) {
-    const { username, oldPassword, newPassword } = body;
-    try {
-        const user = await getUserAndPassword(username);
-        if (!user) { return { status: 404, data: "User not found" } }
-        const passwordMatches = await bcrypt.compare(oldPassword, user.password);
-        if (!passwordMatches) { return { status: 403, data: "Incorrect password" } }
-        const password = await bcrypt.hash(newPassword, saltRounds);
-        const result = await User.findOneAndUpdate({ username }, { password }, { new: true });
-        return { status: 200, data: result };
-    }
-    catch (err) {
-        console.log(err);
-        return { status: 500, data: "Internal server error" };
-    }
-}
-
-async function userUpdate(body) {
-    const { username, password } = body;
-    try {
-        const user = await getUserForUpdate(username);
-        if (!user) { return { status: 404, data: "User not found" } }
-        const passwordMatches = await bcrypt.compare(password, user.password);
-        if (!passwordMatches) { return { status: 403, data: "Incorrect password" } }
-        const updatedUser = getUserUpdateObject(body);
-        const result = await User.findOneAndUpdate({ username }, updatedUser, { new: true });
-        return { status: 200, data: result };
-    }
-    catch (err) {
-        console.log(err);
-        return { status: 500, data: "Internal server error" };
-    }
-}
-
-module.exports = { userCreate, userLogin, userUpdatePassword, userUpdate, getUserUpdateObject };
+module.exports = {
+    userCreate: UserHelper.createUser.bind(UserHelper),
+    userUpdatePassword: UserHelper.updateUserPassword.bind(UserHelper),
+    userUpdate: UserHelper.updateUserProfile.bind(UserHelper)
+};

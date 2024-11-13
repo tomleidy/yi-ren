@@ -1,123 +1,176 @@
 const express = require("express");
-const readingRouter = express.Router();
-const { readingCreate, readingList, readingGet, readingUpdate, readingDelete } = require("../models/reading")
-//const { isValidHexagramString } = require("../helpers/hexagrams");
+const { isAuthenticated } = require("../middleware/authMiddleware");
+const { Reading } = require("../models/reading");
+const { HTTP_STATUS } = require("../constants");
+const router = express.Router();
 
-function getHexagramNumber(hexParameter) {
-    // if hex parameter is number between 1 and 64, return it
-    if (/^([1-9]|[1-5][0-9]|6[0-4])$/.test(hexParameter)) {
-        return Number(hexParameter);
+// Validation helper
+const isValidHexagram = (hex) => {
+    // Valid hexagram number (1-64)
+    if (/^([1-9]|[1-5][0-9]|6[0-4])$/.test(hex)) {
+        return true;
     }
-    // if hex parameter is 6 digit binary string, return hexagram number
-    if (/^[01]{6}$/.test(hexParameter)) {
-        return binaryToHexagram[hexParameter];
-    }
-    return undefined;
-}
-
-
-function isValidHexagramString(hexParameter) {
-    if (getHexagramNumber(hexParameter)) {
+    // Valid binary string
+    if (/^[01]{6}$/.test(hex)) {
         return true;
     }
     return false;
-}
+};
 
+// Route handlers
+const createReading = async (req, res, next) => {
+    const { hexagram1, hexagram2, topic } = req.body;
+    const { _id: userId } = req.session.passport.user;
 
-
-readingRouter.post("/new", async (req, res, next) => {
-    if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
-    // check if SaaS type user, 403 if not
-    if (!req.body.hexagram1 || !isValidHexagramString(req.body.hexagram1)) {
-        return res.status(406).json({ message: "406 Not Acceptable: Hexagram1" })
+    if (!hexagram1 || !isValidHexagram(hexagram1)) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+            message: "Invalid primary hexagram"
+        });
     }
-    if (req.body.hexagram2 && !isValidHexagramString(req.body.hexagram2)) {
-        return res.status(406).json({ message: "406 Not Acceptable: Hexagram2" })
+
+    if (hexagram2 && !isValidHexagram(hexagram2)) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+            message: "Invalid secondary hexagram"
+        });
     }
-    let { hexagram1, hexagram2, topic } = req.body;
-    let { _id: userId, username } = req.session['passport']['user']
-    let readingInfo = { userId, username, hexagram1, hexagram2, topic }
+
     try {
-        let result = await readingCreate(readingInfo);
-        if (!result) {
-            return next({ error: "missing result" });
-        }
-        res.status(result.status).json(result.data);
-        // if they have their own yijing documents
-        // (send the relevant lines from them and Legge)
+        const reading = new Reading({
+            userId,
+            hexagram1: parseInt(hexagram1, 10),
+            hexagram2: hexagram2 ? parseInt(hexagram2, 10) : null,
+            topic
+        });
 
-    }
-    catch (err) {
+        const savedReading = await reading.save();
+        res.status(HTTP_STATUS.CREATED).json(savedReading);
+    } catch (err) {
         next(err);
     }
-});
+};
 
+const listReadings = async (req, res, next) => {
+    const { _id: userId } = req.session.passport.user;
 
-readingRouter.get("/list", async (req, res, next) => {
-    if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
-    let { _id: userId } = req.session['passport']['user'];
     try {
-        let result = await readingList({ userId })
-        if (!result) {
-            return next({ error: "missing result" });
-        }
-        res.status(result.status).json(result.data);
-    }
-    catch (err) {
+        const readings = await Reading.find({
+            userId,
+            deletedAt: null,
+            deletedPermanent: false
+        });
+        res.status(HTTP_STATUS.OK).json(readings);
+    } catch (err) {
         next(err);
     }
-});
-readingRouter.get("/id/:readingId", async (req, res, next) => {
-    if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
-    let { _id: userId } = req.session['passport']['user'];
-    let readingId = req.params.readingId;
+};
+
+const getReading = async (req, res, next) => {
+    const { _id: userId } = req.session.passport.user;
+    const { readingId } = req.params;
+
     try {
-        let result = await readingGet({ userId, readingId });
-        if (!result) {
-            return next({ error: "missing result" });
+        const reading = await Reading.findOne({
+            _id: readingId,
+            userId,
+            deletedAt: null,
+            deletedPermanent: false
+        }).populate('hexagram1 hexagram2');
+
+        if (!reading) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: "Reading not found"
+            });
         }
-        res.status(result.status).json(result.data);
-    }
-    catch (err) {
+
+        res.status(HTTP_STATUS.OK).json(reading);
+    } catch (err) {
         next(err);
     }
-});
-readingRouter.put("/id/:readingId", async (req, res, next) => {
-    if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
-    let { _id: userId } = req.session['passport']['user'];
-    let readingId = req.params.readingId;
-    let readingInfo = JSON.parse(JSON.stringify(req.body));
-    readingInfo['readingId'] = readingId;
-    readingInfo['userId'] = userId;
-    try {
-        let result = await readingUpdate(readingInfo);
-        if (!result) {
-            return next({ error: "missing result" });
-        }
-        res.status(result.status).json(result.data);
+};
+
+const updateReading = async (req, res, next) => {
+    const { _id: userId } = req.session.passport.user;
+    const { readingId } = req.params;
+    const allowedUpdates = ['topic', 'notes'];
+
+    // Filter to only allowed fields
+    const updates = Object.keys(req.body)
+        .filter(key => allowedUpdates.includes(key))
+        .reduce((obj, key) => {
+            obj[key] = req.body[key];
+            return obj;
+        }, {});
+
+    if (Object.keys(updates).length === 0) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+            message: "No valid update fields provided"
+        });
     }
-    catch (err) {
+
+    try {
+        const reading = await Reading.findOneAndUpdate(
+            {
+                _id: readingId,
+                userId,
+                deletedAt: null,
+                deletedPermanent: false
+            },
+            updates,
+            { new: true }
+        ).populate('hexagram1 hexagram2');
+
+        if (!reading) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: "Reading not found"
+            });
+        }
+
+        res.status(HTTP_STATUS.OK).json(reading);
+    } catch (err) {
         next(err);
     }
-});
+};
 
-readingRouter.delete("/id/:readingId", async (req, res, next) => {
-    if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }
-    let { _id: userId } = req.session['passport']['user'];
-    let readingId = req.params.readingId;
-    let readingInfo = { userId, readingId };
+const deleteReading = async (req, res, next) => {
+    const { _id: userId } = req.session.passport.user;
+    const { readingId } = req.params;
+    const { permanent } = req.query;
+
     try {
-        let result = await readingDelete(readingInfo);
-        if (!result) {
-            return next({ error: "missing result" });
+        const updateData = permanent ?
+            { deletedPermanent: true } :
+            { deletedAt: new Date() };
+
+        const reading = await Reading.findOneAndUpdate(
+            {
+                _id: readingId,
+                userId,
+                deletedAt: null,
+                deletedPermanent: false
+            },
+            updateData,
+            { new: true }
+        );
+
+        if (!reading) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: "Reading not found"
+            });
         }
-        res.status(result.status).json(result.data);
-    }
-    catch (err) {
+
+        res.status(HTTP_STATUS.OK).json({
+            message: "Reading deleted successfully"
+        });
+    } catch (err) {
         next(err);
     }
+};
 
-});
+// Routes
+router.post("/new", isAuthenticated, createReading);
+router.get("/list", isAuthenticated, listReadings);
+router.get("/id/:readingId", isAuthenticated, getReading);
+router.put("/id/:readingId", isAuthenticated, updateReading);
+router.delete("/id/:readingId", isAuthenticated, deleteReading);
 
-
-module.exports = readingRouter;
+module.exports = router;

@@ -4,108 +4,120 @@ const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
 const { User } = require("../models/user");
 const { userCreate } = require("../helpers/users");
-const authRouter = express.Router();
-const { createLeggeReference } = require("../helpers/devSetup");
+const { HTTP_STATUS, SALT_ROUNDS } = require("../constants");
+const router = express.Router();
 
-const authenticationError = (req, res, next) => next({
-    status: 401,
-    message: 'Not authenticated'
-});
-
-passport.use(new LocalStrategy(async function verify(username, password, next) {
-    let authenticationIncorrectError = { status: 401, message: "Incorrect username or password" };
+// Configure passport strategy
+passport.use(new LocalStrategy(async (username, password, done) => {
     try {
-        const user = await User.findOne({ username: username });
-        if (!user) { return next(null, false, authenticationIncorrectError); }
-        const passwordsMatch = await bcrypt.compare(password, user.password);
-        if (passwordsMatch) {
-            return next(null, user);
+        const user = await User.findOne({ username });
+        if (!user) {
+            return done(null, false, { message: "Incorrect username or password" });
         }
-        next(authenticationIncorrectError);
+
+        const passwordsMatch = await bcrypt.compare(password, user.password);
+        if (!passwordsMatch) {
+            return done(null, false, { message: "Incorrect username or password" });
+        }
+
+        return done(null, user);
+    } catch (err) {
+        return done(err);
     }
-    catch (err) {
-        return next(err);
-    }
-}
-));
+}));
 
-
-
-passport.serializeUser(function (user, done) {
-    process.nextTick(() => done(null, { _id: user._id, username: user.username }))
+// Passport serialization
+passport.serializeUser((user, done) => {
+    process.nextTick(() => done(null, {
+        _id: user._id,
+        username: user.username
+    }));
 });
-passport.deserializeUser(function (user, done) {
+
+passport.deserializeUser((user, done) => {
     process.nextTick(() => done(null, user));
 });
 
-authRouter.post("/auth/login",
-    passport.authenticate('local', { session: true }),
-    (req, res) => {
-        const user = {
-            username: req.user.username,
-            email: req.user.email,
-            firstName: req.user.firstName,
-            lastName: req.user.lastName,
-            dateOfBirth: req.user.dateOfBirth,
-            profilePicture: req.user.profilePicture,
-            address: req.user.address,
-            phoneNumber: req.user.phoneNumber
-        };
-        res.status(200).json({ message: "Login successful", user });
-    },
-    (err, req, res, next) => {
-        res.status(401).json({ message: "Authentication failed" });
+// Route handlers
+const login = (req, res) => {
+    const user = {
+        username: req.user.username,
+        email: req.user.email,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        dateOfBirth: req.user.dateOfBirth,
+        profilePicture: req.user.profilePicture,
+        address: req.user.address,
+        phoneNumber: req.user.phoneNumber
+    };
+    res.status(HTTP_STATUS.OK).json({
+        message: "Login successful",
+        user
+    });
+};
+
+const register = async (req, res, next) => {
+    const { username, password, email } = req.body;
+
+    if (!username || !password) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+            message: "Missing required fields"
+        });
     }
+
+    try {
+        const result = await userCreate(req.body);
+        res.status(result.status).json(result.data);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const checkSession = async (req, res) => {
+    if (!req.user) {
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+            message: "No active session"
+        });
+    }
+
+    try {
+        const user = await User.findById(req.user._id);
+        res.status(HTTP_STATUS.OK).json({
+            user: {
+                username: user.username,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                dateOfBirth: user.dateOfBirth,
+                profilePicture: user.profilePicture,
+                address: user.address,
+                phoneNumber: user.phoneNumber
+            }
+        });
+    } catch (err) {
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            message: "Error fetching user data"
+        });
+    }
+};
+
+const logout = (req, res, next) => {
+    req.logout((err) => {
+        if (err) { return next(err); }
+        res.status(HTTP_STATUS.OK).json({
+            message: "Logout successful"
+        });
+    });
+};
+
+// Routes
+router.post("/login",
+    passport.authenticate('local', { session: true }),
+    login
 );
 
-authRouter.post('/auth/register', async (req, res, next) => {
-    if (req.body.username === "" || req.body.password === "") {
-        return res.status(406).json({ message: "406 Not Acceptable: Missing Fields" })
-    }
-    try {
-        let result = await userCreate(req.body);
-        return res.status(result.status).json(result.data);
-    }
-    catch (err) {
-        res.status(500).json(err);
-    }
+router.post('/register', register);
+router.get("/check-session", checkSession);
+router.get("/logout", logout);
 
-});
-
-authRouter.get("/auth/check-session", (req, res) => {
-    if (req.user) {
-        // Get the full user object since we're using passport session
-        User.findById(req.user._id)
-            .then(user => {
-                res.status(200).json({
-                    user: {
-                        username: user.username,
-                        email: user.email,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        dateOfBirth: user.dateOfBirth,
-                        profilePicture: user.profilePicture,
-                        address: user.address,
-                        phoneNumber: user.phoneNumber
-                    }
-                });
-            })
-            .catch(err => {
-                res.status(500).json({ message: "Error fetching user data" });
-            });
-    } else {
-        res.status(401).json({ message: "No active session" });
-    }
-});
-
-
-authRouter.get("/auth/logout", (req, res) => {
-    req.logout(function (err) {
-        if (err) { return next(err); }
-        res.status(200).json({ message: "Logout successful" });
-    });
-});
-
-
-
-module.exports = authRouter;
+module.exports = router;
