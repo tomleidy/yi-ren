@@ -1,7 +1,29 @@
 const express = require("express");
 const readingRouter = express.Router();
 const { readingCreate, readingList, readingGet, readingUpdate, readingDelete } = require("../models/reading")
-const { isValidHexagramString } = require("../helpers/hexagrams");
+//const { isValidHexagramString } = require("../helpers/hexagrams");
+
+function getHexagramNumber(hexParameter) {
+    // if hex parameter is number between 1 and 64, return it
+    if (/^([1-9]|[1-5][0-9]|6[0-4])$/.test(hexParameter)) {
+        return Number(hexParameter);
+    }
+    // if hex parameter is 6 digit binary string, return hexagram number
+    if (/^[01]{6}$/.test(hexParameter)) {
+        return binaryToHexagram[hexParameter];
+    }
+    return undefined;
+}
+
+
+function isValidHexagramString(hexParameter) {
+    if (getHexagramNumber(hexParameter)) {
+        return true;
+    }
+    return false;
+}
+
+
 
 readingRouter.post("/new", async (req, res, next) => {
     if (!req.session.passport) { return res.status(403).json({ error: "Not authorized" }); }

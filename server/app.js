@@ -49,14 +49,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(passport.authenticate('session'));
-const hexagramRouter = require("./src/routes/hexagram");
 const readingRouter = require("./src/routes/reading");
 const userRouter = require("./src/routes/users");
 const referenceRouter = require("./src/routes/reference");
-//console.log("\n\n\n".repeat(15));
 
 
-app.use("/hexagram", hexagramRouter);
 app.use("/", authRouter);
 app.use("/reading", readingRouter);
 app.use("/users", userRouter);
