@@ -31,9 +31,10 @@ const YijingUploader: React.FC = () => {
         const { name, value } = e.target;
         setTitleInfo(prev => ({
             ...prev,
-            [name]: value
+            [name]: name === 'year' ? (value ? Number(value) : null) : value
         }));
     };
+
 
     const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -70,9 +71,62 @@ const YijingUploader: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Implement the upload logic
-        console.log('Submit:', { titleInfo, csvPreview });
+        setError('');
+
+        if (!csvPreview) {
+            setError('Please upload a CSV file first');
+            return;
+        }
+
+        try {
+            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+            if (!fileInput?.files?.[0]) {
+                setError('Please select a file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const titleMetadata = {
+                title: titleInfo.title,
+                author: titleInfo.author,
+                translator: titleInfo.translator || null,
+                year: titleInfo.year,  // No need for parseInt now
+                columnOrder: csvPreview.columns
+            };
+            formData.append('titleInfo', JSON.stringify(titleMetadata));
+
+            const response = await fetch('/reference/upload', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message || 'Upload failed');
+            }
+
+            const result = await response.json();
+            console.log('Upload successful:', result);
+
+            setTitleInfo({
+                title: '',
+                author: '',
+                translator: null,
+                year: null
+            });
+            setCsvPreview(null);
+            hide('uploadModal');
+
+        } catch (err) {
+            console.error('Upload error:', err);
+            setError(err instanceof Error ? err.message : 'Failed to upload file');
+        }
     };
+
+
 
     if (!isModalOpen) return null;
 

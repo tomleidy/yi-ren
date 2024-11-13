@@ -94,25 +94,28 @@ yijingTextSchema.statics.getUserTitles = async function (userId) {
 
 const YijingText = mongoose.model('YijingText', yijingTextSchema);
 
-// Enhanced createFromCSV with validation
 async function createFromCSV(userId, titleInfo, csvData) {
     // Validate required fields
     if (!titleInfo.title || !titleInfo.author || !titleInfo.columnOrder) {
         throw new Error('Missing required title information');
     }
 
-    // Validate CSV structure
-    if (!csvData.length || !csvData[0].kingwen) {
-        throw new Error('Invalid CSV structure: missing kingwen column');
+    // Find hexagram number column using regex
+    const hexagramPattern = /^(?:number|hexagram|king\s*wen|\#)$/i;
+    const hexagramColumn = Object.keys(csvData[0]).find(col =>
+        hexagramPattern.test(col.trim())
+    );
+
+    if (!hexagramColumn) {
+        throw new Error('CSV must include a column for hexagram numbers (e.g., Number, Hexagram, KingWen, King Wen)');
     }
 
     // Validate hexagram numbers
     const validHexagramNumbers = new Set(Array.from({ length: 64 }, (_, i) => (i + 1).toString()));
-
     const hexagrams = new Map();
 
     for (const row of csvData) {
-        const hexNum = row.kingwen?.toString();
+        const hexNum = row[hexagramColumn]?.toString();
 
         if (!validHexagramNumbers.has(hexNum)) {
             throw new Error(`Invalid hexagram number: ${hexNum}`);
@@ -120,7 +123,7 @@ async function createFromCSV(userId, titleInfo, csvData) {
 
         const hexData = new Map();
         for (const col of titleInfo.columnOrder) {
-            if (row[col]) {
+            if (col !== hexagramColumn && row[col]) {  // Skip the hexagram number column
                 hexData.set(col, sanitizeText(row[col]));
             }
         }
@@ -135,6 +138,7 @@ async function createFromCSV(userId, titleInfo, csvData) {
 
     return await yijingText.save();
 }
+
 
 // Function to get texts for specific hexagrams
 async function getTexts(hexagramNumbers, userId = null) {
