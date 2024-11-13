@@ -1,11 +1,18 @@
 #!/usr/bin/env node
 const { DevSetup } = require('../src/helpers/devSetup');
+const mongoose = require('mongoose');
+const config = require('../config');
 
 async function setup() {
     try {
         // Get command line arguments
         const args = process.argv.slice(2);
         const command = args[0] || 'init';
+
+        // Connect to MongoDB first
+        console.log('Connecting to MongoDB...');
+        await mongoose.connect(config.mongoUrl);
+        console.log('Connected to MongoDB');
 
         switch (command) {
             case 'init':
@@ -26,10 +33,18 @@ async function setup() {
                 process.exit(1);
         }
 
+        // Disconnect from MongoDB
+        await mongoose.disconnect();
         console.log('Operation completed successfully');
         process.exit(0);
     } catch (err) {
         console.error('Operation failed:', err.message);
+        // Ensure we disconnect even if there's an error
+        try {
+            await mongoose.disconnect();
+        } catch (disconnectErr) {
+            console.error('Error disconnecting from MongoDB:', disconnectErr);
+        }
         process.exit(1);
     }
 }

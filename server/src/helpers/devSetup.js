@@ -46,33 +46,45 @@ class DevSetup {
             }
 
             // Check if user exists
-            const existingUser = await User.findOne({ username: userData.username });
+            const existingUser = await User.findOne({
+                $or: [
+                    { username: userData.username },
+                    { email: userData.email }
+                ]
+            });
 
             if (existingUser) {
+                const field = existingUser.username === userData.username ? 'username' : 'email';
+                const value = field === 'username' ? userData.username : userData.email;
+
                 if (!force) {
-                    console.log(`${userType} already exists: ${userData.username}`);
-                    return existingUser;
+                    console.log(`${userType} ${field} already exists: ${value}`);
+                    throw ErrorHelper.conflict(
+                        `${userType} ${field} already exists: ${value}`,
+                        { field, value }
+                    );
                 }
-                // If force is true, delete existing user
-                await User.findOneAndDelete({ username: userData.username });
+
+                console.log(`Removing existing user with ${field}: ${value}`);
+                await User.findOneAndDelete({ [field]: value });
             }
 
             // Create new user
-            const result = await userCreate(
-                userData,
-                userType === 'ADMIN' // isAdmin flag
-            );
+            const result = await userCreate(userData, userType === 'ADMIN');
 
             if (result.status === 201) {
                 console.log(`Created ${userType}: ${userData.username}`);
                 return result.data;
             } else {
-                throw ErrorHelper.internal(`Failed to create ${userType}: ${JSON.stringify(result.data)}`);
+                throw ErrorHelper.internal(
+                    `Failed to create ${userType}`,
+                    result.data
+                );
             }
         } catch (err) {
             if (err.statusCode) throw err; // If it's already an AppError, rethrow
             console.error(`Error creating ${userType}:`, err);
-            throw ErrorHelper.internal(`Failed to create ${userType}`);
+            throw ErrorHelper.internal(`Failed to create ${userType}`, err.message);
         }
     }
 
@@ -84,6 +96,11 @@ class DevSetup {
         try {
             console.log('Initializing test environment...');
 
+            // First clean up any existing test users
+            console.log('Cleaning up existing test users...');
+            await this.cleanupTestEnvironment();
+
+            console.log('Creating new test users...');
             // Create test users
             const users = await Promise.all([
                 this.createTestUser('USER'),
@@ -96,6 +113,13 @@ class DevSetup {
             return users;
         } catch (err) {
             console.error('Failed to initialize test environment:', err);
+            // If it's a conflict error, give more helpful message
+            if (err.statusCode === 409) {
+                throw ErrorHelper.conflict(
+                    'Test users already exist. Run cleanup first or use reset command.',
+                    err.details
+                );
+            }
             throw ErrorHelper.internal('Test environment initialization failed');
         }
     }

@@ -13,7 +13,10 @@
         "install:all": "npm install && npm run install:client && npm run install:server",
         "install:client": "cd client && npm install",
         "install:server": "cd server && npm install",
-        "test": "cd server && npm test"
+        "test": "cd server && npm test",
+        "setup:dev": "cd server && npm run dev:setup",
+        "cleanup:dev": "cd server && npm run dev:cleanup",
+        "reset:dev": "cd server && npm run dev:reset"
     },
     "devDependencies": {
         "concurrently": "^8.2.2"

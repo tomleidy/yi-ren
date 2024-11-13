@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./server.js",
-    "test": "jest"
+    "test": "jest",
+    "dev:setup": "node bin/dev-setup.js init",
+    "dev:cleanup": "node bin/dev-setup.js cleanup",
+    "dev:reset": "node bin/dev-setup.js reset"
   },
   "keywords": [],
   "author": "",
