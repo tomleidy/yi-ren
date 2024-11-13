@@ -3,7 +3,6 @@ import { HexagramLines, YijingSourceArray } from "./index";
 export interface UserInfo {
     username: string;
     email?: string;
-    userId: string;
     firstName?: string;
     lastName?: string;
     dateOfBirth?: string | null;

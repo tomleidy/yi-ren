@@ -11,7 +11,6 @@ interface FormData {
 }
 interface UserResponse {
     username: string;
-    userId: string;
     email?: string;
     firstName?: string;
     lastName?: string;

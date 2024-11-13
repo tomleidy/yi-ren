@@ -43,7 +43,6 @@ authRouter.post("/auth/login",
     (req, res) => {
         const user = {
             username: req.user.username,
-            userId: req.user._id,
             email: req.user.email,
             firstName: req.user.firstName,
             lastName: req.user.lastName,
@@ -81,7 +80,6 @@ authRouter.get("/auth/check-session", (req, res) => {
                 res.status(200).json({
                     user: {
                         username: user.username,
-                        userId: user._id,
                         email: user.email,
                         firstName: user.firstName,
                         lastName: user.lastName,
