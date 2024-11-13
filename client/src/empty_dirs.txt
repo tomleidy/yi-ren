@@ -1,7 +1,1 @@
-context/
-hooks/
 layouts/
-lib/
-services/
-types/
-utils/
