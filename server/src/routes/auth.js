@@ -2,25 +2,24 @@ const express = require("express");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
+const AuthHelper = require('../helpers/auth');
 const { User } = require("../models/user");
 const { userCreate } = require("../helpers/users");
 const { HTTP_STATUS, SALT_ROUNDS } = require("../constants");
 const router = express.Router();
+const { isAuthenticated } = require("../middleware/authMiddleware");
+
 
 // Configure passport strategy
 passport.use(new LocalStrategy(async (username, password, done) => {
     try {
         const user = await User.findOne({ username });
-        if (!user) {
-            return done(null, false, { message: "Incorrect username or password" });
-        }
+        const result = await AuthHelper.validatePassword(user, password);
 
-        const passwordsMatch = await bcrypt.compare(password, user.password);
-        if (!passwordsMatch) {
-            return done(null, false, { message: "Incorrect username or password" });
+        if (!result.success) {
+            return done(null, false, { message: result.message });
         }
-
-        return done(null, user);
+        return done(null, result.user);
     } catch (err) {
         return done(err);
     }
@@ -112,12 +111,34 @@ const logout = (req, res, next) => {
 
 // Routes
 router.post("/login",
-    passport.authenticate('local', { session: true }),
-    login
+    (req, res, next) => {
+        passport.authenticate('local', (err, user, info) => {
+            if (err) return next(err);
+            if (!user) {
+                return res.status(401).json({ message: info?.message || "Unauthorized" });
+            }
+            req.logIn(user, (err) => {
+                if (err) return next(err);
+                return login(req, res);
+            });
+        })(req, res, next);
+    }
 );
+const changePassword = async (req, res, next) => {
+    const { username, oldPassword, newPassword } = req.body;
+
+    try {
+        const result = await userUpdatePassword(username, oldPassword, newPassword);
+        res.status(result.status).json(result.data);
+    } catch (err) {
+        next(err);
+    }
+};
+
 
 router.post('/register', register);
 router.get("/check-session", checkSession);
 router.get("/logout", logout);
+router.put("/change-password", isAuthenticated, changePassword);
 
 module.exports = router;
