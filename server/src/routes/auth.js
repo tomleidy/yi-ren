@@ -8,7 +8,7 @@ const { userCreate } = require("../helpers/users");
 const { HTTP_STATUS, SALT_ROUNDS } = require("../constants");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
-
+const { userUpdatePassword } = require("../helpers/users");
 
 // Configure passport strategy
 passport.use(new LocalStrategy(async (username, password, done) => {

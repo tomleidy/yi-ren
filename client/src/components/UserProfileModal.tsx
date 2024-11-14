@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useVisibility } from '../context/VisibilityContext';
 import { UserInfo } from '../types/context';
+import ChangePasswordModal from './ChangePasswordModal';
 
 interface ProfileFormData {
     firstName: string;
@@ -15,7 +16,7 @@ interface ProfileFormData {
 
 const UserProfileModal: React.FC = () => {
     const { userInfo, setUserInfo } = useUser();
-    const { visibility, hide } = useVisibility();
+    const { visibility, hide, show } = useVisibility();
     const isModalOpen = visibility['profileModal'];
     const [error, setError] = useState<string>('');
 
@@ -186,6 +187,15 @@ const UserProfileModal: React.FC = () => {
                     {error && (
                         <div className="text-red-500 text-sm text-center">{error}</div>
                     )}
+                    <div className="flex justify-end mb-4">
+                        <button
+                            type="button"
+                            onClick={() => show('passwordModal')}
+                            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                            Change Password
+                        </button>
+                    </div>
 
                     <button
                         type="submit"
@@ -194,6 +204,7 @@ const UserProfileModal: React.FC = () => {
                         Save Changes
                     </button>
                 </form>
+                <ChangePasswordModal />
             </div>
         </div>
     );

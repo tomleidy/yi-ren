@@ -1,5 +1,6 @@
 const { User } = require('../models/user');
 const bcrypt = require('bcrypt');
+const AuthHelper = require('./auth');
 const { SALT_ROUNDS, HTTP_STATUS, ALLOWED_USER_UPDATE_FIELDS } = require('../constants');
 
 class UserHelper {
@@ -46,31 +47,31 @@ class UserHelper {
     static async updateUserPassword(username, oldPassword, newPassword) {
         try {
             const user = await User.findOne({ username });
-            if (!user) {
-                return {
-                    status: HTTP_STATUS.NOT_FOUND,
-                    data: "User not found"
-                };
-            }
+            const validationResult = await AuthHelper.validatePassword(user, oldPassword);
 
-            const passwordMatches = await this.comparePasswords(oldPassword, user.password);
-            if (!passwordMatches) {
+            if (!validationResult.success) {
                 return {
-                    status: HTTP_STATUS.FORBIDDEN,
-                    data: "Incorrect password"
+                    status: validationResult.status,
+                    data: validationResult.message
                 };
             }
 
             const hashedPassword = await this.hashPassword(newPassword);
-            const updatedUser = await User.findOneAndUpdate(
+            const updated = await User.findOneAndUpdate(
                 { username },
-                { password: hashedPassword },
-                { new: true }
+                { password: hashedPassword }
             );
+
+            if (!updated) {
+                return {
+                    status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+                    data: "Failed to update password"
+                };
+            }
 
             return {
                 status: HTTP_STATUS.OK,
-                data: updatedUser
+                data: "Password updated successfully"
             };
         } catch (err) {
             return {
