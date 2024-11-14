@@ -5,11 +5,11 @@ import { coinBlended, coinHeads, coinTails } from '../../assets/images';
 import { CoinType, DisplayReadingType } from '../../types/index';
 import { useActiveReading } from '../../context/ActiveReadingContext';
 import HexagramLinesDisplay from '../display/HexagramLinesDisplay';
-import HexagramNumberDisplay from '../display/HexagramNumberDisplay';
 import YijingTextDisplay from '../yijingText/YijingTextDisplay';
 import TopicComponent from '../display/TopicComponent';
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 import { useVisibility } from '../../context/VisibilityContext';
+import HexagramInfoDisplay from '../display/HexagramInfoDisplay';
 
 const YijingDivination: React.FC = () => {
     const [coins, setCoins] = useState<CoinType[]>([coinBlended, coinBlended, coinBlended]);
@@ -74,8 +74,6 @@ const YijingDivination: React.FC = () => {
                         <ArrowsRightLeftIcon className="h-5 w-5" />
                     </button>
                 </div>
-
-                <HexagramNumberDisplay />
                 <CoinRow coins={coins} />
 
                 <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 pt-2 sm:pt-4">
@@ -92,7 +90,7 @@ const YijingDivination: React.FC = () => {
                         Reset
                     </button>
                 </div>
-
+                <HexagramInfoDisplay />
                 <YijingTextDisplay displayReading={displayReading} />
             </div>
         </div>
