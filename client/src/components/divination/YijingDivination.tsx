@@ -10,40 +10,51 @@ import TopicComponent from '../display/TopicComponent';
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 import { useVisibility } from '../../context/VisibilityContext';
 import HexagramInfoDisplay from '../display/HexagramInfoDisplay';
+import { useCoins } from '../../context/CoinsContext';
+
+interface CoinReadingButtonsProps {
+    setDisplayReading: (setDisplayReading: boolean) => void;
+}
+
+const CoinReadingButtons = ({ setDisplayReading }: CoinReadingButtonsProps) => {
+    const { flipCoins } = useCoins();
+    const { clearReading } = useActiveReading();
+    const { resetCoins } = useCoins();
+    const { hexagramLines } = useActiveReading();
+
+    const resetReading = () => {
+        resetCoins();
+        clearReading();
+    };
+    const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
+
+    return (
+        <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 pt-2 sm:pt-4">
+            <button
+                onClick={hexagramLines.length >= 6 ? showReading : flipCoins}
+                className="px-4 py-2 sm:px-6 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-sm sm:text-base min-h-[44px]"
+            >
+                {hexagramLines.length === 6 ? 'Show Yijing Text' : 'Flip Coins'}
+            </button>
+            <button
+                onClick={resetReading}
+                className="px-4 py-2 sm:px-6 sm:py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm sm:text-base min-h-[44px]"
+            >
+                Reset
+            </button>
+        </div>);
+}
 
 const YijingDivination: React.FC = () => {
-    const [coins, setCoins] = useState<CoinType[]>([coinBlended, coinBlended, coinBlended]);
     const [displayReading, setDisplayReading] = useState<DisplayReadingType>(false);
-    const { hexagramLines, setHexagramLines, setActiveReading, clearReading } = useActiveReading();
+    const { hexagramLines } = useActiveReading();
     const { visibility, toggle } = useVisibility();
     const showTwoHexagrams = visibility['twoHexagramDisplay'];
 
-    const showReading = () => hexagramLines.length === 6 && setDisplayReading(true);
-
     const hasMovingLines = (lines: number[]) => lines.some(line => line === 6 || line === 9);
 
-    const flipCoins = async () => {
-        if (hexagramLines.length >= 6) return;
-        const newCoins: string[] = coins.map(() => Math.random() < 0.5 ? coinHeads : coinTails);
-        setCoins(newCoins);
+    const { coins } = useCoins();
 
-        const headsCount = newCoins.filter(c => c === coinHeads).length;
-        const result = (headsCount * 3) + ((3 - headsCount) * 2);
-
-        const newHexagram = [...hexagramLines, result];
-        setHexagramLines(newHexagram);
-
-        if (newHexagram.length === 6) {
-            const hexagramNumbers = getHexagramFromValues(newHexagram);
-            setActiveReading(hexagramNumbers);
-        }
-    };
-
-    const resetReading = () => {
-        setCoins(coins.map(() => coinBlended));
-        clearReading();
-        setDisplayReading(false);
-    };
 
     return (
         <div className="px-2 sm:px-4 py-4 sm:py-6 max-w-screen-lg mx-auto">
@@ -75,21 +86,8 @@ const YijingDivination: React.FC = () => {
                     </button>
                 </div>
                 <CoinRow coins={coins} />
+                <CoinReadingButtons setDisplayReading={setDisplayReading} />
 
-                <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 pt-2 sm:pt-4">
-                    <button
-                        onClick={hexagramLines.length >= 6 ? showReading : flipCoins}
-                        className="px-4 py-2 sm:px-6 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-sm sm:text-base min-h-[44px]"
-                    >
-                        {hexagramLines.length === 6 ? 'Show Yijing Text' : 'Flip Coins'}
-                    </button>
-                    <button
-                        onClick={resetReading}
-                        className="px-4 py-2 sm:px-6 sm:py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm sm:text-base min-h-[44px]"
-                    >
-                        Reset
-                    </button>
-                </div>
                 <HexagramInfoDisplay />
                 <YijingTextDisplay displayReading={displayReading} />
             </div>
