@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { getHexagramFromValues } from '../../constants/hexagram';
 import CoinRow from '../display/CoinRow';
-import { coinBlended, coinHeads, coinTails } from '../../assets/images';
-import { CoinType, DisplayReadingType } from '../../types/index';
+import { DisplayReadingType } from '../../types/index';
 import { useActiveReading } from '../../context/ActiveReadingContext';
 import HexagramLinesDisplay from '../display/HexagramLinesDisplay';
 import YijingTextDisplay from '../yijingText/YijingTextDisplay';
@@ -53,9 +52,6 @@ const YijingDivination: React.FC = () => {
 
     const hasMovingLines = (lines: number[]) => lines.some(line => line === 6 || line === 9);
 
-    const { coins } = useCoins();
-
-
     return (
         <div className="px-2 sm:px-4 py-4 sm:py-6 max-w-screen-lg mx-auto">
             <div className="space-y-4 sm:space-y-6">
@@ -85,7 +81,7 @@ const YijingDivination: React.FC = () => {
                         <ArrowsRightLeftIcon className="h-5 w-5" />
                     </button>
                 </div>
-                <CoinRow coins={coins} />
+                <CoinRow />
                 <CoinReadingButtons setDisplayReading={setDisplayReading} />
 
                 <HexagramInfoDisplay />
