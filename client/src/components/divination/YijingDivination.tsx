@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import { getHexagramFromValues } from '../../constants/hexagram';
+import { useState } from 'react';
 import CoinRow from '../display/CoinRow';
 import { DisplayReadingType } from '../../types/index';
 import { useActiveReading } from '../../context/ActiveReadingContext';
-import HexagramLinesDisplay from '../display/HexagramLinesDisplay';
 import YijingTextDisplay from '../yijingText/YijingTextDisplay';
 import TopicComponent from '../display/TopicComponent';
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 import { useVisibility } from '../../context/VisibilityContext';
 import HexagramInfoDisplay from '../display/HexagramInfoDisplay';
 import { useCoins } from '../../context/CoinsContext';
+import DrawUpToTwoHexagrams from '../display/DrawUpToTwoHexagrams';
 
 interface CoinReadingButtonsProps {
     setDisplayReading: (setDisplayReading: boolean) => void;
@@ -44,13 +43,23 @@ const CoinReadingButtons = ({ setDisplayReading }: CoinReadingButtonsProps) => {
         </div>);
 }
 
+const ToggleDisplayOneOrTwoHexagrams = () => {
+    const { toggle } = useVisibility();
+    return (
+        <button
+            onClick={() => toggle('twoHexagramDisplay')}
+            className="absolute top-0 right-0 p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+            title="Toggle display mode"
+        >
+            <ArrowsRightLeftIcon className="h-5 w-5" />
+        </button>
+    )
+
+
+}
+
 const YijingDivination: React.FC = () => {
     const [displayReading, setDisplayReading] = useState<DisplayReadingType>(false);
-    const { hexagramLines } = useActiveReading();
-    const { visibility, toggle } = useVisibility();
-    const showTwoHexagrams = visibility['twoHexagramDisplay'];
-
-    const hasMovingLines = (lines: number[]) => lines.some(line => line === 6 || line === 9);
 
     return (
         <div className="px-2 sm:px-4 py-4 sm:py-6 max-w-screen-lg mx-auto">
@@ -60,13 +69,7 @@ const YijingDivination: React.FC = () => {
                         <DrawUpToTwoHexagrams />
                     </div>
                     <TopicComponent />
-                    <button
-                        onClick={() => toggle('twoHexagramDisplay')}
-                        className="absolute top-0 right-0 p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                        title="Toggle display mode"
-                    >
-                        <ArrowsRightLeftIcon className="h-5 w-5" />
-                    </button>
+                    <ToggleDisplayOneOrTwoHexagrams />
                 </div>
                 <CoinRow />
                 <CoinReadingButtons setDisplayReading={setDisplayReading} />
