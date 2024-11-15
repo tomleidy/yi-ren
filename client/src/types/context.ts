@@ -28,6 +28,7 @@ export interface VisibilityContextType {
     hide: (key: string) => void;
 }
 
+
 export interface ActiveReadingContextType {
     activeReading: HexagramLines | null;
     hexagramLines: number[];
@@ -38,4 +39,10 @@ export interface ActiveReadingContextType {
     setActiveReading: (activeReading: HexagramLines | null) => void;
     setHexagramLines: (lines: number[]) => void;
     clearReading: () => void;
+    getNumberOfHexagrams: () => number;
+    isSecondHexagram: (hex: number) => boolean;
+    getHexagramOneLines: () => number[];
+    getHexagramTwoLines: () => number[];
 }
+
+export type ActiveReadingType = number[] | null;

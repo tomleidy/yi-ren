@@ -57,20 +57,7 @@ const YijingDivination: React.FC = () => {
             <div className="space-y-4 sm:space-y-6">
                 <div className="relative">
                     <div className="flex justify-center items-center gap-8 sm:gap-12">
-                        <HexagramLinesDisplay
-                            hexagramLines={hexagramLines}
-                            showTwoHexagrams={showTwoHexagrams}
-                        />
-                        {showTwoHexagrams && hasMovingLines(hexagramLines) && (
-                            <>
-                                <div className="text-2xl text-black dark:text-[#f5f5dc]">→</div>
-                                <HexagramLinesDisplay
-                                    hexagramLines={hexagramLines}
-                                    isSecondHexagram={true}
-                                    showTwoHexagrams={true}
-                                />
-                            </>
-                        )}
+                        <DrawUpToTwoHexagrams />
                     </div>
                     <TopicComponent />
                     <button

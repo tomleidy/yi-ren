@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { getMovingLines } from '../utils/hexagrams';
-import { HexagramLines, YijingSourceArray, ActiveReadingContextType } from '../types/index';
+import { HexagramLines, YijingSourceArray } from '../types/index';
+import { ActiveReadingContextType, ActiveReadingType } from '../types/index';
+
 import { queryYijingTextDbForHexagrams } from '../services/yijingApi';
 
 
@@ -11,13 +13,13 @@ interface ActiveReadingProviderProps {
 }
 
 export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ children }) => {
-    const [activeReading, setActiveReadingState] = useState<HexagramLines | null>(null);
-    const [hexagramLines, setHexagramLines] = useState<number[]>([]);
+    const [activeReading, setActiveReadingState] = useState<ActiveReadingType>(null);
+    const [hexagramLines, setHexagramLines] = useState<HexagramLines>([]);
     const [movingLines, setMovingLines] = useState<number[]>([]);
     const [yijingSourceArray, setYijingSourceArray] = useState<YijingSourceArray>([]);
     const [topic, setTopic] = useState('');
 
-    const setActiveReading = async (newReading: HexagramLines | null) => {
+    const setActiveReading = async (newReading: ActiveReadingType) => {
         setActiveReadingState(newReading);
         if (newReading) {
             const lines = getMovingLines(newReading);
@@ -29,12 +31,26 @@ export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ ch
         }
     };
 
+    const getNumberOfHexagrams = () => hexagramLines.some(line => line === 6 || line === 9) ? 2 : 1;
+
+
+    const stationary: ({ [key: number]: number }) = { 6: 8, 7: 7, 8: 8, 9: 7 }
+    const moving: ({ [key: number]: number }) = { 6: 7, 7: 7, 8: 8, 9: 8 }
+    const getHexagramOneLines = () => hexagramLines.map(lineValue => stationary[lineValue])
+    const getHexagramTwoLines = () => hexagramLines.map(lineValue => moving[lineValue])
+
+
     const clearReading = () => {
         setActiveReadingState(null);
         setHexagramLines([]);
         setMovingLines([]);
         setYijingSourceArray([]);
     };
+
+    const isSecondHexagram = (hex: number) =>
+        activeReading !== null &&
+        activeReading.length > 1 &&
+        activeReading[1] === hex;
 
     return (
         <ActiveReadingContext.Provider value={{
@@ -46,7 +62,11 @@ export const ActiveReadingProvider: React.FC<ActiveReadingProviderProps> = ({ ch
             setTopic,
             setActiveReading,
             setHexagramLines,
-            clearReading
+            clearReading,
+            getNumberOfHexagrams,
+            isSecondHexagram,
+            getHexagramOneLines,
+            getHexagramTwoLines
         }}>
             {children}
         </ActiveReadingContext.Provider>
@@ -60,5 +80,6 @@ export const useActiveReading = () => {
     }
     return context;
 };
+
 
 export default ActiveReadingContext;
