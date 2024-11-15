@@ -32,7 +32,6 @@ export async function queryYijingTextDbForHexagrams(hexagrams: number[]): Promis
         });
 
         if (!needsFetch) {
-            console.log('Using cached Yijing data');
             notifyListeners('using-cache');
             return getStoredYijingSources();
         }
@@ -52,7 +51,6 @@ export async function queryYijingTextDbForHexagrams(hexagrams: number[]): Promis
 
         return data;
     } catch (error) {
-        console.error("getReference error:", error);
         // On error, return cached data if available
         const cachedData = getStoredYijingSources();
         if (cachedData.length > 0) {
