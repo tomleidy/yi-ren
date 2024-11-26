@@ -4,6 +4,8 @@ services:
     container_name: mongodb
     ports:
       - "27017:27017"
+    env_file:
+      - ${ENV_FILE:-.env.example}
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -18,4 +20,3 @@ networks:
 
 volumes:
   mongo_data:
-
