@@ -13,7 +13,18 @@ const options = {
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-const server = https.createServer(options, app);
+try {
+    const options = {
+        key: fs.readFileSync('https/localhost-key.pem'),
+        cert: fs.readFileSync('https/localhost.pem')
+    };
+    server = https.createServer(options, app);
+    console.log('Starting server in HTTPS mode');
+} catch (err) {
+    server = http.createServer(app);
+    console.log('Starting server in HTTP mode');
+}
+
 
 
 // Listen on port, on all network interfaces
