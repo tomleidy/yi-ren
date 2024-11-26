@@ -32,7 +32,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Database setup
 mongoose.connect(config.mongoUrl)
     .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+    .catch(err => {
+        console.error('MongoDB connection error:', err);
+        process.exit(1);
+    });
 
 // Session setup
 app.use(session({
