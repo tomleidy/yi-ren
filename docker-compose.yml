@@ -1,16 +1,21 @@
 services:
   mongo:
     image: mongo:latest
-    container_name: mongodb
+    container_name: ${CONTAINER_NAME}
     ports:
       - "27017:27017"
     env_file:
-      - ${ENV_FILE:-.env.example}
+      - ${ENV_FILE}
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_YIREN_USERNAME=${MONGO_YIREN_USERNAME}
+      - MONGO_YIREN_PASSWORD=${MONGO_YIREN_PASSWORD}
+      - MONGO_YIREN_DBNAME=${MONGO_YIREN_DBNAME}
     volumes:
-      - mongo_data:/data/db
+      - ./mongo/data:/data/db
+      - ./mongo/init.js:/docker-entrypoint-initdb.d/init.js:ro
+      - ./mongo/leggeText.json:/data/db/leggeText.json
     networks:
       - mongo_network
 
