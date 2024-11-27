@@ -12,5 +12,6 @@ if (envFile === '.env.example') {
 }
 
 module.exports = {
-    'mongoUrl': process.env.SECRET_URL
+    'mongoUrl': process.env.SECRET_URL,
+    'sessionSecret': process.env.SESSION_SECRET
 }

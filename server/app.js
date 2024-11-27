@@ -1,4 +1,3 @@
-require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
@@ -39,7 +38,7 @@ mongoose.connect(config.mongoUrl)
 
 // Session setup
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'keyboard cat', // Should be in env
+    secret: config.sessionSecret || 'keyboard cat', // Should be in env
     cookie: { maxAge: SESSION_COOKIE_MAX_AGE },
     resave: false,
     saveUninitialized: false,
