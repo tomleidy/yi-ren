@@ -14,3 +14,4 @@ sessions/
 .eslintrc
 TODO.md
 sources/
+mongo/data
