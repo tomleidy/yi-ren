@@ -26,9 +26,9 @@ if (!db.getUser(process.env.MONGO_YIREN_USERNAME)) {
 }
 
 
-const existingDoc = db.yijingTexts.findOne({ userId: "000000000000000000000000" });
+const existingDoc = db.yijingtexts.findOne({ userId: "000000000000000000000000" });
 if (!existingDoc) {
     // Read Legge JSON file and insert the data into the yijingtexts collection
     const leggeText = JSON.parse(fs.readFileSync('/data/db/leggeText.json', 'utf8'));
-    db.yijingTexts.insertMany(leggeText);
+    db.yijingtexts.insertMany(leggeText);
 }
