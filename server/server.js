@@ -2,27 +2,17 @@
 const app = require('./app.js');
 const debug = require('debug')('yi-ren:server');
 const https = require("https");
-const http = require("http");
 const fs = require('fs');
 
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-let server;
-
-// Try to create HTTPS server, fall back to HTTP if certs not found
-try {
-    const options = {
-        key: fs.readFileSync('https/localhost-key.pem'),
-        cert: fs.readFileSync('https/localhost.pem')
-    };
-    server = https.createServer(options, app);
-    console.log('Starting server in HTTPS mode');
-} catch (err) {
-    console.log('HTTPS certificates not found, falling back to HTTP');
-    server = http.createServer(app);
-    console.log('Starting server in HTTP mode');
-}
+const options = {
+    key: fs.readFileSync('https/localhost-key.pem'),
+    cert: fs.readFileSync('https/localhost.pem')
+};
+console.log('Starting server in HTTPS mode');
+const server = https.createServer(options, app);
 
 // Listen on port, on all network interfaces
 server.listen(port);
